@@ -96,23 +96,23 @@ const personalInfo = [
 ];
 
 const education = [
-  { id: 1, year: "Sep 2021 – May 2025", title: "Bachelor Of Engineering - <span> Chitkara University </span>", description: "Computer Science Engineering – GPA: 9.12 – Solan, Himachal Pradesh" },
-  { id: 2, year: "May 2020 – June 2021", title: "Higher Secondary - <span> DAV Centenary Public School </span>", description: "Percentage: 82.5% – Jaipur, Rajasthan" },
-  { id: 3, year: "May 2018 – April 2019", title: "Secondary - <span> DAV Public School </span>", description: "Percentage: 74.8% – Mohali, Punjab" }
+  { id: 1, year: "Sep 2021 - May 2025", title: "Bachelor Of Engineering - <span> Chitkara University </span>", description: "Computer Science Engineering – GPA: 9.12 – Solan, Himachal Pradesh" },
+  { id: 2, year: "May 2020 - June 2021", title: "Higher Secondary - <span> DAV Centenary Public School </span>", description: "Percentage: 82.5% – Jaipur, Rajasthan" },
+  { id: 3, year: "May 2018 - April 2019", title: "Secondary - <span> DAV Public School </span>", description: "Percentage: 74.8% – Mohali, Punjab" }
 ];
 
 const experience = [
-  { 
-    id: 1, 
-    year: "Sep 2025 – Present", 
-    title: "Software Engineer - <span> Techpearl Software </span>", 
-    description: "Optimized bulk data workflows and backend performance. Reduced bulk import time for 9k records by 66%. Revamped Org Chart queries, cutting response times from 50s to 0.2s using optimized joins." 
+  {
+    id: 1,
+    year: "Sep 2025 – Present",
+    title: "Software Engineer - <span> Techpearl Software </span>",
+    description: "Optimized bulk data workflows and backend performance. Reduced bulk import time for 9k records by 66%. Revamped Org Chart queries, cutting response times from 50s to 0.2s using optimized joins."
   },
-  { 
-    id: 2, 
-    year: "Jan 2025 – Aug 2025", 
-    title: "Project Management Intern - <span> Wabtec Corporation </span>", 
-    description: "Collaborated with cross-functional teams to gather requirements and enhance software performance. Tested digital solutions and validated requirements for production-grade projects." 
+  {
+    id: 2,
+    year: "Jan 2025 – Aug 2025",
+    title: "Project Management Intern - <span> Wabtec Corporation </span>",
+    description: "Collaborated with cross-functional teams to gather requirements and enhance software performance. Tested digital solutions and validated requirements for production-grade projects."
   }
 ];
 
@@ -131,12 +131,12 @@ const skills = [
 
 async function seed() {
   console.log('Seeding Supabase database...');
-  
+
   // Clear and Seed Projects
   await supabase.from('projects').delete().neq('id', 0);
   const { error: pError } = await supabase.from('projects').upsert(portfolioData);
   if (pError) console.error('Error seeding projects:', pError);
-  
+
   // Clear and Seed Info
   await supabase.from('personal_info').delete().neq('key', '');
   const { error: iError } = await supabase.from('personal_info').upsert(personalInfo);
@@ -156,7 +156,7 @@ async function seed() {
   await supabase.from('experience').delete().neq('id', 0);
   const { error: expError } = await supabase.from('experience').upsert(experience);
   if (expError) console.error('Error seeding experience:', expError);
-  
+
   console.log('Seeding process finished!');
 }
 

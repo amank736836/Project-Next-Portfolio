@@ -14,6 +14,9 @@ export default function ResumeManager({ type }) {
   const title = type === 'education' ? 'Academy' : 'Logbook';
   const subtitle = type === 'education' ? 'Academic Achievement Configuration' : 'Professional Mission History';
   const apiPath = `/api/admin/${type}`;
+  const entryCount = items.length;
+  const latestEntry = items[0]?.year || 'No entries yet';
+  const completionLabel = type === 'education' ? 'Academic Track' : 'Experience Track';
 
   useEffect(() => {
     fetchItems();
@@ -182,71 +185,116 @@ export default function ResumeManager({ type }) {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-16">
-        <div>
-          <h2 className="admin-title">{title}</h2>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-3">{subtitle}</p>
+      <div className="admin-card !p-0 mb-10 overflow-hidden border-white/5 bg-white/[0.015]">
+        <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] p-8 lg:p-10">
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.35em] text-indigo-300">
+                Academy Sector
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[9px] font-black uppercase tracking-[0.35em] text-slate-300">
+                {completionLabel}
+              </span>
+            </div>
+
+            <div>
+              <h2 className="admin-title">{title}</h2>
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-3">{subtitle}</p>
+            </div>
+
+            <p className="max-w-2xl text-sm leading-7 text-slate-400">
+              Shape the education timeline with clear milestones, concise context, and stronger visual hierarchy. Each entry now reads like a premium record rather than a plain list row.
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+              <button 
+                onClick={addNew}
+                className="admin-btn admin-btn-primary group !bg-white !text-black hover:!bg-indigo-50"
+              >
+                <FiPlus className="group-hover:rotate-90 transition-transform" /> 
+                <span>New Mission Entry</span>
+              </button>
+              <button
+                onClick={fetchItems}
+                className="admin-btn admin-btn-secondary group"
+              >
+                <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                <span>Refresh Sector</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 self-start lg:justify-self-end w-full max-w-md">
+            <div className="rounded-[28px] border border-white/5 bg-white/[0.03] p-5">
+              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-slate-500 mb-3">Entries</p>
+              <p className="text-4xl font-black tracking-tight text-white">{entryCount}</p>
+              <p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Total records</p>
+            </div>
+            <div className="rounded-[28px] border border-white/5 bg-white/[0.03] p-5">
+              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-slate-500 mb-3">Latest</p>
+              <p className="text-lg font-black tracking-tight text-white leading-tight">{latestEntry}</p>
+              <p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Most recent sector</p>
+            </div>
+          </div>
         </div>
-        <button 
-          onClick={addNew}
-          className="admin-btn admin-btn-primary group !bg-white !text-black hover:!bg-indigo-50"
-        >
-          <FiPlus className="group-hover:rotate-90 transition-transform" /> 
-          <span>New Mission Entry</span>
-        </button>
       </div>
 
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {items.map((item, idx) => (
-          <div key={item.id} className={`admin-card group/card stagger-${(idx % 3) + 1} !p-0 overflow-hidden border-indigo-500/10 hover:border-indigo-500/30`}>
-            <div className="flex flex-col lg:flex-row">
-              {/* Timeline Info Bar */}
-              <div className="lg:w-64 p-8 bg-white/[0.02] border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-between">
-                <div>
-                   <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-4">Timeline</p>
-                   <p className="text-sm font-bold text-slate-300">{item.year}</p>
+          <div key={item.id} className={`admin-card group/card stagger-${(idx % 4) + 1} !p-0 overflow-hidden border-white/5 hover:border-indigo-500/30 bg-white/[0.01] flex flex-col`}>
+            <div className="flex items-start justify-between gap-4 border-b border-white/5 bg-white/[0.02] px-5 py-4">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="h-12 w-12 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 flex items-center justify-center text-indigo-300 shadow-[0_0_25px_rgba(99,102,241,0.12)]">
+                  <FiBookOpen size={18} />
                 </div>
-                <div className="mt-8 pt-8 border-t border-white/5 flex gap-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                   <button 
-                     onClick={() => setEditingItem(item)}
-                     className="admin-icon-btn !w-10 !h-10 bg-indigo-500/5 text-indigo-400 border-indigo-500/20 hover:!bg-indigo-500 hover:!text-white"
-                   >
-                     <FiZap size={16} />
-                   </button>
-                   <button 
-                     onClick={() => deleteItem(item.id)}
-                     className="admin-icon-btn !w-10 !h-10 bg-rose-500/5 text-rose-400 border-rose-500/20 hover:!bg-rose-500 hover:!text-white"
-                   >
-                     <FiTrash2 size={16} />
-                   </button>
+                <div className="min-w-0">
+                  <p className="text-[8px] font-black uppercase tracking-[0.35em] text-slate-500 mb-1">Timeline Sector</p>
+                  <p className="text-sm font-bold text-slate-300">{item.year}</p>
                 </div>
               </div>
 
-              {/* Main Content Preview */}
-              <div className="flex-1 p-10">
-                <div className="flex items-center gap-4 mb-6">
-                   <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20 shadow-inner">
-                      <FiBookOpen size={18} />
-                   </div>
-                   <h3 className="text-xl font-black tracking-tight" dangerouslySetInnerHTML={{ __html: item.title }} />
+              <div className="flex items-center gap-2 shrink-0">
+                <button 
+                  onClick={() => setEditingItem(item)}
+                  className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-300 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 group/edit"
+                  title="Refactor Log"
+                >
+                  <FiZap size={14} className="group-hover/edit:rotate-12 transition-transform" />
+                </button>
+                <button 
+                  onClick={() => deleteItem(item.id)}
+                  className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 group/trash"
+                  title="Eject Log"
+                >
+                  <FiTrash2 size={14} className="group-hover/trash:scale-110 transition-transform" />
+                </button>
+              </div>
+            </div>
+
+            <div className="relative p-6 flex-1 flex flex-col justify-between">
+              <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-indigo-500/30 via-white/5 to-transparent" />
+              <div className="pl-6">
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.5)]" />
+                  <span className="text-[7px] font-black uppercase tracking-[0.45em] text-slate-500">Academic Record</span>
                 </div>
-                <p className="text-slate-400 leading-relaxed text-base">
+
+                <h3 className="text-xl font-black tracking-tight leading-snug text-white" dangerouslySetInnerHTML={{ __html: item.title }} />
+                <p className="mt-4 text-slate-400 leading-7 text-[12px] line-clamp-3 opacity-85 group-hover/card:opacity-100 transition-opacity">
                   {item.description}
                 </p>
-                
-                {/* Visual Accent */}
-                <div className="mt-8 flex items-center gap-2">
-                   <div className="h-1 w-12 bg-indigo-500/30 rounded-full" />
-                   <div className="h-1 w-2 bg-indigo-500/10 rounded-full" />
-                   <div className="h-1 w-1 bg-indigo-500/5 rounded-full" />
-                </div>
+              </div>
+
+              <div className="mt-8 flex items-center justify-between pl-6">
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-indigo-500/20 to-transparent" />
+                <span className="text-[6px] font-black text-slate-600 uppercase tracking-widest pl-4">Log Entry #{idx + 101}</span>
               </div>
             </div>
           </div>
         ))}
 
         {items.length === 0 && (
-          <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
+          <div className="xl:col-span-2 py-24 text-center border-2 border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
             <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No mission logs detected in this sector.</p>
           </div>
         )}

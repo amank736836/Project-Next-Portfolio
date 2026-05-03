@@ -1,15 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode, FiZap, FiSearch, FiX } from 'react-icons/fi';
+import { useSuccessToast, useErrorToast } from './Toast';
+import { useEjectConfirm } from './ConfirmModal';
+import { EmptySkills } from './EmptyState';
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newSkill, setNewSkill] = useState('');
-
+  const [searchQuery, setSearchQuery] = useState('');
   const [editingSkill, setEditingSkill] = useState(null);
+  
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
+  const confirmEject = useEjectConfirm();
 
   useEffect(() => {
     fetchSkills();
@@ -23,6 +30,7 @@ export default function SkillsManager() {
       setSkills(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch skills:', error);
+      errorToast('Failed to load skill matrix');
     } finally {
       setLoading(false);
     }
@@ -37,11 +45,15 @@ export default function SkillsManager() {
     const skill = { id: Date.now(), title: newSkill.trim() };
     setSkills([...skills, skill]);
     setNewSkill('');
+    successToast(`Skill "${skill.title}" injected into matrix`);
   };
 
-  const removeSkill = (id) => {
-    if (window.confirm('Eject this capability from matrix?')) {
+  const removeSkill = async (id) => {
+    const skill = skills.find(s => s.id === id);
+    const confirmed = await confirmEject(skill?.title);
+    if (confirmed) {
       setSkills(skills.filter(s => s.id !== id));
+      successToast(`Skill "${skill?.title}" ejected from matrix`);
     }
   };
 
@@ -55,18 +67,40 @@ export default function SkillsManager() {
       });
       if (res.ok) {
         setEditingSkill(null);
+        successToast('Matrix synchronized successfully');
+      } else {
+        errorToast('Failed to synchronize matrix');
       }
     } catch (error) {
       console.error('Failed to save skills:', error);
+      errorToast('Failed to synchronize matrix');
     } finally {
       setSaving(false);
     }
   };
 
+  // Filter skills based on search
+  const filteredSkills = skills.filter(s => 
+    s.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return (
-    <div className="flex flex-col items-center justify-center py-20 space-y-4">
-      <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin shadow-[0_0_20px_rgba(99,102,241,0.2)]" />
-      <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Assembling Skill Matrix...</p>
+    <div className="space-y-8 animate-pulse">
+      <div className="flex justify-between items-center">
+        <div className="space-y-2">
+          <div className="h-8 w-32 loading-shimmer rounded-xl" />
+          <div className="h-4 w-48 loading-shimmer rounded-lg" />
+        </div>
+        <div className="h-12 w-40 loading-shimmer rounded-xl" />
+      </div>
+      <div className="admin-card !p-8">
+        <div className="h-16 loading-shimmer rounded-xl" />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {[1,2,3,4,5,6,7,8,10].map(i => (
+          <div key={i} className="h-14 loading-shimmer rounded-xl" />
+        ))}
+      </div>
     </div>
   );
 
@@ -139,46 +173,100 @@ export default function SkillsManager() {
         </button>
       </div>
 
-      <div className="admin-card mb-12 !p-8 bg-white/[0.02]">
-        <div className="flex gap-4">
-          <div className="relative flex-1 group">
-            <FiCode className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+      {/* Search & Add Section */}
+      <div className="admin-card mb-12 !p-6 bg-white/[0.02]">
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Search */}
+          <div className="search-input-wrapper flex-1">
+            <FiSearch className="search-icon" size={18} />
             <input
               type="text"
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-              className="neon-input pl-14 h-16 !bg-black/20"
-              placeholder="Inject new capability (e.g. Web3, AI, LLMs)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input !h-12"
+              placeholder="Search capabilities..."
             />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="search-clear"
+              >
+                <FiX size={14} />
+              </button>
+            )}
           </div>
-          <button 
-            onClick={addSkill}
-            className="admin-btn admin-btn-secondary !px-10 hover:!bg-white hover:!text-black"
-          >
-            <FiPlus /> Inject
-          </button>
+          
+          {/* Add New */}
+          <div className="flex gap-3 flex-1 sm:flex-none">
+            <div className="relative flex-1 sm:w-64">
+              <FiCode className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+              <input
+                type="text"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                className="neon-input pl-12 h-12 w-full"
+                placeholder="New skill..."
+              />
+            </div>
+            <button 
+              onClick={addSkill}
+              disabled={!newSkill.trim()}
+              className="admin-btn admin-btn-secondary !px-6 hover:!bg-[var(--first-color)] hover:!text-white hover:!border-[var(--first-color)] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FiPlus /> 
+              <span className="hidden sm:inline">Inject</span>
+            </button>
+          </div>
+        </div>
+        
+        {/* Stats */}
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+          <div className="flex items-center gap-4 text-[10px] text-slate-500">
+            <span className="font-mono">{filteredSkills.length} capabilities</span>
+            {searchQuery && (
+              <span className="text-slate-600">/ {skills.length} total</span>
+            )}
+          </div>
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="text-[10px] text-slate-500 hover:text-[var(--first-color)] transition-colors"
+            >
+              Clear search
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {skills.map((skill, idx) => (
-          <div 
-            key={skill.id} 
-            className={`admin-card !p-5 flex items-center justify-between group/chip stagger-${(idx % 5) + 1} border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-indigo-500/[0.02]`}
+      {/* Empty State */}
+      {skills.length === 0 ? (
+        <EmptySkills onAdd={() => document.querySelector('.neon-input')?.focus()} />
+      ) : filteredSkills.length === 0 ? (
+        <div className="admin-card !p-12 text-center">
+          <FiSearch className="mx-auto mb-4 text-slate-500" size={32} />
+          <p className="text-slate-400 text-sm">No skills match "{searchQuery}"</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {filteredSkills.map((skill, idx) => (
+          <div
+            key={skill.id}
+            className="admin-card !p-4 flex items-center justify-between group border-white/10 hover:border-[var(--first-color)]/50 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300"
+            style={{ animationDelay: `${idx * 50}ms` }}
           >
-            <span className="text-slate-300 font-bold text-[10px] uppercase tracking-[0.2em] truncate pr-2">{skill.title}</span>
-            <div className="flex items-center gap-2 opacity-0 group-hover/chip:opacity-100 transition-opacity">
-              <button 
+            <span className="text-white/80 font-semibold text-xs uppercase tracking-wider truncate pr-3">{skill.title}</span>
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <button
                 onClick={() => setEditingSkill(skill)}
-                className="text-indigo-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-md bg-[var(--first-color)]/10 text-[var(--first-color)] hover:bg-[var(--first-color)] hover:text-white transition-all"
                 title="Refactor"
               >
                 <FiZap size={14} />
               </button>
-              <button 
+              <button
                 onClick={() => removeSkill(skill.id)}
-                className="text-rose-500/60 hover:text-rose-500 transition-colors"
+                className="p-1.5 rounded-md bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all"
                 title="Eject"
               >
                 <FiTrash2 size={14} />
@@ -186,7 +274,8 @@ export default function SkillsManager() {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

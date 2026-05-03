@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, FiCommand, FiCpu, FiGlobe, FiShield, FiClock } from 'react-icons/fi';
+import QuickActions from './QuickActions';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -94,7 +95,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* System Logs */}
-        <div className="lg:col-span-8 admin-card !p-8">
+        <div className="lg:col-span-7 admin-card !p-8">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-black tracking-tighter flex items-center gap-4">
               <FiCommand className="text-[var(--first-color)]" /> Operation Logs
@@ -119,39 +120,40 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Security / Status */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="admin-card deep-glass !p-8 glow-border border-none shadow-[0_0_50px_rgba(var(--admin-accent-rgb),0.15)] relative overflow-hidden group">
-             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-                <FiShield className="text-7xl text-[var(--first-color)] floating-icon" />
-             </div>
-             <h3 className="text-xl font-black tracking-tight mb-2">Security Node</h3>
-             <p className="text-xs font-medium opacity-60 leading-relaxed mb-8 relative z-10">
-               Encryption active (AES-256). All admin routes are protected by encrypted handshake sessions.
-             </p>
-             <div className="flex items-center justify-between mb-2">
-                <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Auth Status</span>
-                <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500 animate-pulse">Protected</span>
-             </div>
-             <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full w-full bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-             </div>
-          </div>
+        {/* Quick Actions + Security */}
+        <div className="lg:col-span-5 space-y-6">
+          <QuickActions />
 
-          <div className="admin-card !p-8 bg-white/[0.01]">
-             <div className="flex items-center gap-4 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <FiGlobe size={14} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest">Network Node</span>
-             </div>
-             <div className="flex justify-between items-end">
-                <div>
-                   <p className="text-xl font-black tracking-tighter">Vercel Edge</p>
-                   <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Primary Gateway</p>
-                </div>
-                <span className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mb-1 bg-emerald-500/10 px-2 py-1 rounded">Active</span>
-             </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="admin-card deep-glass !p-6 glow-border border-none shadow-[0_0_50px_rgba(var(--admin-accent-rgb),0.15)] relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                  <FiShield className="text-5xl text-[var(--first-color)] floating-icon" />
+               </div>
+               <h3 className="text-sm font-black tracking-tight mb-2">Security Node</h3>
+               <div className="flex items-center justify-between mb-2">
+                  <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Auth Status</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500 animate-pulse">Protected</span>
+               </div>
+               <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full w-full bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+               </div>
+            </div>
+
+            <div className="admin-card !p-6 bg-white/[0.01]">
+               <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                    <FiGlobe size={14} />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest">Network</span>
+               </div>
+               <div className="flex justify-between items-end">
+                  <div>
+                     <p className="text-lg font-black tracking-tighter">Vercel</p>
+                     <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Edge</p>
+                  </div>
+                  <span className="badge badge-success">Active</span>
+               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -161,35 +163,42 @@ export default function Dashboard() {
 
 function TelemetryCard({ icon, label, value, trend, sparkline }) {
   return (
-    <div className="admin-card holographic-card group hover:glow-border !p-6 transition-all duration-500 hover:-translate-y-1">
+    <div className="admin-card group hover:border-[var(--first-color)]/40 !p-6 transition-all duration-300 hover:-translate-y-1 bg-white/[0.03]">
       <div className="flex justify-between items-start mb-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 text-[var(--first-color)] border border-white/5 group-hover:scale-110 transition-transform">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--first-color)]/10 text-[var(--first-color)] border border-[var(--first-color)]/20 group-hover:scale-110 transition-transform">
           {icon}
         </div>
-        <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-md bg-white/5 border border-white/5 ${trend === 'Stable' || trend === 'Static' ? 'text-slate-500' : 'text-emerald-500'}`}>
+        <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${trend === 'Stable' || trend === 'Static' ? 'text-slate-400 border-slate-700 bg-slate-800/30' : 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'}`}>
           {trend}
         </span>
       </div>
-      
-      <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1">{label}</p>
-      <h4 className="text-3xl font-black tracking-tighter text-[var(--admin-title)] mb-4">{value}</h4>
-      
-      <div className="sparkline-container !h-8">
-        <svg viewBox="0 0 100 40" className="w-full h-full">
+
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
+      <h4 className="text-3xl font-black tracking-tight text-white mb-4">{value}</h4>
+
+      <div className="h-10 w-full">
+        <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">
           <defs>
-             <linearGradient id="glowGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="var(--first-color)" stopOpacity="0.2" />
+             <linearGradient id={`gradient-${label.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--first-color)" stopOpacity="0.3" />
                 <stop offset="100%" stopColor="var(--first-color)" stopOpacity="0" />
              </linearGradient>
           </defs>
+          {/* Area fill */}
+          <path
+            d={`M 0 40 L 0 ${40 - sparkline[0]} ${sparkline.map((v, i) => `L ${(i * 100) / (sparkline.length - 1)} ${40 - v}`).join(' ')} L 100 ${40 - sparkline[sparkline.length - 1]} L 100 40 Z`}
+            fill={`url(#gradient-${label.replace(/\s+/g, '')})`}
+            className="opacity-50"
+          />
+          {/* Line */}
           <path
             d={`M 0 ${40 - sparkline[0]} ${sparkline.map((v, i) => `L ${(i * 100) / (sparkline.length - 1)} ${40 - v}`).join(' ')}`}
             fill="none"
             stroke="var(--first-color)"
-            strokeWidth="3"
+            strokeWidth="2"
             strokeLinecap="round"
-            className="opacity-20 group-hover:opacity-100 transition-opacity"
-            style={{ filter: 'drop-shadow(0 0 8px var(--first-color))' }}
+            strokeLinejoin="round"
+            className="opacity-60 group-hover:opacity-100 transition-opacity"
           />
         </svg>
       </div>

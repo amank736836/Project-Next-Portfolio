@@ -4,6 +4,8 @@ import '../admin.css';
 import Sidebar from '@/components/Admin/Sidebar';
 import Themes from '@/components/Themes/Themes';
 import { usePathname } from 'next/navigation';
+import { ToastProvider } from '@/components/Admin/Toast';
+import { ConfirmProvider } from '@/components/Admin/ConfirmModal';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -48,7 +50,11 @@ export default function AdminLayout({ children }) {
         </header>
 
         <main className="admin-content-inner">
-          {children}
+          <ToastProvider>
+            <ConfirmProvider>
+              {children}
+            </ConfirmProvider>
+          </ToastProvider>
           
           <footer className="mt-20 pb-12 text-center">
             <p className="text-[9px] font-bold opacity-30 uppercase tracking-[0.5em]">
