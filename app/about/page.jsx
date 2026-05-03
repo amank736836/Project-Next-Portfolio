@@ -5,36 +5,40 @@ import Education from "@/components/Education";
 import "../about.css";
 import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-export default function About() {
+export default async function About() {
+  const supabase = await createClient();
+  const { data: infoData } = await supabase.from('personal_info').select('*');
+
+  const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
+  const personalInfo = infoData?.filter(i => i.key !== 'about_description');
+
   return (
     <main className="section container">
       <section className="about">
-        <h2>
-          <div className="section__title">
-            About <span>Me</span>
-          </div>
+        <h2 className="section__title">
+          About <span>Me</span>
         </h2>
         <div className="about__container grid">
           <div className="about__info">
             <h3 className="section__subtitle">Personal Infos</h3>
+            {aboutDescription && (
+              <p className="about__description mb-8 text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                {aboutDescription}
+              </p>
+            )}
             <ul className="info__list grid">
-              <Info />
+              <Info data={personalInfo} />
             </ul>
-            <center>
+            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8">
               <a href="/assets/Aman_Resume.pdf" download="" className="button">
                 Download Cv
                 <span className="button__icon">
                   <FaDownload />
                 </span>
               </a>
-              <Link
-                href="/resume"
-                className="view"
-                style={{
-                  paddingLeft: "10rem",
-                }}
-              >
+              <Link href="/resume">
                 <div className="button">
                   View Cv
                   <span className="button__icon">
@@ -42,27 +46,7 @@ export default function About() {
                   </span>
                 </div>
               </Link>
-            </center>
-          </div>
-        </div>
-      </section>
-
-      <div className="separator"></div>
-
-      <section className="skills">
-        <h3 className="section__subtitle subtitle__center">My Skills</h3>
-        <div className="skills__container grid">
-          <Skills />
-        </div>
-      </section>
-
-      <div className="separator"></div>
-
-      <section className="resume">
-        <h3 className="section__subtitle subtitle__center">Education</h3>
-        <div className="resume__container grid">
-          <div className="resume__data">
-            <Education />
+            </div>
           </div>
         </div>
       </section>

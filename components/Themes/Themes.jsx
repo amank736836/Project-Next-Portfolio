@@ -5,12 +5,13 @@ import { themes } from "@/data";
 import ThemeItem from "./ThemeItem";
 import { BsMoon, BsSun } from "react-icons/bs";
 import "./Themes.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const Themes = () => {
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [color, setColor] = useState("Blue");
   const [theme, setTheme] = useState("dark-theme");
+  const switcherRef = useRef(null);
 
   const changeColor = (color) => {
     setColor(color);
@@ -23,6 +24,23 @@ const Themes = () => {
       setTheme("light-theme");
     }
   };
+
+  // Close switcher when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (switcherRef.current && !switcherRef.current.contains(event.target)) {
+        setShowSwitcher(false);
+      }
+    };
+
+    if (showSwitcher) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSwitcher]);
 
   useEffect(() => {
     const savedColor = localStorage.getItem("color") || "Blue";
@@ -42,7 +60,7 @@ const Themes = () => {
   }, [theme]);
 
   return (
-    <div>
+    <div ref={switcherRef}>
       <div className={`${showSwitcher ? "show-switcher" : ""} style__switcher`}>
         <div
           className="style__switcher-toggler"

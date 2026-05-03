@@ -254,16 +254,32 @@ export const links = [
     icon: <FaUser className="nav__icon" />,
     path: "/about",
   },
-
   {
     id: 3,
+    name: "Skills",
+    icon: <FaCode className="nav__icon" />,
+    path: "/skills",
+  },
+  {
+    id: 4,
+    name: "Education",
+    icon: <FaGraduationCap className="nav__icon" />,
+    path: "/education",
+  },
+  {
+    id: 5,
+    name: "Experience",
+    icon: <FiFileText className="nav__icon" />,
+    path: "/experience",
+  },
+  {
+    id: 6,
     name: "Portfolio",
     icon: <FaFolderOpen className="nav__icon" />,
     path: "/portfolio",
   },
-
   {
-    id: 4,
+    id: 7,
     name: "Contact",
     icon: <FaEnvelopeOpen className="nav__icon" />,
     path: "/contact",
@@ -388,7 +404,7 @@ export const resume = [
     category: "education",
     icon: <FaGraduationCap />,
     year: "Sep 2021 – May 2025",
-    title: "Bachelor Of Engineering <span> Chitkara University </span>",
+    title: "Bachelor Of Engineering - <span> Chitkara University </span>",
     desc: "Computer Science Engineering – GPA: 9.12 – Solan, Himachal Pradesh",
   },
 
@@ -397,7 +413,7 @@ export const resume = [
     category: "education",
     icon: <FaGraduationCap />,
     year: "May 2020 – June 2021",
-    title: "Higher Secondary  <span> DAV Centenary Public School </span>",
+    title: "Higher Secondary - <span> DAV Centenary Public School </span>",
     desc: "Percentage: 82.5% – Jaipur, Rajasthan",
   },
 
@@ -406,7 +422,7 @@ export const resume = [
     category: "education",
     icon: <FaGraduationCap />,
     year: "May 2018 – April 2019",
-    title: "Secondary <span> DAV Public School </span>",
+    title: "Secondary - <span> DAV Public School </span>",
     desc: "Percentage: 74.8% – Mohali, Punjab",
   },
 ];

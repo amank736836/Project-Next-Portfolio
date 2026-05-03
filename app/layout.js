@@ -1,6 +1,8 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Themes from "@/components/Themes/Themes";
+import ScrollHandler from "@/components/ScrollHandler";
+import TransitionLoader from "@/components/TransitionLoader";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
@@ -14,6 +16,8 @@ export default function RootLayout({ children }) {
       <body>
         <Navbar />
         <Themes />
+        <ScrollHandler />
+        <TransitionLoader />
         <main>{children}</main>
         <Analytics />
       </body>

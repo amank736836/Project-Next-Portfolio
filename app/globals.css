@@ -1,40 +1,54 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@config "../tailwind.config.js";
 
 :root {
-  --first-color: hsl(271, 76%, 53%);
-  --title-color: hsl(0, 0%, 40%);
-  --text-color: hsl(0, 0%, 50%);
-  --body-color: hsl(0, 0%, 100%);
-  --container-color: hsl(0, 0%, 93%);
-  --border-color: hsl(0, 0%, 87%);
-  --text-white: #fff;
+  /* Core Colors - Modern Indigo/Violet Palette */
+  --first-color: hsl(250, 84%, 60%);
+  --first-color-alt: hsl(250, 84%, 50%);
+  --title-color: hsl(250, 8%, 15%);
+  --text-color: hsl(250, 8%, 45%);
+  --body-color: hsl(250, 60%, 98%);
+  --container-color: #fff;
+  --border-color: hsl(250, 8%, 90%);
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 
-  --body-font: "Open Sans", sans-serif;
-  --second-font: "Poppins", sans-serif;
+  /* Typography */
+  --body-font: 'Outfit', sans-serif;
+  --second-font: 'Poppins', sans-serif;
 
-  --big-font-size: 56px;
-  --h1-font-size: 50px;
-  --h2-font-size: 32px;
-  --h3-font-size: 24px;
-  --large-font-size: 18px;
-  --normal-font-size: 16px;
-  --small-font-size: 15px;
-  --smaller-font-size: 14px;
-  --tiny-font-size: 12px;
+  /* Fluid Typography using clamp() */
+  --big-font-size: clamp(2.5rem, 8vw, 3.5rem);
+  --h1-font-size: clamp(2rem, 6vw, 3rem);
+  --h2-font-size: clamp(1.5rem, 4vw, 2.25rem);
+  --h3-font-size: clamp(1.25rem, 3vw, 1.5rem);
+  --normal-font-size: 1rem;
+  --small-font-size: 0.875rem;
+  --smaller-font-size: 0.813rem;
 
   --weight-400: 400;
   --weight-500: 500;
   --weight-600: 600;
   --weight-700: 700;
-  --weight-800: 800;
 }
 
 .dark-theme {
-  --title-color: hsl(0, 0%, 100%);
-  --text-color: hsl(0, 0%, 80%);
-  --body-color: hsl(0, 0%, 7%);
-  --container-color: hsl(0, 1%, 17%);
-  --border-color: hsl(0, 0%, 15%);
+  --title-color: hsl(250, 8%, 95%);
+  --text-color: hsl(250, 8%, 75%);
+  --body-color: hsl(250, 15%, 8%);
+  --container-color: hsl(250, 15%, 12%);
+  --border-color: hsl(250, 12%, 18%);
+  
+  --glass-bg: rgba(20, 20, 35, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
 @media screen and (max-width: 1200px){
@@ -484,4 +498,38 @@ img {
   .view{
     padding-left: 0rem !important;
   }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.page-enter {
+  animation: pageEnter 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #fff;
 }
