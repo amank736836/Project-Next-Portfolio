@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode, FiZap, FiSearch, FiX } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode, FiEdit3, FiSearch, FiX, FiCheck } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptySkills } from './EmptyState';
@@ -40,33 +40,71 @@ export default function SkillsManager() {
     setSkills(skills.map(s => s.id === id ? { ...s, title: value } : s));
   };
 
-  const addSkill = () => {
+  const addSkill = async () => {
     if (!newSkill.trim()) return;
-    const skill = { id: Date.now(), title: newSkill.trim() };
-    setSkills([...skills, skill]);
-    setNewSkill('');
-    successToast(`Skill "${skill.title}" injected into matrix`);
+    setSaving(true);
+    const skill = { title: newSkill.trim() };
+    const updatedSkills = [...skills, skill].map(({ id, title }) => ({ title })); // Clean IDs for re-insert
+    
+    try {
+      const res = await fetch('/api/admin/skills', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSkills),
+      });
+      if (res.ok) {
+        setNewSkill('');
+        await fetchSkills();
+        successToast(`Skill "${skill.title}" synchronized to database`);
+      } else {
+        errorToast('Failed to add skill');
+      }
+    } catch (error) {
+      console.error('Failed to add skill:', error);
+      errorToast('Failed to synchronize matrix');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const removeSkill = async (id) => {
     const skill = skills.find(s => s.id === id);
     const confirmed = await confirmEject(skill?.title);
     if (confirmed) {
-      setSkills(skills.filter(s => s.id !== id));
-      successToast(`Skill "${skill?.title}" ejected from matrix`);
+      setSaving(true);
+      const updatedSkills = skills.filter(s => s.id !== id).map(({ title }) => ({ title }));
+      try {
+        const res = await fetch('/api/admin/skills', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedSkills),
+        });
+        if (res.ok) {
+          await fetchSkills();
+          successToast(`Skill "${skill?.title}" removed from matrix`);
+        } else {
+          errorToast('Failed to remove skill');
+        }
+      } catch (error) {
+        errorToast('Failed to synchronize matrix');
+      } finally {
+        setSaving(false);
+      }
     }
   };
 
-  const saveChanges = async () => {
+  const saveChanges = async (manualData = null) => {
     setSaving(true);
+    const dataToSave = (manualData || skills).map(({ title }) => ({ title }));
     try {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(skills),
+        body: JSON.stringify(dataToSave),
       });
       if (res.ok) {
         setEditingSkill(null);
+        await fetchSkills();
         successToast('Matrix synchronized successfully');
       } else {
         errorToast('Failed to synchronize matrix');
@@ -96,7 +134,7 @@ export default function SkillsManager() {
       <div className="admin-card !p-8">
         <div className="h-16 loading-shimmer rounded-xl" />
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1,2,3,4,5,6,7,8,10].map(i => (
           <div key={i} className="h-14 loading-shimmer rounded-xl" />
         ))}
@@ -117,7 +155,7 @@ export default function SkillsManager() {
                 <h3 className="text-xl font-black tracking-tight">{editingSkill.title}</h3>
               </div>
               <button onClick={() => setEditingSkill(null)} className="admin-icon-btn hover:!rotate-90">
-                <FiZap className="rotate-45" />
+                <FiX />
               </button>
             </div>
             
@@ -248,32 +286,59 @@ export default function SkillsManager() {
           <p className="text-slate-400 text-sm">No skills match "{searchQuery}"</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSkills.map((skill, idx) => (
           <div
             key={skill.id}
-            className="admin-card !p-4 flex items-center justify-between group border-white/10 hover:border-[var(--first-color)]/50 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300"
-            style={{ animationDelay: `${idx * 50}ms` }}
+            className="admin-card group !p-6 border-white/5 hover:border-indigo-500/40 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 animate-fade-in"
+            style={{ animationDelay: `${idx * 40}ms` }}
           >
-            <span className="text-white/80 font-semibold text-xs uppercase tracking-wider truncate pr-3">{skill.title}</span>
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <button
-                onClick={() => setEditingSkill(skill)}
-                className="p-1.5 rounded-md bg-[var(--first-color)]/10 text-[var(--first-color)] hover:bg-[var(--first-color)] hover:text-white transition-all"
-                title="Refactor"
-              >
-                <FiZap size={14} />
-              </button>
-              <button
-                onClick={() => removeSkill(skill.id)}
-                className="p-1.5 rounded-md bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all"
-                title="Eject"
-              >
-                <FiTrash2 size={14} />
-              </button>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-inner">
+                  {idx + 1}
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-sm font-bold text-white tracking-tight truncate group-hover:text-indigo-300 transition-colors">
+                    {skill.title}
+                  </h4>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">
+                    {skill.category || 'Capability'}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => setEditingSkill(skill)}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+                  title="Edit"
+                >
+                  <FiEdit3 size={16} />
+                </button>
+                <button
+                  onClick={() => handleDelete(skill.id)}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                  title="Delete"
+                >
+                  <FiTrash2 size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Subtle Progress Indicator */}
+            <div className="mt-6 pt-4 border-t border-white/[0.05] flex items-center justify-between">
+               <div className="flex gap-1">
+                  {[1,2,3].map(i => (
+                    <div key={i} className={`h-1 w-4 rounded-full ${i <= 2 ? 'bg-indigo-500/40' : 'bg-white/5'}`} />
+                  ))}
+               </div>
+               <span className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
+                 Modified: {skill.updated_at ? new Date(skill.updated_at).toLocaleDateString() : 'Just Now'}
+               </span>
             </div>
           </div>
-        ))}
+          ))}
         </div>
       )}
     </div>

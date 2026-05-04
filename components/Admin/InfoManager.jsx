@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX } from 'react-icons/fi';
+import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX, FiEdit3 } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptyInfo } from './EmptyState';
@@ -26,7 +26,15 @@ export default function InfoManager() {
     try {
       const res = await fetch('/api/admin/info');
       const data = await res.json();
-      setInfo(Array.isArray(data) ? data : []);
+      // Map API fields to UI internal names if needed, or update UI to use API names
+      // We'll update the UI to use API names (title -> label, description -> value, key -> id)
+      const mappedData = Array.isArray(data) ? data.map(item => ({
+        ...item,
+        id: item.key, // Use 'key' as the unique identifier
+        label: item.title.replace(' : ', ''), // Clean up the label
+        value: item.description
+      })) : [];
+      setInfo(mappedData);
     } catch (error) {
       console.error('Failed to fetch info:', error);
     } finally {
@@ -37,11 +45,17 @@ export default function InfoManager() {
   const updateInfo = async (id, newValue) => {
     setSaving(true);
     try {
-      const updatedInfo = info.map(item => item.id === id ? { ...item, value: newValue } : item);
+      const updatedInfo = info.map(item => item.id === id ? { ...item, value: newValue, description: newValue } : item);
+      // API expects the original structure for PUT
+      const apiPayload = updatedInfo.map(item => ({
+        key: item.id,
+        title: item.title,
+        description: item.description
+      }));
       const res = await fetch('/api/admin/info', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedInfo),
+        body: JSON.stringify(apiPayload),
       });
       if (res.ok) {
         setInfo(updatedInfo);
@@ -63,11 +77,16 @@ export default function InfoManager() {
     const confirmed = await confirmEject(item?.label);
     if (confirmed) {
       const updatedInfo = info.filter(item => item.id !== id);
+      const apiPayload = updatedInfo.map(item => ({
+        key: item.id,
+        title: item.title,
+        description: item.description
+      }));
       try {
         const res = await fetch('/api/admin/info', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedInfo),
+          body: JSON.stringify(apiPayload),
         });
         if (res.ok) {
           setInfo(updatedInfo);
@@ -109,47 +128,52 @@ export default function InfoManager() {
 
   return (
     <div className="animate-fade-in relative">
-      {/* Refactoring Dialog */}
+      {/* Edit Modal */}
       {editingItem && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6">
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl animate-fade-in" onClick={() => setEditingItem(null)} />
-          <div className="admin-card w-full max-w-lg relative z-10 !p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-indigo-500/40">
-            <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-              <div>
-                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-1">Identity Refactoring // Node #{editingItem.id}</p>
-                <h3 className="text-xl font-black tracking-tight">{editingItem.label}</h3>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#030712]/80 backdrop-blur-md" onClick={() => setEditingItem(null)} />
+          <div className="admin-card w-full max-w-lg relative z-10 !p-0 overflow-hidden !rounded-[2rem] border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-br from-indigo-500/10 to-transparent p-8 border-b border-white/[0.05]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                  <FiZap size={20} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Modify Identity Node</h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Field: {editingItem.label}</p>
+                </div>
               </div>
-              <button onClick={() => setEditingItem(null)} className="admin-icon-btn hover:!rotate-90">
-                <FiZap className="rotate-45" />
-              </button>
             </div>
-            
+
+            {/* Modal Body */}
             <div className="p-8 space-y-6">
-              <div>
-                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">Data Signature</label>
-                 <input
-                   autoFocus
-                   type="text"
-                   value={editingItem.value}
-                   onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
-                   className="neon-input text-lg font-bold"
-                 />
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Value</label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={editingItem.value}
+                  onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
+                  onKeyDown={(e) => e.key === 'Enter' && updateInfo(editingItem.id, editingItem.value)}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                />
               </div>
-              
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/5">
-                <button 
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
                   onClick={() => setEditingItem(null)}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white px-4"
+                  className="px-6 py-3 rounded-xl text-xs font-bold text-slate-500 hover:text-white transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => updateInfo(editingItem.id, editingItem.value)}
                   disabled={saving}
-                  className="admin-btn admin-btn-primary !px-10 !py-4"
+                  className="flex items-center gap-2 px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50"
                 >
-                  {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning />}
-                  {saving ? 'Synchronizing...' : 'Update Matrix'}
+                  {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
+                  {saving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </div>
@@ -158,105 +182,96 @@ export default function InfoManager() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
         <div>
-          <h2 className="admin-title">Identity</h2>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-3">Personal Data Synchronization</p>
+          <h2 className="text-4xl font-black text-white tracking-tighter">Identity</h2>
+          <p className="text-slate-500 text-[11px] font-bold uppercase tracking-[0.3em] mt-2">Core Profile Data Matrix</p>
         </div>
         <div className="flex items-center gap-4">
-          {/* Search */}
-          <div className="search-input-wrapper w-64">
-            <FiSearch className="search-icon" size={16} />
+          <div className="relative group">
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input !h-10 !pl-10 !text-sm"
-              placeholder="Search identity data..."
+              className="bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/40 focus:ring-4 focus:ring-indigo-500/5 transition-all w-72"
+              placeholder="Search identity..."
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="search-clear !w-6 !h-6"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
               >
-                <FiX size={12} />
+                <FiX size={14} />
               </button>
             )}
           </div>
-          <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center bg-white/[0.02]">
-            <FiShield className="text-indigo-400" size={18} />
+          <div className="w-12 h-12 rounded-2xl border border-white/[0.05] flex items-center justify-center bg-white/[0.02] text-indigo-400 shadow-inner">
+            <FiShield size={20} />
           </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4 text-[10px] text-slate-500">
-          <span className="font-mono">{filteredInfo.length} identity nodes</span>
-          {searchQuery && <span className="text-slate-600">/ {info.length} total</span>}
-        </div>
-        {searchQuery && (
-          <button 
-            onClick={() => setSearchQuery('')}
-            className="text-[10px] text-slate-500 hover:text-[var(--first-color)] transition-colors"
-          >
-            Clear search
-          </button>
-        )}
-      </div>
-
-      {/* Empty State */}
+      {/* Grid */}
       {info.length === 0 ? (
         <EmptyInfo onAdd={() => successToast('Add identity feature coming soon')} />
       ) : filteredInfo.length === 0 ? (
-        <div className="admin-card !p-12 text-center">
-          <FiSearch className="mx-auto mb-4 text-slate-500" size={32} />
-          <p className="text-slate-400 text-sm">No identity data matches "{searchQuery}"</p>
+        <div className="admin-card !p-20 text-center !rounded-[2.5rem]">
+          <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">
+            <FiSearch className="text-slate-600" size={32} />
+          </div>
+          <p className="text-slate-400 text-lg font-medium">No results for "{searchQuery}"</p>
+          <button onClick={() => setSearchQuery('')} className="mt-4 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300">Clear Search</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredInfo.map((item, idx) => (
           <div
             key={item.id}
-            className="admin-card group !p-0 overflow-hidden border-white/10 hover:border-[var(--first-color)]/40 bg-white/[0.03] transition-all duration-300"
-            style={{ animationDelay: `${idx * 100}ms` }}
+            className="admin-card group !p-8 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[2.5rem]"
+            style={{ animationDelay: `${idx * 50}ms` }}
           >
-            <div className="p-6">
-               <div className="flex justify-between items-start mb-4">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{item.label}</p>
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                    <button
-                      onClick={() => setEditingItem(item)}
-                      className="w-8 h-8 rounded-lg bg-[var(--first-color)]/10 text-[var(--first-color)] flex items-center justify-center hover:bg-[var(--first-color)] hover:text-white transition-all"
-                    >
-                      <FiZap size={14} />
-                    </button>
-                    <button
-                      onClick={() => deleteInfo(item.id)}
-                      className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"
-                    >
-                      <FiTrash2 size={14} />
-                    </button>
-                  </div>
-               </div>
-               <p className="text-lg font-bold tracking-tight text-white/90 mb-3 truncate">{item.value}</p>
-               <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-1/3 bg-[var(--first-color)]/30 group-hover:w-full group-hover:bg-[var(--first-color)] transition-all duration-500" />
-               </div>
-            </div>
+             <div className="flex justify-between items-start mb-6">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{item.label}</p>
+                  <div className="h-1 w-8 bg-indigo-500/30 rounded-full group-hover:w-full transition-all duration-700" />
+                </div>
+                <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => setEditingItem(item)}
+                    className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-sm"
+                    title="Edit"
+                  >
+                    <FiEdit3 size={16} />
+                  </button>
+                  <button
+                    onClick={() => deleteInfo(item.id)}
+                    className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-sm"
+                    title="Delete"
+                  >
+                    <FiTrash2 size={16} />
+                  </button>
+                </div>
+             </div>
+             <h4 className="text-xl font-bold text-white tracking-tight mb-2 truncate group-hover:text-indigo-200 transition-colors">
+               {item.value}
+             </h4>
+             <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
+               Synchronized: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Secure'}
+             </p>
           </div>
         ))}
 
         {/* Quick Add Node */}
-        <div
+        <button
           onClick={() => successToast('Add identity feature coming soon')}
-          className="admin-card border-dashed border-white/20 hover:border-[var(--first-color)]/50 bg-white/[0.02] hover:bg-white/[0.04] flex flex-col items-center justify-center py-12 group cursor-pointer transition-all"
+          className="admin-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-12 group transition-all !rounded-[2.5rem]"
         >
-           <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.03]">
-              <FiPlus className="text-slate-400 group-hover:text-[var(--first-color)]" size={24} />
+           <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
+              <FiPlus size={28} />
            </div>
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-[var(--first-color)] transition-colors">Inject New Identity Data</p>
-        </div>
+           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
+        </button>
         </div>
       )}
     </div>

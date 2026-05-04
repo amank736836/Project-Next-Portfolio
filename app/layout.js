@@ -4,6 +4,7 @@ import Themes from "@/components/Themes/Themes";
 import ScrollHandler from "@/components/ScrollHandler";
 import TransitionLoader from "@/components/TransitionLoader";
 import { Analytics } from "@vercel/analytics/react";
+import RootShell from "@/components/RootShell";
 
 export const metadata = {
   title: "Aman Portfolio",
@@ -14,11 +15,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Navbar />
-        <Themes />
-        <ScrollHandler />
-        <TransitionLoader />
-        <main>{children}</main>
+        {/* Portfolio-level chrome: hidden on /admin routes */}
+        <RootShell>
+          <Navbar />
+          <Themes />
+          <ScrollHandler />
+          <TransitionLoader />
+        </RootShell>
+        {children}
         <Analytics />
       </body>
     </html>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff, FiEdit3 } from 'react-icons/fi';
 
 export default function ResumeManager({ type }) {
   const [items, setItems] = useState([]);
@@ -254,20 +254,21 @@ export default function ResumeManager({ type }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item, idx) => (
-          <div key={item.id} className={`admin-card group/card stagger-${(idx % 4) + 1} !p-0 overflow-hidden border-white/5 hover:border-indigo-500/30 bg-white/[0.01] flex flex-col`}>
-            <div className="flex items-start justify-between gap-4 border-b border-white/5 bg-white/[0.02] px-5 py-4">
+          <div key={item.id} className={`admin-card group/card stagger-${(idx % 4) + 1} !p-0 overflow-hidden border-white/5 hover:border-indigo-500/30 bg-white/[0.01] flex flex-col transition-all duration-500`}>
+            {/* Card Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-white/[0.05] bg-white/[0.02] px-6 py-5">
               <div className="flex items-center gap-4 min-w-0">
-                <div className="h-12 w-12 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 flex items-center justify-center text-indigo-300 shadow-[0_0_25px_rgba(99,102,241,0.12)]">
-                  <FiBookOpen size={18} />
+                <div className="h-11 w-11 rounded-xl border border-indigo-500/20 bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-inner">
+                  <FiBookOpen size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[8px] font-black uppercase tracking-[0.35em] text-slate-500 mb-1">Timeline Sector</p>
-                  <h4 className="font-bold text-slate-100 truncate group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Timeframe</p>
+                  <h4 className="font-bold text-white truncate group-hover/card:text-indigo-300 transition-colors flex items-center gap-2">
                     {item.year}
                     {item.is_hidden && (
-                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/20 uppercase tracking-widest leading-none">
+                      <span className="px-1.5 py-0.5 rounded-md text-[8px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-tighter">
                         Hidden
                       </span>
                     )}
@@ -275,63 +276,73 @@ export default function ResumeManager({ type }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0 opacity-40 group-hover/card:opacity-100 transition-opacity">
                 <button 
                   onClick={() => toggleVisibility(item.id, item.is_hidden)}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all border shadow-sm ${
                     item.is_hidden 
-                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/20' 
-                      : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500 hover:text-white'
+                      : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
                   }`}
-                  title={item.is_hidden ? 'Show Entry' : 'Hide Entry'}
+                  title={item.is_hidden ? 'Show' : 'Hide'}
                 >
-                  {item.is_hidden ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                  {item.is_hidden ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                 </button>
                 <button 
                   onClick={() => setEditingItem(item)}
-                  className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-300 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 group/edit"
-                  title="Refactor Log"
+                  className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-sm"
+                  title="Edit"
                 >
-                  <FiZap size={14} className="group-hover/edit:rotate-12 transition-transform" />
+                  <FiEdit3 size={16} />
                 </button>
                 <button 
                   onClick={() => deleteItem(item.id)}
-                  className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 group/trash"
-                  title="Eject Log"
+                  className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-sm"
+                  title="Delete"
                 >
-                  <FiTrash2 size={14} className="group-hover/trash:scale-110 transition-transform" />
+                  <FiTrash2 size={16} />
                 </button>
               </div>
             </div>
 
-            <div className="relative p-6 flex-1 flex flex-col justify-between">
-              <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-indigo-500/30 via-white/5 to-transparent" />
-              <div className="pl-6">
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.5)]" />
-                  <span className="text-[7px] font-black uppercase tracking-[0.45em] text-slate-500">Academic Record</span>
-                </div>
-
-                <h3 className="text-xl font-black tracking-tight leading-snug text-white" dangerouslySetInnerHTML={{ __html: item.title }} />
-                <p className="mt-4 text-slate-400 leading-7 text-[12px] line-clamp-3 opacity-85 group-hover/card:opacity-100 transition-opacity">
+            {/* Card Body */}
+            <div className="p-6 flex-1 flex flex-col">
+              <div className="mb-4">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Entity / Position</p>
+                <h5 className="text-sm font-bold text-slate-200 leading-tight">
+                  {item.title}
+                </h5>
+              </div>
+              
+              <div className="flex-1">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Brief Context</p>
+                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3 group-hover/card:line-clamp-none transition-all">
                   {item.description}
                 </p>
               </div>
 
-              <div className="mt-8 flex items-center justify-between pl-6">
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-indigo-500/20 to-transparent" />
-                <span className="text-[6px] font-black text-slate-600 uppercase tracking-widest pl-4">Log Entry #{idx + 101}</span>
+              <div className="mt-6 flex items-center justify-between pt-4 border-t border-white/[0.05]">
+                <span className={`px-2 py-1 rounded-md text-[9px] font-bold uppercase tracking-tighter border ${
+                  item.category === 'education' 
+                    ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
+                    : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                }`}>
+                  {item.category}
+                </span>
+                <span className="text-[9px] font-medium text-slate-600 uppercase tracking-widest">
+                  Updated: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Active'}
+                </span>
               </div>
             </div>
           </div>
         ))}
-
-        {items.length === 0 && (
-          <div className="xl:col-span-2 py-24 text-center border-2 border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No mission logs detected in this sector.</p>
-          </div>
-        )}
       </div>
+
+      {items.length === 0 && (
+        <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-[2.5rem] bg-white/[0.01]">
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No entries detected. Add one above.</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { 
-  FiEye, FiEyeOff, FiEdit, FiTrash, FiPlus, FiExternalLink, 
+  FiEye, FiEyeOff, FiEdit, FiEdit3, FiTrash, FiTrash2, FiPlus, FiExternalLink, 
   FiCode, FiActivity, FiSearch, FiFilter, FiGrid, FiList,
   FiX, FiChevronDown, FiCheck
 } from 'react-icons/fi';
@@ -290,7 +290,7 @@ export default function ProjectManager() {
         />
       ) : viewMode === 'grid' ? (
         /* Grid View */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, idx) => (
             <ProjectCard
               key={project.id}
@@ -326,97 +326,84 @@ export default function ProjectManager() {
 function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisibility, onDelete }) {
   return (
     <div 
-      className={`admin-card group !p-0 overflow-hidden stagger-${(index % 5) + 1} !rounded-2xl w-full relative ${
-        isSelected ? 'ring-2 ring-[var(--first-color)]' : ''
+      className={`admin-card group !p-0 overflow-hidden stagger-${(index % 5) + 1} !rounded-[2rem] w-full relative transition-all duration-500 hover:scale-[1.01] ${
+        isSelected ? 'ring-2 ring-indigo-500 shadow-[0_0_40px_rgba(99,102,241,0.2)]' : ''
       }`}
     >
-      {/* Selection Checkbox */}
-      <div className="absolute top-3 left-3 z-10">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleSelect();
-          }}
-          className={`w-5 h-5 rounded border transition-all ${
-            isSelected 
-              ? 'bg-[var(--first-color)] border-[var(--first-color)]' 
-              : 'border-white/20 bg-black/30 hover:border-white/40'
-          }`}
-        >
-          {isSelected && <FiCheck size={12} className="m-auto text-white" />}
-        </button>
-      </div>
-
       {/* Image Section */}
-      <div className="relative h-32 overflow-hidden bg-slate-900">
+      <div className="relative h-48 w-full overflow-hidden bg-slate-900">
         <img 
-          src={project.img} 
-          alt={project.title} 
-          className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" 
+          src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'} 
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--container-color)] via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-transparent opacity-90" />
         
         {/* Status Badge */}
-        <div className="absolute top-3 right-3 scale-90 origin-top-right">
+        <div className="absolute top-4 right-4">
           <button 
-            onClick={onToggleVisibility}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl backdrop-blur-xl border transition-all duration-500 group/status ${
+            onClick={(e) => { e.stopPropagation(); onToggleVisibility(); }}
+            className={`px-3 py-1.5 rounded-xl backdrop-blur-xl border transition-all flex items-center gap-2 ${
               project.is_hidden 
                 ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' 
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
             }`}
           >
-            {project.is_hidden ? <FiEyeOff size={10} /> : <FiEye size={10} />}
-            <span className="text-[8px] font-black uppercase tracking-[0.15em]">
-              {project.is_hidden ? 'Offline' : 'Online'}
+            {project.is_hidden ? <FiEyeOff size={12} /> : <FiEye size={12} />}
+            <span className="text-[10px] font-bold uppercase tracking-widest">
+              {project.is_hidden ? 'Private' : 'Public'}
             </span>
           </button>
         </div>
+
+        {/* Selection Overlay */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleSelect(); }}
+          className={`absolute top-4 left-4 w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${
+            isSelected 
+              ? 'bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/40' 
+              : 'bg-black/20 backdrop-blur-md border-white/20 text-white/40 hover:border-white/40'
+          }`}
+        >
+          {isSelected && <FiCheck size={12} strokeWidth={4} />}
+        </button>
       </div>
 
       {/* Content Section */}
-      <div className="p-4 space-y-3">
-        <div className="flex justify-between items-start">
-          <div className="min-w-0">
-            <h3 className="text-sm font-black tracking-tight mb-0.5 group-hover:text-[var(--first-color)] transition-colors truncate">
-              {project.title}
-            </h3>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[7px] font-bold text-slate-500 uppercase tracking-widest truncate">
-                Sector {index + 1}
-              </span>
-              <div className="w-0.5 h-0.5 bg-slate-500 rounded-full" />
-              <span className="text-[7px] font-black text-[var(--first-color)] uppercase tracking-widest truncate">
-                {project.category || 'Module'}
-              </span>
-            </div>
-          </div>
-          <div className="w-8 h-8 flex-shrink-0 bg-[var(--first-color)]/5 rounded-lg flex items-center justify-center text-[var(--first-color)] border border-[var(--first-color)]/10 shadow-inner">
-            <FiActivity size={12} className="animate-pulse" />
-          </div>
+      <div className="p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="px-2 py-1 rounded-md text-[9px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 uppercase tracking-tighter">
+            {project.category || 'Portfolio Item'}
+          </span>
+          <span className="text-[9px] text-slate-600 font-medium uppercase tracking-widest">
+            Last Sync: {project.updated_at ? new Date(project.updated_at).toLocaleDateString() : 'Just Now'}
+          </span>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between gap-2 pt-3 border-t border-[var(--border-color)]">
-          <div className="flex gap-1.5">
-            <button className="admin-btn admin-btn-secondary !px-3 !py-2 !gap-1.5 !rounded-lg !text-[10px]">
-              <FiEdit size={12} /> Edit
-            </button>
-            <button 
-              onClick={onDelete}
-              className="admin-icon-btn hover:!bg-rose-500 hover:!text-white hover:!border-rose-500 !w-8 !h-8 !rounded-lg"
-            >
-              <FiTrash size={14} />
-            </button>
-          </div>
-          <a 
-            href={project.details?.[3]?.desc?.props?.href || '#'} 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="admin-icon-btn !w-8 !h-8 !rounded-lg"
-          >
-            <FiExternalLink size={14} />
-          </a>
+        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-indigo-300 transition-colors truncate">
+          {project.title}
+        </h4>
+        
+        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-6 opacity-70 group-hover:opacity-100 transition-opacity">
+          {project.description}
+        </p>
+
+        {/* Action Row */}
+        <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
+           <div className="flex gap-2 opacity-80 hover:opacity-100 transition-opacity">
+              <button 
+                onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                className="admin-btn-secondary !px-4 !py-2 !rounded-xl !text-[11px] font-bold hover:!bg-indigo-500 hover:!text-white transition-all shadow-sm"
+              >
+                 Edit Details
+              </button>
+           </div>
+           <button
+             onClick={(e) => { e.stopPropagation(); onDelete(); }}
+             className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-rose-500/20 shadow-sm"
+           >
+             <FiTrash2 size={16} />
+           </button>
         </div>
       </div>
     </div>
@@ -426,59 +413,53 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
 function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleVisibility, onDelete }) {
   return (
     <div 
-      className={`admin-card !p-4 flex items-center gap-4 group ${
-        isSelected ? 'ring-2 ring-[var(--first-color)]' : ''
+      className={`admin-card !p-4 flex items-center gap-6 group transition-all duration-300 hover:bg-white/[0.02] ${
+        isSelected ? 'ring-2 ring-indigo-500/50 bg-indigo-500/[0.02]' : ''
       }`}
     >
-      {/* Selection */}
       <button
         onClick={onToggleSelect}
-        className={`w-5 h-5 rounded border transition-all flex-shrink-0 ${
+        className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all flex-shrink-0 ${
           isSelected 
-            ? 'bg-[var(--first-color)] border-[var(--first-color)]' 
-            : 'border-white/20 hover:border-white/40'
+            ? 'bg-indigo-500 border-indigo-400 text-white shadow-lg' 
+            : 'border-white/10 bg-white/5 hover:border-white/30'
         }`}
       >
-        {isSelected && <FiCheck size={12} className="m-auto text-white" />}
+        {isSelected && <FiCheck size={12} strokeWidth={4} />}
       </button>
 
-      {/* Thumbnail */}
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-900 flex-shrink-0">
+      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 flex-shrink-0 border border-white/5">
         <img 
-          src={project.img} 
-          alt={project.title} 
+          src={project.image || project.img || 'https://via.placeholder.com/150'} 
+          alt={project.title}
           className="w-full h-full object-cover"
         />
       </div>
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-black tracking-tight mb-1 truncate group-hover:text-[var(--first-color)] transition-colors">
-          {project.title}
-        </h3>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-500/5 border border-slate-500/10 w-fit">
-          {project.is_hidden ? <FiEyeOff size={12} className="text-rose-400" /> : <FiEye size={12} className="text-emerald-400" />}
-          <span className={`text-[10px] font-bold uppercase tracking-wider ${project.is_hidden ? 'text-rose-400' : 'text-emerald-400'}`}>
-            {project.is_hidden ? 'Hidden' : 'Visible'}
+        <div className="flex items-center gap-3 mb-1">
+          <h4 className="text-sm font-bold text-white truncate group-hover:text-indigo-300 transition-colors">
+            {project.title}
+          </h4>
+          <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-white/5 text-slate-500 border border-white/5 uppercase tracking-tighter">
+            {project.category}
           </span>
         </div>
+        <p className="text-xs text-slate-500 truncate opacity-60 group-hover:opacity-100 transition-opacity">
+          {project.description}
+        </p>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-2">
         <button 
           onClick={onToggleVisibility}
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
             project.is_hidden 
-              ? 'bg-rose-500/10 text-rose-300 border-rose-500/20' 
-              : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+              ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' 
+              : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
           }`}
-          title={project.is_hidden ? 'Show Project' : 'Hide Project'}
         >
-          {project.is_hidden ? <FiEye size={14} /> : <FiEyeOff size={14} />}
-        </button>
-        <button className="admin-icon-btn !w-8 !h-8 !rounded-lg">
-          <FiEdit size={14} />
+          {project.is_hidden ? <FiEyeOff size={14} /> : <FiEye size={14} />}
         </button>
         <button 
           onClick={onDelete}
