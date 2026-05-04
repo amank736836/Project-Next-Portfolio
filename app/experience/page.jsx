@@ -7,6 +7,7 @@ export default async function ExperiencePage() {
   const { data: experienceData } = await supabase
     .from('experience')
     .select('*')
+    .eq('is_hidden', false)
     .order('id', { ascending: true });
 
   return (

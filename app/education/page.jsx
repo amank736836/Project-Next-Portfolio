@@ -7,6 +7,7 @@ export default async function EducationPage() {
   const { data: educationData } = await supabase
     .from('education')
     .select('*')
+    .eq('is_hidden', false)
     .order('id', { ascending: true });
 
   return (

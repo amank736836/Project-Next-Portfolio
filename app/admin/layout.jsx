@@ -16,6 +16,17 @@ export default function AdminLayout({ children }) {
   return (
     <div className="admin-root">
       <div className="scanline" />
+      <div className="noise-overlay" />
+      <svg className="hidden">
+        <filter id="grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.05" />
+          </feComponentTransfer>
+          <feBlend in="SourceGraphic" mode="overlay" />
+        </filter>
+      </svg>
       <Themes />
 
       <Sidebar activeTab={activeTab} />
@@ -24,11 +35,19 @@ export default function AdminLayout({ children }) {
         <header className="admin-header">
           <div className="flex flex-col">
             <h3 className="text-2xl font-black tracking-tighter capitalize flex items-center gap-4">
-              {activeTab} <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)]" />
+              {activeTab} 
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] animate-pulse" />
+                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] opacity-40" />
+                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] opacity-20" />
+              </span>
             </h3>
             <div className="flex gap-4 mt-1">
-              <span className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Sector: Global</span>
-              <span className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Priority: Alpha</span>
+              <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Sector: Global_Admin</span>
+              <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Priority: Alpha_Clearance</span>
+              <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-1">
+                <span className="w-1 h-1 bg-emerald-500 rounded-full" /> Encrypted_Link
+              </span>
             </div>
           </div>
           

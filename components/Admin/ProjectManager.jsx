@@ -366,7 +366,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
                 : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
             }`}
           >
-            <div className={`w-1.5 h-1.5 rounded-full ${project.is_hidden ? 'bg-rose-500' : 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]'}`} />
+            {project.is_hidden ? <FiEyeOff size={10} /> : <FiEye size={10} />}
             <span className="text-[8px] font-black uppercase tracking-[0.15em]">
               {project.is_hidden ? 'Offline' : 'Online'}
             </span>
@@ -456,25 +456,27 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
         <h3 className="text-sm font-black tracking-tight mb-1 truncate group-hover:text-[var(--first-color)] transition-colors">
           {project.title}
         </h3>
-        <div className="flex items-center gap-3 text-[10px]">
-          <span className="text-slate-500 uppercase tracking-wider">Sector {index + 1}</span>
-          <span className="text-[var(--first-color)] font-bold uppercase tracking-wider">
-            {project.category || 'Module'}
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-500/5 border border-slate-500/10 w-fit">
+          {project.is_hidden ? <FiEyeOff size={12} className="text-rose-400" /> : <FiEye size={12} className="text-emerald-400" />}
+          <span className={`text-[10px] font-bold uppercase tracking-wider ${project.is_hidden ? 'text-rose-400' : 'text-emerald-400'}`}>
+            {project.is_hidden ? 'Hidden' : 'Visible'}
           </span>
         </div>
       </div>
 
-      {/* Status */}
-      <button 
-        onClick={onToggleVisibility}
-        className={`badge ${project.is_hidden ? 'badge-danger' : 'badge-success'}`}
-      >
-        <span className={`w-1.5 h-1.5 rounded-full ${project.is_hidden ? 'bg-rose-400' : 'bg-emerald-400 animate-pulse'}`} />
-        {project.is_hidden ? 'Offline' : 'Online'}
-      </button>
-
       {/* Actions */}
       <div className="flex items-center gap-2">
+        <button 
+          onClick={onToggleVisibility}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
+            project.is_hidden 
+              ? 'bg-rose-500/10 text-rose-300 border-rose-500/20' 
+              : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+          }`}
+          title={project.is_hidden ? 'Show Project' : 'Hide Project'}
+        >
+          {project.is_hidden ? <FiEye size={14} /> : <FiEyeOff size={14} />}
+        </button>
         <button className="admin-icon-btn !w-8 !h-8 !rounded-lg">
           <FiEdit size={14} />
         </button>

@@ -63,34 +63,42 @@ export default function Dashboard() {
 
       {/* Main Stats Grid - ENSURING 4 COLUMNS ON LG */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <TelemetryCard 
-          icon={<FiLayers />} 
-          label="Project Nodes" 
-          value={stats.projects} 
-          trend="+2"
-          sparkline={[20, 40, 35, 50, 45, 60]}
-        />
-        <TelemetryCard 
-          icon={<FiTrendingUp />} 
-          label="Matrix Skills" 
-          value={stats.skills} 
-          trend="+5"
-          sparkline={[30, 25, 45, 40, 55, 50]}
-        />
-        <TelemetryCard 
-          icon={<FiMessageSquare />} 
-          label="Mission Logs" 
-          value={stats.experience} 
-          trend="Stable"
-          sparkline={[50, 50, 50, 50, 50, 50]}
-        />
-        <TelemetryCard 
-          icon={<FiActivity />} 
-          label="Academy Data" 
-          value={stats.education} 
-          trend="Static"
-          sparkline={[10, 20, 15, 25, 20, 30]}
-        />
+        <div className="animate-fade-in stagger-1">
+          <TelemetryCard 
+            icon={<FiLayers />} 
+            label="Project Nodes" 
+            value={stats.projects} 
+            trend="+2"
+            sparkline={[20, 40, 35, 50, 45, 60]}
+          />
+        </div>
+        <div className="animate-fade-in stagger-2">
+          <TelemetryCard 
+            icon={<FiTrendingUp />} 
+            label="Matrix Skills" 
+            value={stats.skills} 
+            trend="+5"
+            sparkline={[30, 25, 45, 40, 55, 50]}
+          />
+        </div>
+        <div className="animate-fade-in stagger-3">
+          <TelemetryCard 
+            icon={<FiMessageSquare />} 
+            label="Mission Logs" 
+            value={stats.experience} 
+            trend="Stable"
+            sparkline={[50, 50, 50, 50, 50, 50]}
+          />
+        </div>
+        <div className="animate-fade-in stagger-4">
+          <TelemetryCard 
+            icon={<FiActivity />} 
+            label="Academy Data" 
+            value={stats.education} 
+            trend="Static"
+            sparkline={[10, 20, 15, 25, 20, 30]}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -174,7 +182,10 @@ function TelemetryCard({ icon, label, value, trend, sparkline }) {
       </div>
 
       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-      <h4 className="text-3xl font-black tracking-tight text-white mb-4">{value}</h4>
+      <h4 className="text-3xl font-black tracking-tight text-white mb-4 flex items-center gap-2">
+        {value}
+        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+      </h4>
 
       <div className="h-10 w-full">
         <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">

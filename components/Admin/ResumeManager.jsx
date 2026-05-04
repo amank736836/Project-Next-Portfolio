@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function ResumeManager({ type }) {
   const [items, setItems] = useState([]);
@@ -79,6 +79,21 @@ export default function ResumeManager({ type }) {
       console.error('Failed to save item:', error);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const toggleVisibility = async (id, currentStatus) => {
+    try {
+      const res = await fetch(apiPath, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_hidden: !currentStatus }),
+      });
+      if (res.ok) {
+        setItems(items.map(item => item.id === id ? { ...item, is_hidden: !currentStatus } : item));
+      }
+    } catch (error) {
+      console.error('Failed to update visibility:', error);
     }
   };
 
@@ -249,11 +264,29 @@ export default function ResumeManager({ type }) {
                 </div>
                 <div className="min-w-0">
                   <p className="text-[8px] font-black uppercase tracking-[0.35em] text-slate-500 mb-1">Timeline Sector</p>
-                  <p className="text-sm font-bold text-slate-300">{item.year}</p>
+                  <h4 className="font-bold text-slate-100 truncate group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                    {item.year}
+                    {item.is_hidden && (
+                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/20 uppercase tracking-widest leading-none">
+                        Hidden
+                      </span>
+                    )}
+                  </h4>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
+                <button 
+                  onClick={() => toggleVisibility(item.id, item.is_hidden)}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
+                    item.is_hidden 
+                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/20' 
+                      : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                  }`}
+                  title={item.is_hidden ? 'Show Entry' : 'Hide Entry'}
+                >
+                  {item.is_hidden ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                </button>
                 <button 
                   onClick={() => setEditingItem(item)}
                   className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-300 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 group/edit"
