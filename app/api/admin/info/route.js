@@ -1,7 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
+  // Check authentication
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('personal_info')
@@ -13,6 +19,11 @@ export async function GET() {
 }
 
 export async function PUT(request) {
+  // Check authentication
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const supabase = await createClient();
   const info = await request.json();
 

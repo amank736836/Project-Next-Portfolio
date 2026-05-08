@@ -42,10 +42,10 @@ export default function AdminLayout({ children }) {
                 <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] opacity-20" />
               </span>
             </h3>
-            <div className="flex gap-4 mt-1">
+            <div className="flex gap-6 mt-2">
               <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Sector: Global_Admin</span>
               <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Priority: Alpha_Clearance</span>
-              <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-1">
+              <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-2">
                 <span className="w-1 h-1 bg-emerald-500 rounded-full" /> Encrypted_Link
               </span>
             </div>
@@ -54,7 +54,7 @@ export default function AdminLayout({ children }) {
           <div className="flex items-center gap-8">
             <div className="text-right hidden sm:block">
               <p className="text-[9px] font-black text-[var(--first-color)] uppercase tracking-[0.4em] mb-1">Authenticated Operator</p>
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex items-center justify-end gap-4">
                  <span className="text-[8px] font-bold text-emerald-500/60 hud-text uppercase">UP: 12:44:02</span>
                  <p className="text-sm font-black tracking-tight">AMAN KUMAR</p>
               </div>

@@ -182,7 +182,7 @@ export default function InfoManager() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-24">
         <div>
           <h2 className="text-4xl font-black text-white tracking-tighter">Identity</h2>
           <p className="text-slate-500 text-[11px] font-bold uppercase tracking-[0.3em] mt-2">Core Profile Data Matrix</p>
@@ -216,7 +216,7 @@ export default function InfoManager() {
       {info.length === 0 ? (
         <EmptyInfo onAdd={() => successToast('Add identity feature coming soon')} />
       ) : filteredInfo.length === 0 ? (
-        <div className="admin-card !p-20 text-center !rounded-[2.5rem]">
+        <div className="admin-card mb-32 !p-12 bg-white/[0.02] text-center !rounded-[2.5rem]">
           <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">
             <FiSearch className="text-slate-600" size={32} />
           </div>
@@ -224,16 +224,16 @@ export default function InfoManager() {
           <button onClick={() => setSearchQuery('')} className="mt-4 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300">Clear Search</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 mt-16">
           {filteredInfo.map((item, idx) => (
           <div
             key={item.id}
-            className="admin-card group !p-8 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[2.5rem]"
+            className="admin-card group !p-12 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[2.5rem]"
             style={{ animationDelay: `${idx * 50}ms` }}
           >
              <div className="flex justify-between items-start mb-6">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{item.label}</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: item.label }} />
                   <div className="h-1 w-8 bg-indigo-500/30 rounded-full group-hover:w-full transition-all duration-700" />
                 </div>
                 <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
@@ -253,9 +253,10 @@ export default function InfoManager() {
                   </button>
                 </div>
              </div>
-             <h4 className="text-xl font-bold text-white tracking-tight mb-2 truncate group-hover:text-indigo-200 transition-colors">
-               {item.value}
-             </h4>
+             <h4 
+               className="text-xl font-bold text-white tracking-tight mb-2 truncate group-hover:text-indigo-200 transition-colors" 
+               dangerouslySetInnerHTML={{ __html: item.value }} 
+             />
              <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
                Synchronized: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Secure'}
              </p>

@@ -1,6 +1,6 @@
 .style__switcher {
   position: fixed;
-  top: 8%;
+  top: 160px;
   right: 0;
   background-color: var(--container-color);
   /* var(--first-color); */

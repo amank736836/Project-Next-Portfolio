@@ -1,0 +1,137 @@
+/* Design Tokens - Spacing */
+:root {
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-28: 112px;
+  --space-32: 128px;
+  --space-36: 144px;
+  --space-40: 160px;
+  --space-44: 176px;
+  --space-48: 192px;
+  --space-52: 208px;
+  --space-56: 224px;
+  --space-60: 240px;
+  --space-64: 256px;
+  --space-72: 288px;
+  --space-80: 320px;
+  --space-96: 384px;
+}
+
+/* Design Tokens - Typography */
+:root {
+  --font-size-0: 0.625rem; /* 10px */
+  --font-size-1: 0.75rem; /* 12px */
+  --font-size-2: 0.875rem; /* 14px */
+  --font-size-3: 1rem; /* 16px */
+  --font-size-4: 1.125rem; /* 18px */
+  --font-size-5: 1.25rem; /* 20px */
+  --font-size-6: 1.5rem; /* 24px */
+  --font-size-7: 1.75rem; /* 28px */
+  --font-size-8: 2rem; /* 32px */
+  --font-size-9: 2.25rem; /* 36px */
+  --font-size-10: 2.5rem; /* 40px */
+  --font-size-11: 2.75rem; /* 44px */
+  --font-size-12: 3rem; /* 48px */
+  --font-size-13: 3.5rem; /* 56px */
+  --font-size-14: 4rem; /* 64px */
+  --font-size-15: 4.5rem; /* 72px */
+  --font-size-16: 5rem; /* 80px */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+}
+
+/* Design Tokens - Radii */
+:root {
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
+  --radius-full: 9999px;
+}
+
+/* Design Tokens - Border Width */
+:root {
+  --border-width-0: 0px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+  --border-width-6: 6px;
+  --border-width-8: 8px;
+}
+
+/* Design Tokens - Opacity */
+:root {
+  --opacity-0: 0%;
+  --opacity-5: 5%;
+  --opacity-10: 10%;
+  --opacity-15: 15%;
+  --opacity-20: 20%;
+  --opacity-25: 25%;
+  --opacity-30: 30%;
+  --opacity-35: 35%;
+  --opacity-40: 40%;
+  --opacity-45: 45%;
+  --opacity-50: 50%;
+  --opacity-55: 55%;
+  --opacity-60: 60%;
+  --opacity-65: 65%;
+  --opacity-70: 70%;
+  --opacity-75: 75%;
+  --opacity-80: 80%;
+  --opacity-85: 85%;
+  --opacity-90: 90%;
+  --opacity-95: 95%;
+  --opacity-100: 100%;
+}
+
+/* Design Tokens - Shadows */
+:root {
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-outline: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}

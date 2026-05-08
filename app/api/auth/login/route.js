@@ -1,12 +1,59 @@
-import { scalekit } from '@/lib/scalekit';
-import { redirect } from 'next/navigation';
+import { getScalekitClient } from '@/lib/scalekit';
+import { getDefaultScopes } from '@/lib/scalekit';
+import { setOAuthState } from '@/lib/cookies';
+import { cookies } from 'next/headers';
+import { crypto } from 'node:crypto';
 
-export async function GET() {
-  const redirectUri = 'http://localhost:3000/api/auth/callback';
-  const options = {
-    state: 'random_secure_string',
-  };
+export async function GET(request) {
+  const scalekit = getScalekitClient();
 
-  const authUrl = scalekit.getAuthorizationUrl(redirectUri, options);
-  return redirect(authUrl);
+  // Get the 'next' parameter for deep link preservation
+  const { searchParams } = new URL(request.url);
+  const nextUrl = searchParams.get('next') || '/dashboard';
+
+  // Validate next URL to prevent open redirect attacks
+  let safeNextUrl = '/dashboard';
+  try {
+    const url = new URL(nextUrl, request.url);
+    // Only allow relative paths (same origin)
+    if (url.origin === request.url.origin && url.pathname.startsWith('/')) {
+      safeNextUrl = url.pathname + url.search;
+    }
+  } catch (error) {
+    // If URL parsing fails, use default
+    console.warn('Invalid next URL:', nextUrl);
+  }
+
+  // Generate cryptographically secure state for CSRF protection
+  const state = crypto.randomBytes(32).toString('base64url');
+
+  // Store state and next URL in cookie for validation in callback
+  const cookieStore = await cookies();
+  cookieStore.set('auth_next', safeNextUrl, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 10, // 10 minutes
+  });
+
+  await setOAuthState(state);
+
+  // Get redirect URI - must match exactly what's configured in Scalekit dashboard
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const redirectUri = `${protocol}://${host}/api/auth/callback`;
+
+  // Get default scopes
+  const scopes = getDefaultScopes();
+
+  // Generate authorization URL
+  const authUrl = scalekit.getAuthorizationUrl(redirectUri, {
+    state,
+    scopes,
+  });
+
+  // Redirect to Scalekit authorization endpoint
+  return Response.redirect(authUrl);
 }
