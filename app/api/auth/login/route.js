@@ -6,17 +6,18 @@ import crypto from 'node:crypto';
 
 export async function GET(request) {
   const scalekit = getScalekitClient();
+  const requestUrl = new URL(request.url);
 
   // Get the 'next' parameter for deep link preservation
-  const { searchParams } = new URL(request.url);
+  const { searchParams } = requestUrl;
   const nextUrl = searchParams.get('next') || '/dashboard';
 
   // Validate next URL to prevent open redirect attacks
   let safeNextUrl = '/dashboard';
   try {
-    const url = new URL(nextUrl, request.url);
+    const url = new URL(nextUrl, requestUrl);
     // Only allow relative paths (same origin)
-    if (url.origin === request.url.origin && url.pathname.startsWith('/')) {
+    if (url.origin === requestUrl.origin && url.pathname.startsWith('/')) {
       safeNextUrl = url.pathname + url.search;
     }
   } catch (error) {

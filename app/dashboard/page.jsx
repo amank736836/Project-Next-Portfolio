@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import LogoutButton from '@/components/LogoutButton';
 
 // Prevent caching of protected pages
 export const dynamic = 'force-dynamic';
@@ -26,16 +27,8 @@ export default async function Dashboard() {
       </div>
 
       <div>
-        <button onClick={handleLogout}>Logout</button>
+        <LogoutButton />
       </div>
     </div>
   );
-}
-
-async function handleLogout() {
-  // Call the logout endpoint
-  await fetch('/api/auth/logout', { method: 'POST' });
-
-  // Redirect to home page
-  window.location.href = '/';
 }

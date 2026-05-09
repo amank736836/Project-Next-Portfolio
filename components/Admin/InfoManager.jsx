@@ -26,13 +26,11 @@ export default function InfoManager() {
     try {
       const res = await fetch('/api/admin/info');
       const data = await res.json();
-      // Map API fields to UI internal names if needed, or update UI to use API names
-      // We'll update the UI to use API names (title -> label, description -> value, key -> id)
       const mappedData = Array.isArray(data) ? data.map(item => ({
         ...item,
-        id: item.key, // Use 'key' as the unique identifier
-        label: item.title.replace(' : ', ''), // Clean up the label
-        value: item.description
+        id: item.key,
+        label: item.title || item.key,
+        value: item.description || ''
       })) : [];
       setInfo(mappedData);
     } catch (error) {
@@ -67,6 +65,43 @@ export default function InfoManager() {
     } catch (error) {
       console.error('Failed to update info:', error);
       errorToast('Failed to update identity node');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addInfo = async () => {
+    setSaving(true);
+    try {
+      const draft = {
+        key: `custom_${Date.now()}`,
+        title: 'Custom Field',
+        description: 'Edit me',
+      };
+
+      const res = await fetch('/api/admin/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(draft),
+      });
+
+      if (res.ok) {
+        const created = await res.json();
+        const mapped = {
+          ...created,
+          id: created.key,
+          label: created.title || created.key,
+          value: created.description || '',
+        };
+        setInfo((current) => [...current, mapped]);
+        setEditingItem(mapped);
+        successToast('Identity node added successfully');
+      } else {
+        errorToast('Failed to add identity node');
+      }
+    } catch (error) {
+      console.error('Failed to add info:', error);
+      errorToast('Failed to add identity node');
     } finally {
       setSaving(false);
     }
@@ -166,12 +201,12 @@ export default function InfoManager() {
                   className="px-6 py-3 rounded-xl text-xs font-bold text-slate-500 hover:text-white transition-colors"
                 >
                   Cancel
-                </button>
                 <button
-                  onClick={() => updateInfo(editingItem.id, editingItem.value)}
-                  disabled={saving}
-                  className="flex items-center gap-2 px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50"
+                  onClick={() => setEditingItem(null)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                 >
+                  <FiX size={14} />
+                </button>
                   {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -206,15 +241,19 @@ export default function InfoManager() {
               </button>
             )}
           </div>
-          <div className="w-12 h-12 rounded-2xl border border-white/[0.05] flex items-center justify-center bg-white/[0.02] text-indigo-400 shadow-inner">
-            <FiShield size={20} />
-          </div>
+          <button
+            onClick={addInfo}
+            className="w-12 h-12 rounded-2xl border border-white/[0.05] flex items-center justify-center bg-white/[0.02] text-indigo-400 shadow-inner hover:bg-white/[0.05] transition-colors"
+            title="Add identity node"
+          >
+            <FiPlus size={20} />
+          </button>
         </div>
       </div>
 
       {/* Grid */}
       {info.length === 0 ? (
-        <EmptyInfo onAdd={() => successToast('Add identity feature coming soon')} />
+        <EmptyInfo onAdd={addInfo} />
       ) : filteredInfo.length === 0 ? (
         <div className="admin-card mb-32 !p-12 bg-white/[0.02] text-center !rounded-[2.5rem]">
           <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">

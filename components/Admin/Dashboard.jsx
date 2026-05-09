@@ -18,10 +18,10 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         const [p, s, ed, ex] = await Promise.all([
-          fetch('/api/api/admin/projects').then(r => r.json()),
-          fetch('/api/api/admin/skills').then(r => r.json()),
-          fetch('/api/api/admin/education').then(r => r.json()),
-          fetch('/api/api/admin/experience').then(r => r.json()),
+          fetch('/api/admin/projects').then(r => r.json()),
+          fetch('/api/admin/skills').then(r => r.json()),
+          fetch('/api/admin/education').then(r => r.json()),
+          fetch('/api/admin/experience').then(r => r.json()),
         ]);
         setStats({
           projects: Array.isArray(p) ? p.length : 0,

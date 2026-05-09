@@ -64,6 +64,40 @@ export default function ProjectManager() {
     }
   };
 
+  const addProject = async () => {
+    setSaving(true);
+    try {
+      const draft = {
+        title: 'New Mission',
+        img: '',
+        is_hidden: false,
+        details: [],
+        category: 'Portfolio Item',
+        description: 'Describe this project and its outcome.',
+      };
+
+      const res = await fetch('/api/admin/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(draft),
+      });
+
+      if (res.ok) {
+        const created = await res.json();
+        setProjects((current) => [created, ...current]);
+        setEditingProject(created);
+        successToast('New project created');
+      } else {
+        errorToast('Failed to create project');
+      }
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      errorToast('Failed to create project');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const toggleVisibility = async (id, currentStatus) => {
     try {
       const res = await fetch('/api/admin/projects', {
@@ -107,8 +141,26 @@ export default function ProjectManager() {
   const handleDelete = async (project) => {
     const confirmed = await confirmDelete(`"${project.title}"`);
     if (confirmed) {
-      // Simulate delete - would call API in real implementation
-      successToast('Project ejected from matrix successfully');
+      try {
+        const res = await fetch(`/api/admin/projects?id=${project.id}`, {
+          method: 'DELETE',
+        });
+
+        if (res.ok) {
+          setProjects((current) => current.filter((item) => item.id !== project.id));
+          setSelectedProjects((current) => {
+            const next = new Set(current);
+            next.delete(project.id);
+            return next;
+          });
+          successToast('Project ejected from matrix successfully');
+        } else {
+          errorToast('Failed to delete project');
+        }
+      } catch (error) {
+        console.error('Failed to delete project:', error);
+        errorToast('Failed to delete project');
+      }
     }
   };
 
@@ -116,8 +168,15 @@ export default function ProjectManager() {
     if (selectedProjects.size === 0) return;
     const confirmed = await confirmDelete(`${selectedProjects.size} projects`);
     if (confirmed) {
-      setSelectedProjects(new Set());
-      successToast(`${selectedProjects.size} projects ejected from matrix`);
+      try {
+        await Promise.all([...selectedProjects].map((id) => fetch(`/api/admin/projects?id=${id}`, { method: 'DELETE' })));
+        setProjects((current) => current.filter((project) => !selectedProjects.has(project.id)));
+        setSelectedProjects(new Set());
+        successToast(`${selectedProjects.size} projects ejected from matrix`);
+      } catch (error) {
+        console.error('Failed to bulk delete projects:', error);
+        errorToast('Failed to delete selected projects');
+      }
     }
   };
 
@@ -294,8 +353,9 @@ export default function ProjectManager() {
           )}
           <Button
             variant="outline"
-            onClick={() => successToast('New project creation coming soon')}
+            onClick={addProject}
             className="flex items-center gap-2"
+            disabled={saving}
           >
             <FiPlus className="text-xl group-hover:rotate-90 transition-transform duration-500" />
             <span className="hidden sm:inline">New Mission</span>
@@ -447,7 +507,7 @@ export default function ProjectManager() {
 
       {/* Empty States */}
       {projects.length === 0 ? (
-        <EmptyProjects onAdd={() => successToast('New project creation coming soon')} />
+        <EmptyProjects onAdd={addProject} />
       ) : filteredProjects.length === 0 ? (
         <EmptySearch
           searchTerm={searchQuery}
