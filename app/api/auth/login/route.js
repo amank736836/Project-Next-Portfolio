@@ -1,8 +1,8 @@
 import { getScalekitClient } from '@/lib/scalekit';
 import { getDefaultScopes } from '@/lib/scalekit';
 import { setOAuthState } from '@/lib/cookies';
-import { cookies } from 'next/headers';
-import { crypto } from 'node:crypto';
+import { cookies, headers } from 'next/headers';
+import crypto from 'node:crypto';
 
 export async function GET(request) {
   const scalekit = getScalekitClient();

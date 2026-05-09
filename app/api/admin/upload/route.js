@@ -1,7 +1,13 @@
 import { cloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 export async function POST(request) {
+  // Check authentication
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const formData = await request.formData();
   const file = formData.get('file');
 

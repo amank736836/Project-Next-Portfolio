@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getScalekitClient } from '@/lib/scalekit';
 import { getOAuthState, clearOAuthState, setSession } from '@/lib/cookies';
 import { cookies } from 'next/headers';
-import { jwtDecode } from 'jose';
+import { decodeJwt } from 'jose';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -42,7 +42,7 @@ export async function GET(request) {
 
     if (id_token) {
       try {
-        const decodedIdToken = jwtDecode(id_token);
+        const decodedIdToken = decodeJwt(id_token);
         // Extract user information from ID token with priority order
         user = {
           sub: decodedIdToken.sub,

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { clearSession } from '@/lib/cookies';
+import { clearSession, getSession } from '@/lib/cookies';
 import { getScalekitClient } from '@/lib/scalekit';
 
 export async function POST(request) {
   try {
     // Get Scalekit logout URL
     const scalekit = getScalekitClient();
-    const session = await (await import('@/lib/cookies')).getSession();
+    const session = await getSession();
 
     let logoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`; // Default fallback
 

@@ -104,7 +104,7 @@ export default function QuickActions({ className = '' }) {
                 <span className="text-xs font-mono text-slate-600 ml-2">{action.shortcut}</span>
               )}
             </div>
-          </button>
+          </Button>
         ))}
       </div>
 

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { links } from "@/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
 import { Button, Avatar } from "@/components/ui";
 import "./Navbar.css";
 
@@ -17,8 +16,13 @@ const Navbar = () => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+        const response = await fetch('/api/auth/validate');
+        const data = await response.json();
+        if (data.authenticated) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
       } catch (error) {
         console.error('Failed to get current user:', error);
         setUser(null);
@@ -107,7 +111,7 @@ const Navbar = () => {
                   className="nav__link"
                 >
                   <span className="nav__icon">🚪</span>
-                  <h3 className="nav__name">Logout</span>
+                  <h3 className="nav__name">Logout</h3>
                 </Button>
               </li>
             </>
