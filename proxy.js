@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/cookies';
+import { getSession, isTokenExpired } from '@/lib/cookies';
 
 /**
  * @typedef {import('next/server').NextRequest} NextRequest
@@ -24,7 +24,7 @@ const PUBLIC_API_PATHS = [
   // Add other public API paths as needed
 ];
 
-export default async function proxy(request) {
+export default async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Check if it's an API admin route (needs protection)
@@ -46,14 +46,17 @@ export default async function proxy(request) {
     const session = await getSession(request.cookies);
 
     // Redirect to login if no session exists or token is expired
-    if (!session) {
+    if (!session || isTokenExpired(session)) {
       const loginUrl = new URL('/api/auth/login', request.url);
       loginUrl.searchParams.set('next', pathname);
+      
+      // If it's an API route, return 401 instead of redirecting
+      if (isApiAdminRoute) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      
       return NextResponse.redirect(loginUrl);
     }
-
-    // Optional: Check if token is expired and refresh if needed
-    // This could be done here or in the route handlers
   }
 
   return NextResponse.next();

@@ -99,11 +99,15 @@ const Navbar = () => {
             </li>
           ) : (
             <>
-              <li key="user" className="nav__item">
-                <span className="nav__link">
-                  <span className="nav__icon">👤</span>
-                  <h3 className="nav__name">{user?.name || 'User'}</h3>
-                </span>
+              <li key="admin" className="nav__item">
+                <Link
+                  href="/admin"
+                  className={pathname.startsWith('/admin') ? "nav__link active-nav" : "nav__link"}
+                  onClick={() => setShowMenu(false)}
+                >
+                  <span className="nav__icon">⚙️</span>
+                  <h3 className="nav__name">Admin</h3>
+                </Link>
               </li>
               <li key="logout" className="nav__item">
                 <Button

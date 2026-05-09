@@ -8,12 +8,16 @@ export async function POST(request) {
     const scalekit = getScalekitClient();
     const session = await getSession();
 
-    let logoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`; // Default fallback
+    const host = request.headers.get('host') || 'localhost:3000';
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const appUrl = `${protocol}://${host}`;
+
+    let logoutUrl = appUrl;
 
     if (session && session.tokens && session.tokens.id_token) {
       logoutUrl = scalekit.getLogoutUrl({
         idTokenHint: session.tokens.id_token,
-        postLogoutRedirectUri: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+        postLogoutRedirectUri: `${appUrl}/`, // Add trailing slash as it's common for Scalekit
       });
     }
 

@@ -14,23 +14,43 @@ export default function Dashboard() {
   });
   const [uptime, setUptime] = useState('00:00:00');
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [p, s, ed, ex] = await Promise.all([
-          fetch('/api/admin/projects').then(r => r.json()),
-          fetch('/api/admin/skills').then(r => r.json()),
-          fetch('/api/admin/education').then(r => r.json()),
-          fetch('/api/admin/experience').then(r => r.json()),
+        setLoading(true);
+        const responses = await Promise.all([
+          fetch('/api/admin/projects'),
+          fetch('/api/admin/skills'),
+          fetch('/api/admin/education'),
+          fetch('/api/admin/experience'),
         ]);
+
+        // Check for 401s
+        const unauthorized = responses.find(r => r.status === 401);
+        if (unauthorized) {
+          setError('Authentication failed. Please log in again.');
+          return;
+        }
+
+        const [p, s, ed, ex] = await Promise.all(responses.map(r => r.json()));
+
+        console.log('Admin Stats Debug:', { projects: p, skills: s, education: ed, experience: ex });
+
         setStats({
           projects: Array.isArray(p) ? p.length : 0,
           skills: Array.isArray(s) ? s.length : 0,
           education: Array.isArray(ed) ? ed.length : 0,
           experience: Array.isArray(ex) ? ex.length : 0,
         });
+        setError(null);
       } catch (err) {
         console.error('Stats fetch failed', err);
+        setError('Failed to connect to the matrix server.');
+      } finally {
+        setLoading(false);
       }
     };
     fetchStats();
@@ -43,111 +63,99 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-[1700px] mx-auto pb-10">
+    <div className="space-y-12 animate-fade-in max-w-[1700px] mx-auto pb-10">
       {/* HUD Header */}
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" />
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">System Online</span>
+      <div className="flex flex-col gap-8 mb-12">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(16,185,129,1)]" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/80">System Online</span>
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 opacity-60">Signal Stable // Encrypted</p>
         </div>
-        <h2 className="text-3xl font-bold tracking-tighter !mb-0">Core Telemetry</h2>
-        <p className="text-sm font-bold uppercase tracking-wider text-slate-500 opacity-75">Unified Command Interface // Signal Stable</p>
-        <div className="flex flex-wrap gap-4">
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-white/10 border border-white/20">
-            <FiClock className="h-4 w-4 text-emerald-400" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Local Time</p>
-              <p className="text-sm font-bold">{uptime}</p>
-            </div>
+        
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-8">
+          <div>
+            <h2 className="text-5xl font-black tracking-tighter !mb-2 bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Core Telemetry</h2>
+            <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/60">Unified Portfolio Command Interface</p>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-white/10 border border-white/20">
-            <FiActivity className="h-4 w-4 text-emerald-400" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Uptime</p>
-              <p className="text-sm font-bold">12:44:02</p>
+
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                <FiClock size={18} />
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">Local Time</p>
+                <p className="text-lg font-black tracking-tight hud-text">{uptime}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-white/10 border border-white/20">
-            <FiCpu className="h-4 w-4 text-emerald-400" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">System Load</p>
-              <p className="text-sm font-bold">1.24%</p>
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                <FiActivity size={18} />
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">Session</p>
+                <p className="text-lg font-black tracking-tight hud-text">Active</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div className="flex items-start">
-          <Card className="flex h-[120px] items-start">
-            <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center bg-emerald-500/20 rounded-lg">
-              <FiLayers className="h-4 w-4 text-emerald-400" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Projects', value: stats.projects, icon: FiLayers, color: 'indigo', desc: 'Total Nodes Active' },
+          { label: 'Matrix', value: stats.skills, icon: FiTrendingUp, color: 'emerald', desc: 'Identified Skills' },
+          { label: 'Logs', value: stats.experience, icon: FiMessageSquare, color: 'amber', desc: 'Experience Entries' },
+          { label: 'Academy', value: stats.education, icon: FiGlobe, color: 'rose', desc: 'Education Data' }
+        ].map((stat, i) => (
+          <Card key={i} className="group relative overflow-hidden min-h-[160px] flex flex-col justify-between">
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <stat.icon size={80} />
             </div>
-            <div className="ml-4 flex-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Project Nodes</span>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">+2</span>
+            
+            <div className="relative z-10 flex items-center justify-between">
+              <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center text-${stat.color}-400 border border-${stat.color}-500/20`}>
+                <stat.icon size={18} />
               </div>
-              <p className="text-2xl font-bold tracking-tighter text-white flex items-center">
-                {stats.projects}
-                <span className="ml-2 h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              </p>
+              <span className={`text-[9px] font-black text-${stat.color}-400 bg-${stat.color}-500/10 px-2 py-1 rounded-md uppercase tracking-[0.2em] border border-${stat.color}-500/10`}>
+                {stat.label}
+              </span>
+            </div>
+
+            <div className="relative z-10">
+              {loading ? (
+                <div className="h-10 w-24 bg-white/5 animate-pulse rounded-lg mb-2" />
+              ) : error ? (
+                <p className="text-xs font-bold text-rose-500/80 uppercase tracking-tighter">Signal Error</p>
+              ) : (
+                <p className="text-4xl font-black tracking-tighter text-white">{stat.value}</p>
+              )}
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-1">{stat.desc}</p>
             </div>
           </Card>
-        </div>
-        <div className="flex items-start">
-          <Card className="flex h-[120px] items-start">
-            <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center bg-emerald-500/20 rounded-lg">
-              <FiTrendingUp className="h-4 w-4 text-emerald-400" />
-            </div>
-            <div className="ml-4 flex-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Matrix Skills</span>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">+5</span>
-              </div>
-              <p className="text-2xl font-bold tracking-tighter text-white flex items-center">
-                {stats.skills}
-                <span className="ml-2 h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              </p>
-            </div>
-          </Card>
-        </div>
-        <div className="flex items-start">
-          <Card className="flex h-[120px] items-start">
-            <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center bg-emerald-500/20 rounded-lg">
-              <FiMessageSquare className="h-4 w-4 text-emerald-400" />
-            </div>
-            <div className="ml-4 flex-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Mission Logs</span>
-                <span className="text-xs font-bold uppercase tracking-wider">Stable</span>
-              </div>
-              <p className="text-2xl font-bold tracking-tighter text-white flex items-center">
-                {stats.experience}
-                <span className="ml-2 h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              </p>
-            </div>
-          </Card>
-        </div>
-        <div className="flex items-start">
-          <Card className="flex h-[120px] items-start">
-            <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center bg-emerald-500/20 rounded-lg">
-              <FiActivity className="h-4 w-4 text-emerald-400" />
-            </div>
-            <div className="ml-4 flex-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Academy Data</span>
-                <span className="text-xs font-bold uppercase tracking-wider">Static</span>
-              </div>
-              <p className="text-2xl font-bold tracking-tighter text-white flex items-center">
-                {stats.education}
-                <span className="ml-2 h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              </p>
-            </div>
-          </Card>
-        </div>
+        ))}
       </div>
+
+      {error && (
+        <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 flex items-center gap-4 animate-fade-in">
+          <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400">
+            <FiShield size={20} />
+          </div>
+          <div>
+            <p className="text-sm font-black text-rose-400 uppercase tracking-widest">Protocol Override Required</p>
+            <p className="text-xs font-bold text-slate-400 opacity-80">{error}</p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="ml-auto px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest transition-all"
+          >
+            Retry Connection
+          </button>
+        </div>
+      )}
 
       {/* System Logs and Quick Actions */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
