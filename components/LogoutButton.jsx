@@ -7,11 +7,12 @@ export default function LogoutButton() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      const response = await fetch('/api/auth/logout', { method: 'POST' });
+      const data = await response.json();
+      window.location.href = data.logoutUrl || '/';
     } catch (error) {
       console.error('Logout failed:', error);
-    } finally {
-      router.replace('/');
+      window.location.href = '/';
     }
   };
 

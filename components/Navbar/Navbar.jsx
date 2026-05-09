@@ -40,11 +40,13 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      const response = await fetch('/api/auth/logout', { method: 'POST' });
+      const data = await response.json();
       setUser(null);
-      window.location.href = '/';
+      window.location.href = data.logoutUrl || '/';
     } catch (error) {
       console.error('Logout failed:', error);
+      window.location.href = '/';
     }
   };
 
@@ -120,7 +122,7 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`${showMenu ? "nav__menu animate-toggle" : "nav__menu"}`}
+        className={`${showMenu ? "nav__toggle animate-toggle" : "nav__toggle"}`}
         onClick={() => setShowMenu(!showMenu)}
       >
         <span></span>
