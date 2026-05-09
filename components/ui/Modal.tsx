@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -15,9 +16,10 @@ const DialogFooter = ({ className, ...props }) => (
 );
 const DialogTitle = DialogPrimitive.Title;
 const DialogDescription = DialogPrimitive.Description;
-import { X } from 'lucide-react';
 
-interface ModalProps {
+export { Dialog, DialogTrigger, DialogPortal, DialogOverlay, DialogClose, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription };
+
+export interface ModalProps {
   children: React.ReactNode;
   trigger: React.ReactNode;
   title?: string;

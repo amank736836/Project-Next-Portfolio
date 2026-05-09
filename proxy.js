@@ -24,7 +24,7 @@ const PUBLIC_API_PATHS = [
   // Add other public API paths as needed
 ];
 
-export async function middleware(request) {
+export default async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // Check if it's an API admin route (needs protection)
@@ -43,7 +43,7 @@ export async function middleware(request) {
   const needsAuth = isApiAdminRoute || isProtectedPage;
 
   if (needsAuth && !isPublicApiRoute) {
-    const session = await getSession();
+    const session = await getSession(request.cookies);
 
     // Redirect to login if no session exists or token is expired
     if (!session) {

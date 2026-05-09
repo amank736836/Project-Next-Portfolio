@@ -309,7 +309,7 @@ export default function SkillsManager() {
                 Clear search
               </Button>
             )}
-          }
+          </div>
         </div>
       </div>
 
@@ -323,7 +323,7 @@ export default function SkillsManager() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
-          {filteredSkills.map((skill, idx) => (
+          {filteredSkills.map((skill, idx) =>
           <div
             key={skill.id}
             className="group border-border/50 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
@@ -379,4 +379,4 @@ export default function SkillsManager() {
       )}
     </div>
   );
-}
+};

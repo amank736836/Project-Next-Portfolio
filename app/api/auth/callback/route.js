@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getScalekitClient } from '@/lib/scalekit';
 import { getOAuthState, clearOAuthState, setSession } from '@/lib/cookies';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { decodeJwt } from 'jose';
 
 export async function GET(request) {
@@ -33,16 +33,16 @@ export async function GET(request) {
     // Exchange code for tokens
     const scalekit = getScalekitClient();
     const authResult = await scalekit.authenticateWithCode(code, redirectUri);
-    const { access_token, refresh_token, id_token, expires_in } = authResult;
+    const { accessToken, refreshToken, idToken, expiresIn } = authResult;
 
     // Decode ID token to get user information
     let user = {};
     let roles = [];
     let permissions = [];
 
-    if (id_token) {
+    if (idToken) {
       try {
-        const decodedIdToken = decodeJwt(id_token);
+        const decodedIdToken = decodeJwt(idToken);
         // Extract user information from ID token with priority order
         user = {
           sub: decodedIdToken.sub,
@@ -78,17 +78,17 @@ export async function GET(request) {
     }
 
     // Calculate expiration time
-    const expiresAt = Math.floor(Date.now() / 1000) + (expires_in || 3600);
+    const expiresAt = Math.floor(Date.now() / 1000) + (expiresIn || 3600);
 
     // Create session object
     const session = {
       user,
       tokens: {
-        access_token,
-        refresh_token,
-        id_token,
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        id_token: idToken,
         expires_at: expiresAt,
-        expires_in: expires_in || 3600,
+        expires_in: expiresIn || 3600,
       },
       roles,
       permissions,

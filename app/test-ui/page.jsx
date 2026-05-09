@@ -31,17 +31,17 @@ export default function TestUI() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4">Default Card</Card>
+            <h3 className="text-xl font-bold mb-4">Default Card</h3>
             <p>This is a sample card content.</p>
           </Card>
 
           <Card variant="elevated" className="p-6">
-            <h3 className="text-xl font-bold mb-4">Elevated Card</Card>
+            <h3 className="text-xl font-bold mb-4">Elevated Card</h3>
             <p>This card has elevation.</p>
           </Card>
 
           <Card variant="subtle" className="p-6">
-            <h3 className="text-xl font-bold mb-4">Subtle Card</Card>
+            <h3 className="text-xl font-bold mb-4">Subtle Card</h3>
             <p>This card has subtle styling.</p>
           </Card>
         </div>
