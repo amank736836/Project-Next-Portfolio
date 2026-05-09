@@ -253,7 +253,7 @@ export default function ProjectManager() {
             </div>
 
             <div className="p-10 max-h-[70vh] overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">Project Title</label>
@@ -333,7 +333,7 @@ export default function ProjectManager() {
       )}
 
       {/* Header Section */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+      <div className="flex-1 flex flex-col p-12 lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Asset Showcase</h2>
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-2">
@@ -447,8 +447,8 @@ export default function ProjectManager() {
         </div>
 
         {/* Filter Pills & Stats */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-t">
-          <div className="flex items-center gap-2">
+        <div className="mt-8 flex flex-wrap gap-3">
+          <div className="flex items-center gap-10 p-12">
             {(searchQuery || filterStatus !== 'all') && (
               <>
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">

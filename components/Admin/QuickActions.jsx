@@ -87,13 +87,13 @@ export default function QuickActions({ className = '' }) {
         <kbd className="kbd hidden sm:inline-flex">Ctrl+K</kbd>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {actions.map((action) => (
           <Button
             key={action.id}
             variant="outline"
             onClick={() => handleAction(action)}
-            className={`flex h-14 w-full items-center justify-start gap-4 text-left ${className}`}
+            className={`flex h-16 w-full items-center justify-start gap-6 text-left ${className}`}
           >
             <div className="flex-shrink-0">
               {action.icon}

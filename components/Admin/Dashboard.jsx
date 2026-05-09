@@ -111,7 +111,7 @@ export default function Dashboard() {
           { label: 'Logs', value: stats.experience, icon: FiMessageSquare, color: 'amber', desc: 'Experience Entries' },
           { label: 'Academy', value: stats.education, icon: FiGlobe, color: 'rose', desc: 'Education Data' }
         ].map((stat, i) => (
-          <Card key={i} className="group relative overflow-hidden min-h-[160px] flex flex-col justify-between">
+          <Card key={i} className="group relative overflow-hidden min-h-[300px] flex flex-col justify-between p-24 lg:p-32">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
               <stat.icon size={80} />
             </div>
@@ -133,7 +133,7 @@ export default function Dashboard() {
               ) : (
                 <p className="text-4xl font-black tracking-tighter text-white">{stat.value}</p>
               )}
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-1">{stat.desc}</p>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-3">{stat.desc}</p>
             </div>
           </Card>
         ))}
@@ -173,8 +173,8 @@ export default function Dashboard() {
                 <span className="text-xs font-bold uppercase tracking-widest opacity-50">Live Feed</span>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">14:16:55</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
@@ -182,7 +182,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">14:15:22</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
@@ -190,7 +190,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">14:12:30</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
@@ -198,7 +198,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">14:08:45</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20" />
@@ -206,7 +206,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Info</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">13:55:12</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
@@ -214,7 +214,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Info</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">13:42:01</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
@@ -222,7 +222,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">13:15:55</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
@@ -230,7 +230,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
               </div>
-              <div className="flex items-center gap-3 py-2 px-3 rounded-lg border border-white/20 hover:bg-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
                 <span className="text-xs font-bold text-slate-500">13:30:15</span>
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
