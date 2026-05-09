@@ -93,7 +93,7 @@ export default function QuickActions({ className = '' }) {
             key={action.id}
             variant="outline"
             onClick={() => handleAction(action)}
-            className={`flex h-12 w-full items-center justify-start gap-3 text-left ${className}`}
+            className={`flex h-14 w-full items-center justify-start gap-4 text-left ${className}`}
           >
             <div className="flex-shrink-0">
               {action.icon}
@@ -120,7 +120,7 @@ export default function QuickActions({ className = '' }) {
           </span>
         </div>
         <div className="space-y-2">
-          <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10">
+          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono text-slate-500">14:32</span>
               <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export default function QuickActions({ className = '' }) {
             </div>
             <span className="text-xs text-slate-400">Frame and Phrase</span>
           </div>
-          <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10">
+          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono text-slate-500">13:15</span>
               <div className="flex items-center gap-2">
@@ -140,7 +140,7 @@ export default function QuickActions({ className = '' }) {
             </div>
             <span className="text-xs text-slate-400">TypeScript</span>
           </div>
-          <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10">
+          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono text-slate-500">11:48</span>
               <div className="flex items-center gap-2">

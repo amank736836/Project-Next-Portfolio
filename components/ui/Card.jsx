@@ -1,9 +1,9 @@
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const cardVariants = cva(
-  'rounded-xl border border-border bg-background p-6 shadow-sm',
+  'rounded-xl border border-border bg-background p-8 shadow-sm',
   {
     variants: {
       variant: {
@@ -20,12 +20,7 @@ const cardVariants = cva(
   }
 );
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated' | 'outline' | 'subtle' | 'ghost';
-  className?: string;
-}
-
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
+const Card = React.forwardRef(
   ({ className, variant, children, ...props }, ref) => {
     return (
       <div
@@ -42,4 +37,3 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 Card.displayName = 'Card';
 
 export { Card, cardVariants };
-export type { CardProps };

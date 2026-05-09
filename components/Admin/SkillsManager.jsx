@@ -179,7 +179,7 @@ export default function SkillsManager() {
             ref={modalRef}
             className="w-full max-w-lg relative z-10 p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-border/50"
           >
-            <div className="p-6 border-b border-border/50 flex items-center justify-between bg-background/50">
+            <div className="p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">
                   Matrix Refactoring // Node #{editingSkill.id.toString().slice(-4)}
@@ -191,7 +191,7 @@ export default function SkillsManager() {
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-10">
               <div className="mb-6">
                  <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 block">Skill Signature</label>
                  <Input
@@ -207,7 +207,7 @@ export default function SkillsManager() {
                  />
               </div>
 
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-border/50">
+              <div className="flex items-center justify-end gap-4 pt-6 border-t border-border/50">
                 <button
                   onClick={() => setEditingSkill(null)}
                   className="text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-white transition-colors px-4 py-2"
@@ -326,7 +326,7 @@ export default function SkillsManager() {
           {filteredSkills.map((skill, idx) =>
           <div
             key={skill.id}
-            className="group border-border/50 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
+            className="group admin-card p-10 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
             style={{ animationDelay: `${idx * 40}ms` }}
           >
             <div className="flex items-center justify-between gap-4">

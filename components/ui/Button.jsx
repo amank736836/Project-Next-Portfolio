@@ -1,5 +1,5 @@
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -28,16 +28,7 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
-  size?: 'default' | 'sm' | 'lg' | 'icon';
-  asChild?: boolean;
-}
-
-const Button = React.forwardRef<
-  HTMLButtonElement | HTMLAnchorElement,
-  ButtonProps
->(({ className, variant, size, asChild = false, children, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, children, ...props }, ref) => {
   const Component = asChild ? 'a' : 'button';
 
   return (
@@ -49,10 +40,8 @@ const Button = React.forwardRef<
       {children}
     </Component>
   );
-  }
-);
+});
 
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
-export type { ButtonProps };

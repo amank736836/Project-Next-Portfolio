@@ -240,7 +240,7 @@ export default function ProjectManager() {
             ref={modalRef}
             className="w-full max-w-2xl relative z-10 p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-border/50"
           >
-            <div className="p-6 border-b border-border/50 flex items-center justify-between bg-background/50">
+            <div className="p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">
                   Asset Refactoring // Node #{editingProject.id.toString().slice(-4)}
@@ -252,7 +252,7 @@ export default function ProjectManager() {
               </button>
             </div>
 
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
+            <div className="p-10 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
@@ -312,7 +312,7 @@ export default function ProjectManager() {
               </div>
             </div>
 
-            <div className="p-6 bg-background/50 border-t border-border/50 flex items-center justify-end gap-4">
+            <div className="p-10 bg-background/50 border-t border-border/50 flex items-center justify-end gap-4">
               <button
                 onClick={() => setEditingProject(null)}
                 className="text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-white transition-colors px-4 py-2"
@@ -600,7 +600,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
       </div>
 
       {/* Content Section */}
-      <div className="p-6">
+      <div className="p-12">
         <div className="flex items-center gap-2 mb-3">
           <span className="px-2 py-1 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 uppercase tracking-tighter">
             {project.category || 'Portfolio Item'}

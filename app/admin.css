@@ -108,8 +108,8 @@
 }
 
 .admin-content-inner {
-  padding: 8rem 5rem 15rem;
-  max-width: 1700px;
+  padding: 8rem 10rem 20rem; /* Increased horizontal padding from 8rem to 10rem */
+  max-width: 1850px; /* Slightly wider for ultra-wide screens */
   margin: 0 auto;
 }
 
@@ -134,7 +134,7 @@
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--admin-border);
   border-radius: 2rem;
-  padding: 3.5rem;
+  padding: 4.5rem; /* Increased from 3.5rem for more internal breathing room */
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -1076,7 +1076,7 @@
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.25rem;
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 2.5rem; /* Increased horizontal padding for text input */
   color: white;
   font-size: 0.95rem;
   transition: all 0.3s ease;

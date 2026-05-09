@@ -1,32 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getSession, isTokenExpired } from '@/lib/cookies';
 
-/**
- * @typedef {import('next/server').NextRequest} NextRequest
- */
+const PROTECTED_PATHS = ['/admin', '/dashboard'];
+const PUBLIC_API_PATHS = ['/api/auth'];
 
-/**
- * Protected paths that require authentication
- */
-const PROTECTED_PATHS = [
-  '/admin',
-  '/dashboard',
-  '/sessions',
-  '/organization',
-  // Add other protected paths as needed
-];
-
-/**
- * Public API paths that don't require authentication
- */
-const PUBLIC_API_PATHS = [
-  '/api/auth',
-  // Add other public API paths as needed
-];
-
-export default async function proxy(request) {
+export default async function middleware(request) {
   const { pathname } = request.nextUrl;
-  console.log(`[Proxy] Checking path: ${pathname}`);
+  console.log(`[Middleware] Checking path: ${pathname}`);
 
   // Check if it's an API admin route (needs protection)
   const isApiAdminRoute = pathname.startsWith('/api/admin');
@@ -45,11 +25,12 @@ export default async function proxy(request) {
 
   if (needsAuth && !isPublicApiRoute) {
     const session = await getSession(request.cookies);
-    console.log(`[Proxy] Session found: ${!!session}, Expired: ${session ? isTokenExpired(session) : 'N/A'}`);
+    const expired = session ? isTokenExpired(session) : 'N/A';
+    console.log(`[Middleware] Session found: ${!!session}, Expired: ${expired}`);
 
     // Redirect to login if no session exists or token is expired
-    if (!session || isTokenExpired(session)) {
-      console.log(`[Proxy] Redirecting to login from ${pathname}`);
+    if (!session || expired === true) {
+      console.log(`[Middleware] Redirecting to login from ${pathname}`);
       const loginUrl = new URL('/api/auth/login', request.url);
       loginUrl.searchParams.set('next', pathname);
       

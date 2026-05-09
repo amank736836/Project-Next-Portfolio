@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
+  console.log('[API] GET /api/admin/projects hit');
   // Check authentication
   if (!await isAuthenticated()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

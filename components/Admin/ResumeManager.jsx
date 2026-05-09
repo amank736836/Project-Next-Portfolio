@@ -201,7 +201,7 @@ export default function ResumeManager({ type }) {
       )}
 
       <div className="admin-card !p-0 mb-[160px] overflow-hidden border-white/5 bg-white/[0.015] relative z-30">
-        <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] p-8 lg:p-10">
+        <div className="grid gap-12 lg:grid-cols-[1.3fr_0.7fr] p-16 lg:p-20">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.35em] text-indigo-300">
@@ -258,7 +258,7 @@ export default function ResumeManager({ type }) {
         {items.map((item, idx) => (
           <div key={item.id} className={`admin-card group/card stagger-${(idx % 4) + 1} !p-0 overflow-hidden border-white/5 hover:border-indigo-500/30 bg-white/[0.01] flex flex-col transition-all duration-500`}>
             {/* Card Header */}
-            <div className="flex items-start justify-between gap-4 border-b border-white/[0.05] bg-white/[0.02] px-12 py-8">
+            <div className="flex items-start justify-between gap-8 border-b border-white/[0.05] bg-white/[0.02] px-20 py-16">
               <div className="flex items-center gap-4 min-w-0">
                 <div className="h-11 w-11 rounded-xl border border-indigo-500/20 bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-inner">
                   <FiBookOpen size={16} />
@@ -306,7 +306,7 @@ export default function ResumeManager({ type }) {
             </div>
 
             {/* Card Body */}
-            <div className="p-16 flex-1 flex flex-col">
+            <div className="p-28 flex-1 flex flex-col gap-10">
               <div className="mb-4">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Entity / Position</p>
                 <h5 className="text-sm font-bold text-slate-200 leading-tight" dangerouslySetInnerHTML={{ __html: item.title }} />
