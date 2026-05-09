@@ -24,8 +24,9 @@ const PUBLIC_API_PATHS = [
   // Add other public API paths as needed
 ];
 
-export default async function middleware(request) {
+export default async function proxy(request) {
   const { pathname } = request.nextUrl;
+  console.log(`[Proxy] Checking path: ${pathname}`);
 
   // Check if it's an API admin route (needs protection)
   const isApiAdminRoute = pathname.startsWith('/api/admin');
@@ -44,9 +45,11 @@ export default async function middleware(request) {
 
   if (needsAuth && !isPublicApiRoute) {
     const session = await getSession(request.cookies);
+    console.log(`[Proxy] Session found: ${!!session}, Expired: ${session ? isTokenExpired(session) : 'N/A'}`);
 
     // Redirect to login if no session exists or token is expired
     if (!session || isTokenExpired(session)) {
+      console.log(`[Proxy] Redirecting to login from ${pathname}`);
       const loginUrl = new URL('/api/auth/login', request.url);
       loginUrl.searchParams.set('next', pathname);
       
