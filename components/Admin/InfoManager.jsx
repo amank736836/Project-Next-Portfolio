@@ -5,6 +5,7 @@ import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudL
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptyInfo } from './EmptyState';
+import { calculateAge } from '@/lib/utils';
 
 export default function InfoManager() {
   const [info, setInfo] = useState([]);
@@ -184,7 +185,9 @@ export default function InfoManager() {
             {/* Modal Body */}
             <div className="p-8 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Value</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">
+                  Value {editingItem.id === 'age' && <span className="text-indigo-400 normal-case ml-2">(Enter DOB as DD/MM/YYYY for dynamic age)</span>}
+                </label>
                 {editingItem.id === 'about_description' || editingItem.id === 'address' ? (
                   <textarea
                     autoFocus
@@ -304,7 +307,7 @@ export default function InfoManager() {
              </div>
              <div 
                className={`text-lg font-bold text-white tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
-               dangerouslySetInnerHTML={{ __html: item.value }} 
+               dangerouslySetInnerHTML={{ __html: item.id === 'age' && item.value.includes('/') ? calculateAge(item.value) + ' Years' : item.value }} 
              />
              <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
                Synchronized: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Secure'}

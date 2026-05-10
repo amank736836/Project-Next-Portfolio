@@ -3,22 +3,17 @@
 
 :root {
   /* Dynamic Tokens from global theme */
-  --admin-bg: #030712; /* Deeper dark for premium feel */
+  --admin-bg: #030712; 
   --admin-card: rgba(17, 24, 39, 0.6);
   --admin-border: rgba(255, 255, 255, 0.05);
-  --admin-accent: #6366f1;
-  --admin-accent-glow: rgba(99, 102, 241, 0.3);
+  --admin-accent: var(--first-color);
+  --admin-accent-glow: color-mix(in srgb, var(--first-color) 30%, transparent);
   --admin-text: #9ca3af;
   --admin-title: #f3f4f6;
   
   /* Layout Constants */
   --admin-sidebar-bg: rgba(15, 23, 42, 0.8);
   --glass-blur: 24px;
-
-  /* HSL Helpers */
-  --admin-accent-h: 239;
-  --admin-accent-s: 84%;
-  --admin-accent-l: 67%;
 }
 
 /* Base Styles */
@@ -454,6 +449,16 @@
 /* --- Admin System Tokens --- */
 :root {
   --admin-accent-rgb: 99, 102, 241; /* Default indigo */
+}
+
+.light-theme {
+  --admin-bg: #f3f4f6;
+  --admin-card: rgba(255, 255, 255, 0.7);
+  --admin-sidebar-bg: rgba(255, 255, 255, 0.9);
+  --admin-border: rgba(0, 0, 0, 0.05);
+  --admin-text: #4b5563;
+  --admin-title: #111827;
+  --admin-card-rgb: 255, 255, 255;
 }
 
 .dark-theme {

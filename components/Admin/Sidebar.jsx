@@ -27,14 +27,14 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
       <div className="mb-12 px-4 flex items-center justify-between">
         <div className="flex items-center gap-4 group cursor-pointer">
           <div className="relative">
-            <div className="absolute -inset-2 bg-indigo-500/20 rounded-2xl blur-lg group-hover:bg-indigo-500/40 transition duration-500"></div>
+            <div className="absolute -inset-2 bg-[var(--admin-accent)]/20 rounded-2xl blur-lg group-hover:bg-[var(--admin-accent)]/40 transition duration-500"></div>
             <div className="relative bg-black border border-white/10 w-12 h-12 rounded-2xl flex items-center justify-center text-white transition-transform group-hover:rotate-12 duration-500 shadow-2xl">
-              <FiTerminal className="text-xl text-indigo-400" />
+              <FiTerminal className="text-xl text-[var(--admin-accent)]" />
             </div>
           </div>
           <div className="overflow-hidden">
             <h1 className="text-xl font-black tracking-tighter text-white leading-none">CORE.OS</h1>
-            <p className="text-[9px] font-black text-indigo-500 tracking-[0.3em] uppercase mt-1">Admin Node v4.2</p>
+            <p className="text-[9px] font-black text-[var(--admin-accent)] tracking-[0.3em] uppercase mt-1">Admin Node v4.2</p>
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
             <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">Active</span>
           </div>
           <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mb-4">
-            <div className="h-full w-[85%] bg-indigo-500 animate-pulse" />
+            <div className="h-full w-[85%] bg-[var(--admin-accent)] animate-pulse" />
           </div>
           
           <div className="grid grid-cols-2 gap-4 mt-4">
@@ -86,7 +86,7 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
         <a 
           href="/about" 
           target="_blank"
-          className="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-indigo-400 transition-all text-[10px] font-bold uppercase tracking-widest group"
+          className="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-[var(--admin-accent)] transition-all text-[10px] font-bold uppercase tracking-widest group"
         >
           <FiExternalLink className="text-lg group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           <span>Live Link</span>

@@ -45,6 +45,21 @@
   padding-left: 70px;
 }
 
+.theme__item-color {
+  width: 25px;
+  height: 25px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 5px;
+}
+
+.theme__item-color:hover {
+  transform: rotate(-45deg) scale(1.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
 .theme__img{
     width: 30px;
     cursor: pointer;

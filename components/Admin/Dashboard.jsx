@@ -146,6 +146,13 @@ export default function Dashboard() {
       });
       if (res.ok) {
         setThemeSettings({ color, mode });
+        
+        // Force apply to current session immediately for the admin
+        localStorage.setItem("color", color);
+        localStorage.setItem("theme", mode);
+        document.documentElement.style.setProperty("--first-color", color);
+        document.documentElement.className = mode;
+
         setSuccess('Theme updated across the matrix');
         setTimeout(() => setSuccess(''), 3000);
       }
@@ -281,7 +288,7 @@ export default function Dashboard() {
               {logs.map((log, idx) => (
                 <div key={idx} className="flex items-start gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:bg-white/[0.04] transition-colors">
                   <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
-                    log.type === 'auth' ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : 
+                    log.type === 'auth' ? 'bg-[var(--admin-accent)] shadow-[0_0_15px_var(--admin-accent-glow)]' : 
                     log.type === 'write' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
                     'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                   }`} />
@@ -313,13 +320,22 @@ export default function Dashboard() {
               {/* Color Selector */}
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4">Primary Signature</p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4">
                   {themes.map((t, idx) => (
                     <button
                       key={idx}
                       onClick={() => saveThemeSettings(t.color, themeSettings.mode)}
-                      className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${themeSettings.color === t.color ? 'border-white scale-125 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-transparent opacity-60'}`}
-                      style={{ backgroundColor: t.color }}
+                      className={`w-7 h-7 transition-all hover:scale-110 active:scale-95 ${
+                        themeSettings.color === t.color 
+                          ? 'border-2 border-white shadow-[0_0_15px_var(--first-color)] scale-125' 
+                          : 'opacity-70 hover:opacity-100'
+                      }`}
+                      style={{ 
+                        backgroundColor: t.color,
+                        borderRadius: '50% 50% 50% 0',
+                        transform: 'rotate(-45deg)',
+                        margin: '6px'
+                      }}
                       title={t.color}
                     />
                   ))}
@@ -375,7 +391,7 @@ export default function Dashboard() {
                     <FiGithub className="text-slate-400" size={14} />
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">GitHub Protocol</span>
                   </div>
-                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.github.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 animate-pulse'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.github.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-[var(--admin-accent)] shadow-[0_0_8px_var(--admin-accent-glow)]'}`} />
                 </div>
                 <div className="flex items-end justify-between">
                   <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.github.status}</p>
@@ -390,7 +406,7 @@ export default function Dashboard() {
                     <FiGlobe className="text-slate-400" size={14} />
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Vercel Edge</span>
                   </div>
-                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.vercel.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 animate-pulse'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.vercel.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-[var(--admin-accent)] shadow-[0_0_8px_var(--admin-accent-glow)]'}`} />
                 </div>
                 <div className="flex items-end justify-between">
                   <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.vercel.status}</p>
@@ -420,8 +436,8 @@ export default function Dashboard() {
                     {[1,2,3,4].map(i => <div key={i} className="w-1 h-1 rounded-full bg-emerald-500/40" />)}
                   </div>
                 </div>
-                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full w-4/5 bg-indigo-500 animate-pulse" />
+                <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden mt-3">
+                  <div className="h-full bg-[var(--admin-accent)] rounded-full shadow-[0_0_10px_var(--admin-accent-glow)]" style={{ width: '85%' }}></div>
                 </div>
               </div>
             </div>

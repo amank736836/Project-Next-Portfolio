@@ -1,11 +1,10 @@
 import React from "react";
 
-const ThemeItem = ({ color, img, changeColor }) => {
+const ThemeItem = ({ color, changeColor }) => {
   return (
-    <img
-      src={img}
-      alt=""
-      className="theme__img"
+    <div
+      className="theme__item-color"
+      style={{ backgroundColor: color }}
       onClick={() => {
         changeColor(color);
       }}

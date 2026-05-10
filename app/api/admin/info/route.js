@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data, error } = await supabase
     .from('personal_info')
     .select('*')
@@ -23,7 +23,7 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const body = await request.json();
   const item = {
     key: body.key || `custom_${Date.now()}`,
@@ -42,7 +42,7 @@ export async function PUT(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const info = await request.json();
   const payload = Array.isArray(info) ? info : [info];
 
@@ -57,7 +57,7 @@ export async function DELETE(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { searchParams } = new URL(request.url);
   const key = searchParams.get('key');
 

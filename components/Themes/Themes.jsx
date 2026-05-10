@@ -13,16 +13,15 @@ const Themes = () => {
   const [theme, setTheme] = useState("dark-theme");
   const switcherRef = useRef(null);
 
-  const changeColor = (color) => {
-    setColor(color);
+  const changeColor = (newColor) => {
+    setColor(newColor);
+    localStorage.setItem("color", newColor);
   };
 
   const toggleTheme = () => {
-    if (theme === "light-theme") {
-      setTheme("dark-theme");
-    } else {
-      setTheme("light-theme");
-    }
+    const newTheme = theme === "light-theme" ? "dark-theme" : "light-theme";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
   };
 
   // Close switcher when clicking outside
@@ -58,7 +57,7 @@ const Themes = () => {
         } else if (colorSetting) {
           setColor(colorSetting.description);
         } else {
-          setColor("Blue");
+          setColor("hsl(225, 73%, 57%)");
         }
 
         if (savedTheme) {
@@ -83,12 +82,10 @@ const Themes = () => {
 
   useEffect(() => {
     document.documentElement.style.setProperty("--first-color", color);
-    localStorage.setItem("color", color);
   }, [color]);
 
   useEffect(() => {
     document.documentElement.className = theme;
-    localStorage.setItem("theme", theme);
   }, [theme]);
 
   return (

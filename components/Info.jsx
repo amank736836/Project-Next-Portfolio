@@ -1,17 +1,7 @@
+import { calculateAge } from '@/lib/utils';
+
 const Info = ({ data }) => {
   if (!data || data.length === 0) return null;
-
-  const calculateAge = (dob) => {
-    const [day, month, year] = dob.split("/").map(Number);
-    const birthDate = new Date(year, month - 1, day);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
 
   return (
     <>
@@ -21,7 +11,7 @@ const Info = ({ data }) => {
         
         const displayDescription =
           isAgeField && description.includes("/")
-            ? calculateAge(description)
+            ? `${calculateAge(description)} Years`
             : description;
 
         return (

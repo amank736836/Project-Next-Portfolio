@@ -74,18 +74,18 @@ export default function AdminLayout({ children }) {
         <header className="admin-header">
           <div className="flex items-center gap-4">
             <button 
-              className="lg:hidden relative group h-10 w-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-indigo-500/50"
+              className="lg:hidden relative group h-10 w-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--admin-accent)]/50"
               onClick={() => setIsSidebarOpen(true)}
             >
-              <div className="absolute -inset-1 bg-indigo-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
+              <div className="absolute -inset-1 bg-[var(--admin-accent)] rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
               <FiMenu size={20} className="relative z-10" />
             </button>
             <div className="flex flex-col">
-              <h3 className="text-xl font-black tracking-tighter capitalize flex items-center gap-3 leading-none">
+              <h3 className="text-xl font-black tracking-tighter capitalize flex items-center gap-3 leading-none text-[var(--admin-title)]">
                 {activeTab} 
                 <span className="flex gap-1">
-                  <span className="w-1 h-1 bg-indigo-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,1)] animate-pulse" />
-                  <span className="w-1 h-1 bg-indigo-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,1)] opacity-40" />
+                  <span className="w-1 h-1 bg-[var(--admin-accent)] rounded-full shadow-[0_0_10px_var(--admin-accent)] animate-pulse" />
+                  <span className="w-1 h-1 bg-[var(--admin-accent)] rounded-full shadow-[0_0_10px_var(--admin-accent)] opacity-40" />
                 </span>
               </h3>
               <div className="flex gap-4 mt-1 hidden sm:flex">
