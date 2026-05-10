@@ -13,11 +13,20 @@ import { Button, Input, Card } from '@/components/ui';
 
 export default function ProjectManager() {
   const [projects, setProjects] = useState([]);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
+  const [showCategoryFilters, setShowCategoryFilters] = useState(false);
+
+  const categories = useMemo(() => {
+    const cats = new Set(projects.map(p => p.category).filter(Boolean));
+    return Array.from(cats).sort();
+  }, [projects]);
   const [selectedProjects, setSelectedProjects] = useState(new Set());
   const [editingProject, setEditingProject] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -33,12 +42,16 @@ export default function ProjectManager() {
     fetchProjects();
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setEditingProject(null);
+      if (e.key === 'Escape') {
+        setEditingProject(null);
+        setIsAddingCategory(false);
+      }
     };
 
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
         setEditingProject(null);
+        setIsAddingCategory(false);
       }
     };
 
@@ -74,7 +87,7 @@ export default function ProjectManager() {
         img: '',
         is_hidden: false,
         details: [],
-        category: 'Portfolio Item',
+        category: 'sideproject',
         description: 'Describe this project and its outcome.',
       };
 
@@ -127,6 +140,7 @@ export default function ProjectManager() {
       });
       if (res.ok) {
         setEditingProject(null);
+        setIsAddingCategory(false);
         fetchProjects();
         successToast(`Project "${editingProject.title}" updated successfully`);
       } else {
@@ -234,6 +248,11 @@ export default function ProjectManager() {
       result = result.filter(p => p.is_hidden);
     }
 
+    // Apply category filter
+    if (filterCategory !== 'all') {
+      result = result.filter(p => p.category === filterCategory);
+    }
+
     return result;
   }, [projects, searchQuery, filterStatus]);
 
@@ -258,6 +277,7 @@ export default function ProjectManager() {
   const clearSearch = () => {
     setSearchQuery('');
     setFilterStatus('all');
+    setFilterCategory('all');
     setSelectedProjects(new Set());
   };
 
@@ -280,7 +300,7 @@ export default function ProjectManager() {
                 </p>
                 <h3 className="text-xl font-bold tracking-tight">Edit Project</h3>
               </div>
-              <button onClick={() => setEditingProject(null)} className="hover:rotate-90 transition-transform">
+              <button onClick={() => { setEditingProject(null); setIsAddingCategory(false); }} className="hover:rotate-90 transition-transform">
                 <FiX />
               </button>
             </div>
@@ -299,12 +319,47 @@ export default function ProjectManager() {
                   </div>
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">Category</label>
-                    <Input
-                      value={editingProject.category || ''}
-                      onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
-                      placeholder="e.g. Automation, AI, Web..."
-                      className="w-full"
-                    />
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <select
+                          value={isAddingCategory ? 'new' : (editingProject.category || '')}
+                          onChange={(e) => {
+                            if (e.target.value === 'new') {
+                              setIsAddingCategory(true);
+                              setEditingProject({ ...editingProject, category: '' });
+                            } else {
+                              setIsAddingCategory(false);
+                              setEditingProject({ ...editingProject, category: e.target.value });
+                            }
+                          }}
+                          className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold appearance-none outline-none focus:border-indigo-500 transition-colors"
+                        >
+                          <option value="" disabled>Select Category</option>
+                          {categories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                          <option value="new">+ Add New Category...</option>
+                        </select>
+                        {!isAddingCategory && (
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <FiChevronDown size={16} />
+                          </div>
+                        )}
+                      </div>
+
+                      {isAddingCategory && (
+                        <div className="animate-slide-up">
+                          <Input
+                            autoFocus
+                            value={editingProject.category || ''}
+                            onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
+                            placeholder="Enter new category name..."
+                            className="w-full"
+                          />
+                          <p className="text-[10px] text-slate-500 mt-2 italic">This new category will be saved with the project.</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -381,7 +436,7 @@ export default function ProjectManager() {
 
             <div className="p-10 bg-background/50 border-t border-border/50 flex items-center justify-end gap-4">
               <button
-                onClick={() => setEditingProject(null)}
+                onClick={() => { setEditingProject(null); setIsAddingCategory(false); }}
                 className="text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-white transition-colors px-4 py-2"
               >
                 Discard Changes
@@ -498,6 +553,49 @@ export default function ProjectManager() {
             )}
           </div>
 
+          {/* Category Filter Dropdown */}
+          <div className="relative w-fit">
+            <Button
+              variant="outline"
+              onClick={() => setShowCategoryFilters(!showCategoryFilters)}
+              className={`flex items-center gap-2 ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
+            >
+              <FiGrid size={16} />
+              <span className="hidden sm:inline">
+                {filterCategory === 'all' ? 'All Categories' : filterCategory}
+              </span>
+              <FiChevronDown size={14} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
+            </Button>
+
+            {showCategoryFilters && (
+              <div className="absolute top-full left-0 mt-3 w-56 z-50">
+                <div className="admin-dropdown-menu max-h-60 overflow-y-auto">
+                  <button
+                    onClick={() => {
+                      setFilterCategory('all');
+                      setShowCategoryFilters(false);
+                    }}
+                    className={`admin-dropdown-item ${filterCategory === 'all' ? 'active' : ''}`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setFilterCategory(cat);
+                        setShowCategoryFilters(false);
+                      }}
+                      className={`admin-dropdown-item ${filterCategory === cat ? 'active' : ''}`}
+                    >
+                      <span className="capitalize">{cat}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* View Mode Toggle */}
           <div className="flex items-center w-48">
             <Button
@@ -545,6 +643,19 @@ export default function ProjectManager() {
                       variant="outline"
                       size="icon"
                       onClick={() => setFilterStatus('all')}
+                      className="-ml-2"
+                    >
+                      <FiX size={10} />
+                    </Button>
+                  </span>
+                )}
+                {filterCategory !== 'all' && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-400">
+                    Category: {filterCategory}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setFilterCategory('all')}
                       className="-ml-2"
                     >
                       <FiX size={10} />

@@ -43,10 +43,42 @@ const Themes = () => {
   }, [showSwitcher]);
 
   useEffect(() => {
-    const savedColor = localStorage.getItem("color") || "Blue";
-    const savedTheme = localStorage.getItem("theme") || "dark-theme";
-    setColor(savedColor);
-    setTheme(savedTheme);
+    const fetchDefaultSettings = async () => {
+      try {
+        const res = await fetch('/api/info');
+        const data = await res.json();
+        const colorSetting = data.find(item => item.key === 'default_theme_color');
+        const modeSetting = data.find(item => item.key === 'default_theme_mode');
+        
+        const savedColor = localStorage.getItem("color");
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedColor) {
+          setColor(savedColor);
+        } else if (colorSetting) {
+          setColor(colorSetting.description);
+        } else {
+          setColor("Blue");
+        }
+
+        if (savedTheme) {
+          setTheme(savedTheme);
+        } else if (modeSetting) {
+          setTheme(modeSetting.description);
+        } else {
+          setTheme("dark-theme");
+        }
+      } catch (err) {
+        console.error('Failed to fetch default theme:', err);
+        // Fallback
+        const savedColor = localStorage.getItem("color") || "Blue";
+        const savedTheme = localStorage.getItem("theme") || "dark-theme";
+        setColor(savedColor);
+        setTheme(savedTheme);
+      }
+    };
+
+    fetchDefaultSettings();
   }, []);
 
   useEffect(() => {

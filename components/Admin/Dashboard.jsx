@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { 
   FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, 
   FiCommand, FiCpu, FiGlobe, FiShield, FiClock, FiZap, 
-  FiDatabase, FiGithub, FiExternalLink, FiPieChart 
+  FiDatabase, FiGithub, FiExternalLink, FiPieChart, FiSun, FiMoon 
 } from 'react-icons/fi';
+import { themes } from '@/data';
 import QuickActions from './QuickActions';
 import { Card } from '@/components/ui';
 
@@ -27,11 +28,19 @@ export default function Dashboard() {
     database: { status: 'Checking...' }
   });
 
+  const [themeSettings, setThemeSettings] = useState({
+    color: 'Blue',
+    mode: 'dark-theme'
+  });
+  const [savingTheme, setSavingTheme] = useState(false);
+  const [success, setSuccess] = useState('');
+
   useEffect(() => {
     setMounted(true);
     
     fetchStats();
     fetchExternalStatuses();
+    fetchThemeSettings();
 
     const timer = setInterval(() => {
       const now = new Date();
@@ -104,6 +113,46 @@ export default function Dashboard() {
       setExternalStatus(prev => ({ ...prev, database: { status: 'Degraded' } }));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchThemeSettings = async () => {
+    try {
+      const res = await fetch('/api/admin/info');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const color = data.find(item => item.key === 'default_theme_color')?.description || 'Blue';
+        const mode = data.find(item => item.key === 'default_theme_mode')?.description || 'dark-theme';
+        setThemeSettings({ color, mode });
+      }
+    } catch (err) {
+      console.error('Failed to fetch theme settings', err);
+    }
+  };
+
+  const saveThemeSettings = async (color, mode) => {
+    setSavingTheme(true);
+    setSuccess('');
+    try {
+      const payload = [
+        { key: 'default_theme_color', title: 'Default Theme Color', description: color },
+        { key: 'default_theme_mode', title: 'Default Theme Mode', description: mode }
+      ];
+      const res = await fetch('/api/admin/info', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        setThemeSettings({ color, mode });
+        setSuccess('Theme updated across the matrix');
+        setTimeout(() => setSuccess(''), 3000);
+      }
+    } catch (err) {
+      console.error('Failed to save theme settings', err);
+    } finally {
+      setSavingTheme(false);
     }
   };
 
@@ -245,6 +294,63 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+
+          {/* Theme Settings */}
+          <section className="admin-card border-white/5 bg-white/[0.01] p-8">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
+                <FiZap size={20} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Global Aesthetics</h3>
+                <p className="text-[10px] text-slate-500 font-bold tracking-tighter">Set default theme for new users</p>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {/* Color Selector */}
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4">Primary Signature</p>
+                <div className="flex flex-wrap gap-3">
+                  {themes.map((t, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => saveThemeSettings(t.color, themeSettings.mode)}
+                      className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${themeSettings.color === t.color ? 'border-white scale-125 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-transparent opacity-60'}`}
+                      style={{ backgroundColor: t.color }}
+                      title={t.color}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Mode Selector */}
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Visual Protocol</p>
+                  <p className="text-sm font-bold text-white capitalize">{themeSettings.mode.split('-')[0]} Mode</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => saveThemeSettings(themeSettings.color, 'light-theme')}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'light-theme' ? 'bg-amber-500 text-white' : 'bg-white/5 text-slate-500 hover:bg-white/10'}`}
+                  >
+                    <FiSun size={18} />
+                  </button>
+                  <button
+                    onClick={() => saveThemeSettings(themeSettings.color, 'dark-theme')}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'dark-theme' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-slate-500 hover:bg-white/10'}`}
+                  >
+                    <FiMoon size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {success && (
+                <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest text-center animate-bounce">{success}</p>
+              )}
             </div>
           </section>
         </div>

@@ -274,7 +274,7 @@ export const links = [
   },
   {
     id: 6,
-    name: "Portfolio",
+    name: "Projects",
     icon: <FaFolderOpen className="nav__icon" />,
     path: "/portfolio",
   },

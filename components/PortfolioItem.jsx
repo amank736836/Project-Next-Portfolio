@@ -14,7 +14,7 @@ const iconMap = {
   FiUser: <FiUser />
 };
 
-const PortfolioItem = ({ img, title, details }) => {
+const PortfolioItem = ({ img, title, details, category }) => {
   const [modal, setModal] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -83,6 +83,7 @@ const PortfolioItem = ({ img, title, details }) => {
       />
       <div className="portfolio__hover">
         <h3 className="portfolio__title">{title}</h3>
+        {category && <span className="portfolio__category">{category}</span>}
       </div>
       
       {modal && mounted && createPortal(ModalContent, document.body)}
