@@ -42,11 +42,22 @@ export default function Dashboard() {
     fetchExternalStatuses();
     fetchThemeSettings();
 
+    const handleThemeChange = () => {
+      const color = localStorage.getItem("color") || 'Blue';
+      const mode = localStorage.getItem("theme") || 'dark-theme';
+      setThemeSettings({ color, mode });
+    };
+
+    window.addEventListener("themeChange", handleThemeChange);
+
     const timer = setInterval(() => {
       const now = new Date();
       setUptime(now.toLocaleTimeString('en-US', { hour12: false }));
     }, 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("themeChange", handleThemeChange);
+    };
   }, []);
 
   const fetchExternalStatuses = async () => {
@@ -152,6 +163,7 @@ export default function Dashboard() {
         localStorage.setItem("theme", mode);
         document.documentElement.style.setProperty("--first-color", color);
         document.documentElement.className = mode;
+        window.dispatchEvent(new Event("themeChange"));
 
         setSuccess('Theme updated across the matrix');
         setTimeout(() => setSuccess(''), 3000);
@@ -183,29 +195,29 @@ export default function Dashboard() {
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 opacity-60">Signal Stable // Encrypted</p>
         </div>
         
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-10">
           <div>
-            <h2 className="text-4xl font-black tracking-tighter !mb-1 bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Core Telemetry</h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400/60">Unified Portfolio Command Interface</p>
+            <h2 className="text-4xl font-black tracking-tighter !mb-1 text-[var(--admin-title)]">Core Telemetry</h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-accent)] opacity-60">Unified Portfolio Command Interface</p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                <FiClock size={18} />
+          <div className="flex flex-wrap gap-8 mb-4">
+            <div className="flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-[var(--admin-accent)]/30 group/hud">
+              <div className="w-11 h-11 rounded-xl bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)] group-hover/hud:scale-110 transition-transform">
+                <FiClock size={20} />
               </div>
               <div>
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">Local Time</p>
-                <p className="text-lg font-black tracking-tight hud-text">{uptime}</p>
+                <p className="text-xl font-black tracking-tight hud-text">{uptime}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                <FiActivity size={18} />
+            <div className="flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-emerald-500/30 group/hud">
+              <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover/hud:scale-110 transition-transform">
+                <FiActivity size={20} />
               </div>
               <div>
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">Session</p>
-                <p className="text-lg font-black tracking-tight hud-text">Active</p>
+                <p className="text-xl font-black tracking-tight hud-text">Active</p>
               </div>
             </div>
           </div>
@@ -213,36 +225,39 @@ export default function Dashboard() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
         {[
           { label: 'Projects', value: stats.projects, icon: FiLayers, color: 'indigo', desc: 'Total Nodes Active' },
           { label: 'Matrix', value: stats.skills, icon: FiTrendingUp, color: 'emerald', desc: 'Identified Skills' },
           { label: 'Logs', value: stats.experience, icon: FiMessageSquare, color: 'amber', desc: 'Experience Entries' },
           { label: 'Academy', value: stats.education, icon: FiGlobe, color: 'rose', desc: 'Education Data' }
         ].map((stat, i) => (
-          <div key={i} className="telemetry-card group !min-h-[180px] hover:border-white/20 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <stat.icon size={80} />
+          <div key={i} className="telemetry-card group relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+              <stat.icon size={120} />
             </div>
             
             <div className="relative z-10 flex items-center justify-between">
-              <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center text-${stat.color}-400 border border-${stat.color}-500/20`}>
-                <stat.icon size={18} />
+              <div className={`w-12 h-12 rounded-2xl bg-${stat.color}-500/10 flex items-center justify-center text-${stat.color}-400 border border-${stat.color}-500/20`}>
+                <stat.icon size={22} />
               </div>
-              <span className={`text-[10px] font-black text-${stat.color}-400 bg-${stat.color}-500/10 px-2 py-1 rounded-md uppercase tracking-[0.2em] border border-${stat.color}-500/10`}>
+              <span className={`text-[10px] font-black text-${stat.color}-400 bg-${stat.color}-500/10 px-3 py-1.5 rounded-lg uppercase tracking-[0.2em] border border-${stat.color}-500/10`}>
                 {stat.label}
               </span>
             </div>
 
-            <div className="relative z-10 mt-auto">
+            <div className="relative z-10 mt-8">
               {loading ? (
-                <div className="h-10 w-24 bg-white/5 animate-pulse rounded-lg mb-2" />
+                <div className="h-12 w-24 bg-white/5 animate-pulse rounded-xl mb-2" />
               ) : error ? (
                 <p className="text-xs font-bold text-rose-500/80 uppercase tracking-tighter">Signal Error</p>
               ) : (
-                <p className="text-5xl font-black tracking-tighter text-white">{stat.value}</p>
+                <p className="text-6xl font-black tracking-tighter text-[var(--admin-title)]">{stat.value}</p>
               )}
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-4">{stat.desc}</p>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-4 flex items-center gap-2">
+                <span className={`w-1 h-1 rounded-full bg-${stat.color}-500`} />
+                {stat.desc}
+              </p>
             </div>
           </div>
         ))}
@@ -266,22 +281,22 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-16 gap-y-16">
         {/* Left Column - High Density Data */}
         <div className="xl:col-span-8 space-y-6">
           {/* Operation Logs */}
-          <section className="admin-card !p-0 overflow-hidden border-white/5">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.05] bg-white/[0.02]">
+          <section className="admin-card !p-0 overflow-hidden border-[var(--admin-border)]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--admin-border)] bg-[var(--admin-accent)]/5">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                <div className="w-8 h-8 rounded-lg bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)]">
                   <FiActivity size={16} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">Operation Logs</h3>
+                  <h3 className="text-sm font-bold text-[var(--admin-title)] uppercase tracking-wider">Operation Logs</h3>
                   <p className="text-[10px] text-slate-500 font-bold tracking-tighter">Real-time system synchronization</p>
                 </div>
               </div>
-              <button className="text-[10px] font-black text-indigo-400 uppercase tracking-widest hover:text-indigo-300">Clear</button>
+              <button className="text-[10px] font-black text-[var(--admin-accent)] uppercase tracking-widest hover:opacity-80 transition-opacity">Clear</button>
             </div>
             
             <div className="max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 space-y-3">
@@ -305,13 +320,13 @@ export default function Dashboard() {
           </section>
 
           {/* Theme Settings */}
-          <section className="admin-card border-white/5 bg-white/[0.01] p-8">
+          <section className="admin-card border-[var(--admin-border)] bg-[var(--admin-card)] p-8">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
                 <FiZap size={20} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Global Aesthetics</h3>
+                <h3 className="text-sm font-bold text-[var(--admin-title)] uppercase tracking-wider">Global Aesthetics</h3>
                 <p className="text-[10px] text-slate-500 font-bold tracking-tighter">Set default theme for new users</p>
               </div>
             </div>
@@ -343,10 +358,10 @@ export default function Dashboard() {
               </div>
 
               {/* Mode Selector */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)]">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Visual Protocol</p>
-                  <p className="text-sm font-bold text-white capitalize">{themeSettings.mode.split('-')[0]} Mode</p>
+                  <p className="text-sm font-bold text-[var(--admin-title)] capitalize">{themeSettings.mode.split('-')[0]} Mode</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -357,7 +372,7 @@ export default function Dashboard() {
                   </button>
                   <button
                     onClick={() => saveThemeSettings(themeSettings.color, 'dark-theme')}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'dark-theme' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-slate-500 hover:bg-white/10'}`}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'dark-theme' ? 'bg-[var(--admin-accent)] text-white' : 'bg-[var(--admin-accent)]/10 text-slate-500 hover:bg-[var(--admin-accent)]/20'}`}
                   >
                     <FiMoon size={18} />
                   </button>
@@ -372,20 +387,20 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column - Status */}
-        <div className="xl:col-span-4 space-y-6">
-          <section className="admin-card border-indigo-500/20 bg-indigo-500/[0.02]">
+        <div className="xl:col-span-4 space-y-8">
+          <section className="admin-card">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/20 flex items-center justify-center text-[var(--admin-accent)]">
                 <FiZap size={20} className="animate-pulse" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Status Report</h3>
+                <h3 className="text-sm font-bold text-[var(--admin-title)] uppercase tracking-wider">Status Report</h3>
                 <p className="text-[10px] text-slate-500 font-bold">Priority Status</p>
               </div>
             </div>
             <div className="space-y-4">
               {/* GitHub Status */}
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <FiGithub className="text-slate-400" size={14} />
@@ -394,13 +409,13 @@ export default function Dashboard() {
                   <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.github.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-[var(--admin-accent)] shadow-[0_0_8px_var(--admin-accent-glow)]'}`} />
                 </div>
                 <div className="flex items-end justify-between">
-                  <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.github.status}</p>
+                  <p className="text-xs font-bold text-[var(--admin-title)] truncate max-w-[150px]">{externalStatus.github.status}</p>
                   <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">Status.json</span>
                 </div>
               </div>
 
               {/* Vercel Status */}
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <FiGlobe className="text-slate-400" size={14} />
@@ -409,13 +424,13 @@ export default function Dashboard() {
                   <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.vercel.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-[var(--admin-accent)] shadow-[0_0_8px_var(--admin-accent-glow)]'}`} />
                 </div>
                 <div className="flex items-end justify-between">
-                  <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.vercel.status}</p>
+                  <p className="text-xs font-bold text-[var(--admin-title)] truncate max-w-[150px]">{externalStatus.vercel.status}</p>
                   <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">Vercel-Status</span>
                 </div>
               </div>
 
               {/* DB Status */}
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <FiDatabase className="text-slate-400" size={14} />
@@ -424,19 +439,19 @@ export default function Dashboard() {
                   <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.database.status === 'Operational' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 animate-pulse'}`} />
                 </div>
                 <div className="flex items-end justify-between">
-                  <p className="text-xs font-bold text-white">{externalStatus.database.status}</p>
+                  <p className="text-xs font-bold text-[var(--admin-title)]">{externalStatus.database.status}</p>
                   <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">PostgreSQL v15</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Neural Link</span>
                   <div className="flex gap-1">
                     {[1,2,3,4].map(i => <div key={i} className="w-1 h-1 rounded-full bg-emerald-500/40" />)}
                   </div>
                 </div>
-                <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden mt-3">
+                <div className="h-1.5 w-full bg-[var(--admin-title)]/5 rounded-full overflow-hidden mt-3">
                   <div className="h-full bg-[var(--admin-accent)] rounded-full shadow-[0_0_10px_var(--admin-accent-glow)]" style={{ width: '85%' }}></div>
                 </div>
               </div>
@@ -444,9 +459,9 @@ export default function Dashboard() {
           </section>
 
           <section className="grid grid-cols-1 gap-4">
-            <div className="admin-card !p-6 border-white/5 bg-white/[0.01]">
+            <div className="admin-card !p-6 border-[var(--admin-border)] bg-[var(--admin-card)]">
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Hits</p>
-              <h4 className="text-2xl font-black text-white tracking-tighter">12.4K</h4>
+              <h4 className="text-2xl font-black text-[var(--admin-title)] tracking-tighter">12.4K</h4>
             </div>
           </section>
         </div>

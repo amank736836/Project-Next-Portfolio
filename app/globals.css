@@ -326,7 +326,7 @@ img {
     margin: 65px auto 50px !important;
   }
   .portfolio__container {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr);
   }
   .contact__container {
     grid-template-columns: 1fr !important;
@@ -399,7 +399,7 @@ img {
     font-size: var(--h1-font-size);
   }
   .portfolio__container {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
   .modal__list {
     grid-template-columns: 1fr !important;

@@ -3,29 +3,29 @@
 
 :root {
   /* Dynamic Tokens from global theme */
-  --admin-bg: #030712; 
-  --admin-card: rgba(17, 24, 39, 0.6);
-  --admin-border: rgba(255, 255, 255, 0.05);
+  --admin-bg: #020617; 
+  --admin-card: rgba(30, 41, 59, 0.3);
+  --admin-border: rgba(255, 255, 255, 0.1);
   --admin-accent: var(--first-color);
-  --admin-accent-glow: color-mix(in srgb, var(--first-color) 30%, transparent);
-  --admin-text: #9ca3af;
-  --admin-title: #f3f4f6;
+  --admin-accent-glow: color-mix(in srgb, var(--first-color) 25%, transparent);
+  --admin-text: #94a3b8;
+  --admin-title: #f1f5f9;
   
   /* Layout Constants */
-  --admin-sidebar-bg: rgba(15, 23, 42, 0.8);
-  --glass-blur: 24px;
+  --admin-sidebar-bg: rgba(15, 23, 42, 0.5);
+  --glass-blur: 32px;
 }
 
 /* Base Styles */
 .admin-root {
   background-color: var(--admin-bg);
   background-image: 
-    radial-gradient(at 0% 0%, hsla(var(--first-color-hsl), 0.15) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(var(--first-color-hsl), 0.05) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(var(--first-color-hsl), 0.15) 0, transparent 50%),
-    linear-gradient(var(--border-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 50px 50px, 50px 50px;
+    radial-gradient(at 10% 20%, hsla(var(--first-color-hsl), 0.25) 0, transparent 45%), 
+    radial-gradient(at 80% 10%, hsla(var(--first-color-hsl), 0.15) 0, transparent 40%),
+    radial-gradient(at 50% 90%, hsla(var(--first-color-hsl), 0.2) 0, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px;
   color: var(--admin-text);
   min-height: 100vh;
   display: flex;
@@ -134,7 +134,7 @@
 
 .admin-content-inner {
   padding: 3rem 1.5rem 10rem;
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
 }
 
@@ -174,16 +174,16 @@
 /* Orbit Glass Cards */
 .admin-card {
   background: var(--admin-card);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(200%);
   border: 1px solid var(--admin-border);
-  border-radius: 1.5rem;
-  padding: 2rem; /* Reduced from 4.5rem to be more balanced */
+  border-radius: 2rem;
+  padding: 3rem;
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   overflow: hidden;
   box-shadow: 
-    0 20px 50px -12px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.03);
+    0 30px 60px -12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .admin-card::before {
@@ -225,15 +225,19 @@
 /* Inputs */
 /* Premium Telemetry & Input Systems */
 .telemetry-card {
-  padding: 2rem !important;
+  padding: 3rem !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 200px;
-  border-radius: 1.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  min-height: 240px;
+  border-radius: 2rem;
+  background: var(--admin-card);
+  backdrop-filter: blur(var(--glass-blur)) saturate(200%);
   border: 1px solid var(--admin-border);
-  transition: all 0.4s ease;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .telemetry-card:hover {
@@ -452,12 +456,12 @@
 }
 
 .light-theme {
-  --admin-bg: #f3f4f6;
-  --admin-card: rgba(255, 255, 255, 0.7);
-  --admin-sidebar-bg: rgba(255, 255, 255, 0.9);
-  --admin-border: rgba(0, 0, 0, 0.05);
-  --admin-text: #4b5563;
-  --admin-title: #111827;
+  --admin-bg: #f8fafc;
+  --admin-card: rgba(255, 255, 255, 0.4);
+  --admin-sidebar-bg: rgba(255, 255, 255, 0.4);
+  --admin-border: rgba(0, 0, 0, 0.08);
+  --admin-text: #475569;
+  --admin-title: #0f172a;
   --admin-card-rgb: 255, 255, 255;
 }
 
@@ -985,7 +989,7 @@
 .quick-actions-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+  gap: 2.5rem;
 }
 
 @media (min-width: 640px) {

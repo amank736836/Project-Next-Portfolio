@@ -53,17 +53,19 @@ export default function Portfolio() {
       </h2>
 
       {/* Category Filter Bar */}
-      <div className="portfolio__filters container">
-        {categories.map((category) => (
-          <span 
-            key={category}
-            className={`portfolio__item ${activeFilter === category ? 'active-portfolio' : ''}`}
-            onClick={() => setActiveFilter(category)}
-          >
-            {category}
-          </span>
-        ))}
-      </div>
+      {categories.length > 2 && (
+        <div className="portfolio__filters container">
+          {categories.map((category) => (
+            <span 
+              key={category}
+              className={`portfolio__item ${activeFilter === category ? 'active-portfolio' : ''}`}
+              onClick={() => setActiveFilter(category)}
+            >
+              {category}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="portfolio__container container grid">
         {loading ? (

@@ -181,10 +181,10 @@ export default function SkillsManager() {
           >
             <div className="p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--admin-accent)]">
                   Matrix Refactoring // Node #{editingSkill.id.toString().slice(-4)}
                 </p>
-                <h3 className="text-xl font-bold tracking-tight">{editingSkill.title}</h3>
+                <h3 className="text-xl font-bold tracking-tight text-[var(--admin-title)]">{editingSkill.title}</h3>
               </div>
               <button onClick={() => setEditingSkill(null)} className="hover:rotate-90 transition-transform">
                 <FiX />
@@ -217,7 +217,7 @@ export default function SkillsManager() {
                 <Button
                   onClick={saveChanges}
                   disabled={saving}
-                  className="px-10 py-4"
+                   className="px-10 py-4 bg-[var(--admin-accent)] text-white shadow-[0_0_15px_var(--admin-accent-glow)]"
                 >
                   {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning />}
                   {saving ? 'Synchronizing...' : 'Update Matrix'}
@@ -230,7 +230,7 @@ export default function SkillsManager() {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Matrix</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--admin-title)]">Matrix</h2>
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">Technical Proficiency Configuration</p>
         </div>
         <Button
@@ -331,11 +331,11 @@ export default function SkillsManager() {
           >
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-inner">
+                <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/10 border border-[var(--admin-accent)]/20 flex items-center justify-center text-[var(--admin-accent)] font-bold text-xs shadow-inner">
                   {idx + 1}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-white tracking-tight group-hover:text-indigo-300 transition-colors">
+                  <h4 className="text-sm font-bold text-[var(--admin-title)] tracking-tight group-hover:text-[var(--admin-accent)] transition-colors">
                     {skill.title}
                   </h4>
                   <p className="text-xs text-slate-500 uppercase tracking-widest mt-0.5">

@@ -298,7 +298,7 @@ export default function ProjectManager() {
                 <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">
                   Asset Refactoring // Node #{editingProject.id.toString().slice(-4)}
                 </p>
-                <h3 className="text-xl font-bold tracking-tight">Edit Project</h3>
+                <h3 className="text-xl font-bold tracking-tight text-[var(--admin-title)]">Edit Project</h3>
               </div>
               <button onClick={() => { setEditingProject(null); setIsAddingCategory(false); }} className="hover:rotate-90 transition-transform">
                 <FiX />
@@ -457,7 +457,7 @@ export default function ProjectManager() {
       {/* Header Section */}
       <div className="flex-1 flex flex-col p-6 lg:flex-row justify-between items-start lg:items-center gap-6 mb-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Asset Showcase</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--admin-title)]">Asset Showcase</h2>
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
             Node Showcase v4.2 // Unified Asset Management
           </p>
@@ -554,47 +554,49 @@ export default function ProjectManager() {
           </div>
 
           {/* Category Filter Dropdown */}
-          <div className="relative w-fit">
-            <Button
-              variant="outline"
-              onClick={() => setShowCategoryFilters(!showCategoryFilters)}
-              className={`flex items-center gap-2 ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
-            >
-              <FiGrid size={16} />
-              <span className="hidden sm:inline">
-                {filterCategory === 'all' ? 'All Categories' : filterCategory}
-              </span>
-              <FiChevronDown size={14} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
-            </Button>
+          {categories.length > 1 && (
+            <div className="relative w-fit">
+              <Button
+                variant="outline"
+                onClick={() => setShowCategoryFilters(!showCategoryFilters)}
+                className={`flex items-center gap-2 ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
+              >
+                <FiGrid size={16} />
+                <span className="hidden sm:inline">
+                  {filterCategory === 'all' ? 'All Categories' : filterCategory}
+                </span>
+                <FiChevronDown size={14} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
+              </Button>
 
-            {showCategoryFilters && (
-              <div className="absolute top-full left-0 mt-3 w-56 z-50">
-                <div className="admin-dropdown-menu max-h-60 overflow-y-auto">
-                  <button
-                    onClick={() => {
-                      setFilterCategory('all');
-                      setShowCategoryFilters(false);
-                    }}
-                    className={`admin-dropdown-item ${filterCategory === 'all' ? 'active' : ''}`}
-                  >
-                    All Categories
-                  </button>
-                  {categories.map((cat) => (
+              {showCategoryFilters && (
+                <div className="absolute top-full left-0 mt-3 w-56 z-50">
+                  <div className="admin-dropdown-menu max-h-60 overflow-y-auto">
                     <button
-                      key={cat}
                       onClick={() => {
-                        setFilterCategory(cat);
+                        setFilterCategory('all');
                         setShowCategoryFilters(false);
                       }}
-                      className={`admin-dropdown-item ${filterCategory === cat ? 'active' : ''}`}
+                      className={`admin-dropdown-item ${filterCategory === 'all' ? 'active' : ''}`}
                     >
-                      <span className="capitalize">{cat}</span>
+                      All Categories
                     </button>
-                  ))}
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          setFilterCategory(cat);
+                          setShowCategoryFilters(false);
+                        }}
+                        className={`admin-dropdown-item ${filterCategory === cat ? 'active' : ''}`}
+                      >
+                        <span className="capitalize">{cat}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* View Mode Toggle */}
           <div className="flex items-center w-48">
@@ -735,7 +737,7 @@ export default function ProjectManager() {
 function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) {
   return (
     <div
-      className={`group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] ${isSelected ? 'ring-2 ring-indigo-500 shadow-[0_0_40px_rgba(99,102,241,0.2)]' : ''}`}
+      className={`group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] ${isSelected ? 'ring-2 ring-[var(--admin-accent)] shadow-[0_0_40px_var(--admin-accent-glow)]' : ''}`}
     >
       {/* Image Section */}
       <div className="relative h-48 w-full overflow-hidden bg-slate-900">
@@ -792,7 +794,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
           </span>
         </div>
 
-        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-indigo-300 transition-colors">
+        <h4 className="text-lg font-bold text-[var(--admin-title)] mb-2 tracking-tight group-hover:text-[var(--admin-accent)] transition-colors">
           {project.title}
         </h4>
 

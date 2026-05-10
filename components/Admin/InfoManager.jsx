@@ -27,12 +27,14 @@ export default function InfoManager() {
     try {
       const res = await fetch('/api/admin/info');
       const data = await res.json();
-      const mappedData = Array.isArray(data) ? data.map(item => ({
-        ...item,
-        id: item.key,
-        label: item.title || item.key,
-        value: item.description || ''
-      })) : [];
+      const mappedData = Array.isArray(data) ? data
+        .filter(item => !item.key.startsWith('default_theme_'))
+        .map(item => ({
+          ...item,
+          id: item.key,
+          label: item.title || item.key,
+          value: item.description || ''
+        })) : [];
       setInfo(mappedData);
     } catch (error) {
       console.error('Failed to fetch info:', error);
@@ -176,7 +178,7 @@ export default function InfoManager() {
                   <FiZap size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">Modify Identity Node</h3>
+                  <h3 className="text-xl font-bold text-[var(--admin-title)] tracking-tight">Modify Identity Node</h3>
                   <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Field: {editingItem.label}</p>
                 </div>
               </div>
@@ -218,7 +220,7 @@ export default function InfoManager() {
                 <button
                   onClick={() => updateInfo(editingItem.id, editingItem.value)}
                   disabled={saving}
-                  className="px-8 py-3 rounded-xl bg-indigo-500 text-white text-xs font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all shadow-[0_4px_15px_rgba(99,102,241,0.3)]"
+                  className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-[0_4px_15px_var(--admin-accent-glow)]"
                 >
                   {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
                   {saving ? 'Saving...' : 'Save Changes'}
@@ -232,7 +234,7 @@ export default function InfoManager() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
         <div>
-          <h2 className="text-3xl font-black text-white tracking-tighter">Identity</h2>
+          <h2 className="text-3xl font-black text-[var(--admin-title)] tracking-tighter">Identity</h2>
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Core Profile Data Matrix</p>
         </div>
         <div className="flex items-center gap-4">
@@ -306,7 +308,7 @@ export default function InfoManager() {
                 </div>
              </div>
              <div 
-               className={`text-lg font-bold text-white tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
+               className={`text-lg font-bold text-[var(--admin-title)] tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
                dangerouslySetInnerHTML={{ __html: item.id === 'age' && item.value.includes('/') ? calculateAge(item.value) + ' Years' : item.value }} 
              />
              <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">

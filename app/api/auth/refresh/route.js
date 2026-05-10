@@ -20,8 +20,8 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Token is still valid' });
     }
 
-    // Prevent concurrent refresh attempts from same session
-    const sessionId = session.tokens?.access_token || Math.random().toString();
+    // Prevent concurrent refresh attempts from same session using a stable id
+    const sessionId = session.user?.sub || session.user?.id || session.user?.email || session.tokens?.access_token || Math.random().toString();
     if (refreshInProgress.has(sessionId)) {
       return NextResponse.json({ error: 'Refresh already in progress' }, { status: 429 });
     }

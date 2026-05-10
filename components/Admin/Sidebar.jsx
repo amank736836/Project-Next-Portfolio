@@ -33,7 +33,7 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
             </div>
           </div>
           <div className="overflow-hidden">
-            <h1 className="text-xl font-black tracking-tighter text-white leading-none">CORE.OS</h1>
+            <h1 className="text-xl font-black tracking-tighter text-[var(--admin-title)] leading-none">CORE.OS</h1>
             <p className="text-[9px] font-black text-[var(--admin-accent)] tracking-[0.3em] uppercase mt-1">Admin Node v4.2</p>
           </div>
         </div>

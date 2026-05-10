@@ -16,12 +16,14 @@ const Themes = () => {
   const changeColor = (newColor) => {
     setColor(newColor);
     localStorage.setItem("color", newColor);
+    window.dispatchEvent(new Event("themeChange"));
   };
 
   const toggleTheme = () => {
     const newTheme = theme === "light-theme" ? "dark-theme" : "light-theme";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
+    window.dispatchEvent(new Event("themeChange"));
   };
 
   // Close switcher when clicking outside
@@ -78,6 +80,22 @@ const Themes = () => {
     };
 
     fetchDefaultSettings();
+
+    const handleStorageChange = () => {
+      const savedColor = localStorage.getItem("color");
+      const savedTheme = localStorage.getItem("theme");
+      if (savedColor) setColor(savedColor);
+      if (savedTheme) setTheme(savedTheme);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    // Also listen for a custom event for same-window syncing
+    window.addEventListener("themeChange", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("themeChange", handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {

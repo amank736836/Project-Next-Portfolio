@@ -12,7 +12,10 @@ export default async function About() {
   const { data: infoData } = await supabase.from('personal_info').select('*');
 
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
-  const personalInfo = infoData?.filter(i => i.key !== 'about_description');
+  const personalInfo = infoData?.filter(i => 
+    i.key !== 'about_description' && 
+    !i.key.startsWith('default_theme_')
+  );
 
   return (
     <main className="section container">
