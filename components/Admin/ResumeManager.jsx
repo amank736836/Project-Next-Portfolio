@@ -200,8 +200,8 @@ export default function ResumeManager({ type }) {
         </div>
       )}
 
-      <div className="admin-card mb-[160px] overflow-hidden border-white/5 bg-white/[0.015] relative z-30 p-20 lg:p-32">
-        <div className="grid gap-16 lg:grid-cols-[1.3fr_0.7fr]">
+      <div className="admin-card mb-[100px] overflow-hidden border-white/5 bg-white/[0.015] relative z-30 p-12 lg:p-16">
+        <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.35em] text-indigo-300">
@@ -239,16 +239,20 @@ export default function ResumeManager({ type }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 self-start lg:justify-self-end w-full max-w-md">
-            <div className="rounded-[28px] border border-white/5 bg-white/[0.03] p-5">
-              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-slate-500 mb-3">Entries</p>
-              <p className="text-4xl font-black tracking-tight text-white">{entryCount}</p>
-              <p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Total records</p>
+          <div className="grid grid-cols-2 gap-6 w-full max-w-md ml-auto">
+            <div className="telemetry-card">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-6">Entries</p>
+                <p className="text-6xl font-black tracking-tighter text-white">{entryCount}</p>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold">Total records</p>
             </div>
-            <div className="rounded-[28px] border border-white/5 bg-white/[0.03] p-5">
-              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-slate-500 mb-3">Latest</p>
-              <p className="text-lg font-black tracking-tight text-white leading-tight">{latestEntry}</p>
-              <p className="mt-2 text-[10px] uppercase tracking-widest text-slate-500">Most recent sector</p>
+            <div className="telemetry-card">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-6">Latest</p>
+                <p className="text-2xl font-black tracking-tight text-white leading-tight">{latestEntry}</p>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 font-bold">Most recent sector</p>
             </div>
           </div>
         </div>

@@ -63,9 +63,9 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="space-y-12 animate-fade-in max-w-[1700px] mx-auto pb-10">
+    <div className="space-y-6 animate-fade-in max-w-[1700px] mx-auto pb-10">
       {/* HUD Header */}
-      <div className="flex flex-col gap-8 mb-12">
+      <div className="flex flex-col gap-4 mb-2">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(16,185,129,1)]" />
@@ -74,10 +74,10 @@ export default function Dashboard() {
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 opacity-60">Signal Stable // Encrypted</p>
         </div>
         
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-6">
           <div>
-            <h2 className="text-5xl font-black tracking-tighter !mb-2 bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Core Telemetry</h2>
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/60">Unified Portfolio Command Interface</p>
+            <h2 className="text-4xl font-black tracking-tighter !mb-1 bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Core Telemetry</h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400/60">Unified Portfolio Command Interface</p>
           </div>
 
           <div className="flex flex-wrap gap-4">
@@ -111,7 +111,7 @@ export default function Dashboard() {
           { label: 'Logs', value: stats.experience, icon: FiMessageSquare, color: 'amber', desc: 'Experience Entries' },
           { label: 'Academy', value: stats.education, icon: FiGlobe, color: 'rose', desc: 'Education Data' }
         ].map((stat, i) => (
-          <Card key={i} className="group relative overflow-hidden min-h-[300px] flex flex-col justify-between p-24 lg:p-32">
+          <div key={i} className="telemetry-card group !min-h-[180px] hover:border-white/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
               <stat.icon size={80} />
             </div>
@@ -120,22 +120,22 @@ export default function Dashboard() {
               <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center text-${stat.color}-400 border border-${stat.color}-500/20`}>
                 <stat.icon size={18} />
               </div>
-              <span className={`text-[9px] font-black text-${stat.color}-400 bg-${stat.color}-500/10 px-2 py-1 rounded-md uppercase tracking-[0.2em] border border-${stat.color}-500/10`}>
+              <span className={`text-[10px] font-black text-${stat.color}-400 bg-${stat.color}-500/10 px-2 py-1 rounded-md uppercase tracking-[0.2em] border border-${stat.color}-500/10`}>
                 {stat.label}
               </span>
             </div>
 
-            <div className="relative z-10">
+            <div className="relative z-10 mt-auto">
               {loading ? (
                 <div className="h-10 w-24 bg-white/5 animate-pulse rounded-lg mb-2" />
               ) : error ? (
                 <p className="text-xs font-bold text-rose-500/80 uppercase tracking-tighter">Signal Error</p>
               ) : (
-                <p className="text-4xl font-black tracking-tighter text-white">{stat.value}</p>
+                <p className="text-5xl font-black tracking-tighter text-white">{stat.value}</p>
               )}
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-3">{stat.desc}</p>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-4">{stat.desc}</p>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
@@ -157,12 +157,47 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* System Logs and Quick Actions */}
+      {/* 3-Column Mission Control Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        {/* System Logs */}
-        <div className="xl:col-span-7">
-          <Card>
-            <div className="flex justify-between items-center mb-6">
+        {/* Column 1: Recent Activity (Far Left) */}
+        <div className="xl:col-span-3">
+          <Card className="h-full">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                <FiActivity size={20} />
+              </div>
+              <div>
+                <h3 className="text-sm font-black uppercase tracking-widest">Activity</h3>
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Live Mission Feed</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                { time: '14:32', title: 'Project updated', desc: 'Frame and Phrase' },
+                { time: '13:15', title: 'Skill added', desc: 'TypeScript' },
+                { time: '11:48', title: 'Identity synced', desc: 'Profile data' },
+                { time: '10:05', title: 'Session start', desc: 'Admin login' },
+                { time: '09:22', title: 'Database fix', desc: 'Skills matrix' },
+              ].map((act, i) => (
+                <div key={i} className="py-4 px-5 rounded-xl bg-white/[0.02] hover:bg-white/5 border border-white/5 transition-all">
+                  <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-mono text-slate-500">{act.time}</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-200">{act.title}</span>
+                      <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{act.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Column 2: Operation Logs (Center) */}
+        <div className="xl:col-span-5">
+          <Card className="h-full">
+            <div className="flex justify-between items-center mb-8">
               <h3 className="text-lg font-bold tracking-tighter flex items-center gap-3">
                 <FiCommand className="text-[var(--first-color)]" /> Operation Logs
               </h3>
@@ -170,80 +205,33 @@ export default function Dashboard() {
                 <div className="h-1 w-20 bg-indigo-500/10 rounded-full overflow-hidden">
                   <div className="h-full w-1/2 bg-indigo-500 animate-[shimmer_2s_infinite]" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest opacity-50">Live Feed</span>
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Live</span>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">14:16:55</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
-                  <p className="text-xs font-medium">API Node Handshake successful</p>
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { time: '14:16:55', msg: 'API Node Handshake successful', type: 'Verified', color: 'emerald' },
+                { time: '14:15:22', msg: 'Showcase database synchronized', type: 'Info', color: 'indigo' },
+                { time: '14:12:30', msg: 'Matrix Refactoring Node #9021', type: 'Info', color: 'indigo' },
+                { time: '14:08:45', msg: 'Security Packet verification', type: 'Info', color: 'amber' },
+                { time: '13:55:12', msg: 'System telemetry update', type: 'Info', color: 'amber' },
+                { time: '13:42:01', msg: 'Identity sequence validated', type: 'Verified', color: 'emerald' },
+              ].map((log, i) => (
+                <div key={i} className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/5 hover:bg-white/5 transition-all">
+                  <span className="text-[10px] font-bold text-slate-500 font-mono">{log.time}</span>
+                  <div className="flex-1 flex items-center gap-2">
+                    <div className={`w-1.5 h-1.5 rounded-full bg-${log.color}-500/40`} />
+                    <p className="text-xs font-medium text-slate-300">{log.msg}</p>
+                  </div>
+                  <span className={`text-[9px] font-black uppercase tracking-wider text-${log.color}-400`}>{log.type}</span>
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">14:15:22</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
-                  <p className="text-xs font-medium">Showcase database synchronized</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">14:12:30</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
-                  <p className="text-xs font-medium">Matrix Refactoring Node #9021</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">14:08:45</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20" />
-                  <p className="text-xs font-medium">Security Packet verification</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Info</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">13:55:12</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
-                  <p className="text-xs font-medium">System telemetry update</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Info</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">13:42:01</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
-                  <p className="text-xs font-medium">Identity sequence validated</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">13:15:55</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/20" />
-                  <p className="text-xs font-medium">Node version 4.2.0 active</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Info</span>
-              </div>
-              <div className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all">
-                <span className="text-xs font-bold text-slate-500">13:30:15</span>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
-                  <p className="text-xs font-medium">Cloudinary Uplink established</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified</span>
-              </div>
+              ))}
             </div>
           </Card>
         </div>
 
-        {/* Quick Actions + Security */}
-        <div className="xl:col-span-5 space-y-6">
+        {/* Column 3: Quick Actions + Security (Right) */}
+        <div className="xl:col-span-4 space-y-6">
           <QuickActions />
 
           <div className="grid grid-cols-2 gap-4">
@@ -252,14 +240,14 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                   <FiGlobe size={14} />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider">Network</span>
+                <span className="text-[10px] font-black uppercase tracking-wider">Network</span>
               </div>
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-lg font-bold tracking-tighter">Vercel</p>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Edge</p>
+                  <p className="text-lg font-black tracking-tighter">Vercel</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">Edge Node</p>
                 </div>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">Active</span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">ACTIVE</span>
               </div>
             </Card>
 
@@ -268,14 +256,14 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                   <FiShield size={14} />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider">Security</span>
+                <span className="text-[10px] font-black uppercase tracking-wider">Security</span>
               </div>
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider">Auth Status</p>
-                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-400">Protected</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-indigo-400">Protected</p>
+                  <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-1">SSL 256-bit</p>
                 </div>
-                <div className="h-1 w-full bg-indigo-500/20 rounded-full overflow-hidden">
+                <div className="h-1.5 w-12 bg-indigo-500/20 rounded-full overflow-hidden">
                   <div className="h-full w-full bg-indigo-500" />
                 </div>
               </div>

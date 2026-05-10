@@ -1,10 +1,10 @@
-import { skills } from '@/data'
+const Skills = ({ data }) => {
+  if (!data || data.length === 0) return null;
 
-const Skills = () => {
   return (
     <>
         {
-            skills.map(({ title }, index) => {
+            data.map(({ title }, index) => {
                 return (
                     <div className="progress__box" key={index}>
                         <h3 className="skills__title">{title}</h3>

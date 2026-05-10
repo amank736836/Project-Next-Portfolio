@@ -228,10 +228,10 @@ export default function SkillsManager() {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-16">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Matrix</h2>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-2">Technical Proficiency Configuration</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">Technical Proficiency Configuration</p>
         </div>
         <Button
           onClick={saveChanges}
@@ -247,21 +247,21 @@ export default function SkillsManager() {
       <div className="mb-8">
         <div className="grid gap-4 md:grid-cols-2">
           {/* Search */}
-          <div className="flex items-center">
-            <FiSearch className="w-5 h-5 text-slate-500" />
+          <div className="input-icon-wrapper">
+            <FiSearch className="icon" />
             <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 min-w-0"
+              className="admin-input"
               placeholder="Search capabilities..."
             />
             {searchQuery && (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
                 onClick={() => setSearchQuery('')}
-                className="-ml-2"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-500 hover:text-white"
               >
                 <FiX size={14} />
               </Button>
@@ -270,14 +270,14 @@ export default function SkillsManager() {
 
           {/* Add New */}
           <div className="flex gap-3 flex-1 sm:flex-none">
-            <div className="relative flex-1 sm:w-64">
-              <FiCode className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <div className="input-icon-wrapper sm:w-64">
+              <FiCode className="icon" size={18} />
               <Input
                 type="text"
                 value={newSkill}
                 onChange={(e) => setNewSkill(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-                className="w-full pl-12"
+                className="admin-input"
                 placeholder="New skill..."
               />
             </div>
@@ -326,7 +326,7 @@ export default function SkillsManager() {
           {filteredSkills.map((skill, idx) =>
           <div
             key={skill.id}
-            className="group admin-card p-10 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
+            className="group admin-card p-6 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
             style={{ animationDelay: `${idx * 40}ms` }}
           >
             <div className="flex items-center justify-between gap-4">

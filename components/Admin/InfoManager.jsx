@@ -217,19 +217,19 @@ export default function InfoManager() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-24">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
         <div>
-          <h2 className="text-4xl font-black text-white tracking-tighter">Identity</h2>
-          <p className="text-slate-500 text-[11px] font-bold uppercase tracking-[0.3em] mt-2">Core Profile Data Matrix</p>
+          <h2 className="text-3xl font-black text-white tracking-tighter">Identity</h2>
+          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Core Profile Data Matrix</p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative group">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
+          <div className="input-icon-wrapper w-72">
+            <FiSearch className="icon" size={18} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/40 focus:ring-4 focus:ring-indigo-500/5 transition-all w-72"
+              className="bg-white/[0.03] border border-white/10 rounded-2xl pr-10 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/40 focus:ring-4 focus:ring-indigo-500/5 transition-all w-full"
               placeholder="Search identity..."
             />
             {searchQuery && (
@@ -255,7 +255,7 @@ export default function InfoManager() {
       {info.length === 0 ? (
         <EmptyInfo onAdd={addInfo} />
       ) : filteredInfo.length === 0 ? (
-        <div className="admin-card mb-32 !p-12 bg-white/[0.02] text-center !rounded-[2.5rem]">
+        <div className="admin-card mb-12 !p-8 bg-white/[0.02] text-center !rounded-[1.5rem]">
           <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">
             <FiSearch className="text-slate-600" size={32} />
           </div>
@@ -263,11 +263,11 @@ export default function InfoManager() {
           <button onClick={() => setSearchQuery('')} className="mt-4 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300">Clear Search</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
           {filteredInfo.map((item, idx) => (
           <div
             key={item.id}
-            className="admin-card group !p-12 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[2.5rem]"
+            className="admin-card group !p-6 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[1.5rem]"
             style={{ animationDelay: `${idx * 50}ms` }}
           >
              <div className="flex justify-between items-start mb-6">
@@ -305,7 +305,7 @@ export default function InfoManager() {
         {/* Quick Add Node */}
         <button
           onClick={() => successToast('Add identity feature coming soon')}
-          className="admin-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-12 group transition-all !rounded-[2.5rem]"
+          className="admin-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
         >
            <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
               <FiPlus size={28} />

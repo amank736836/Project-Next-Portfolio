@@ -34,34 +34,33 @@ export default function AdminLayout({ children }) {
       <div className="admin-main custom-scrollbar z-10 relative">
         <header className="admin-header">
           <div className="flex flex-col">
-            <h3 className="text-2xl font-black tracking-tighter capitalize flex items-center gap-4">
+            <h3 className="text-xl font-black tracking-tighter capitalize flex items-center gap-3 leading-none">
               {activeTab} 
               <span className="flex gap-1">
-                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] animate-pulse" />
-                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] opacity-40" />
-                <span className="w-1.5 h-1.5 bg-[var(--first-color)] rounded-full shadow-[0_0_15px_var(--first-color)] opacity-20" />
+                <span className="w-1 h-1 bg-[var(--first-color)] rounded-full shadow-[0_0_10px_var(--first-color)] animate-pulse" />
+                <span className="w-1 h-1 bg-[var(--first-color)] rounded-full shadow-[0_0_10px_var(--first-color)] opacity-40" />
               </span>
             </h3>
-            <div className="flex gap-6 mt-2">
-              <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Sector: Global_Admin</span>
-              <span className="text-[8px] font-black opacity-40 uppercase tracking-[0.3em]">Priority: Alpha_Clearance</span>
-              <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-2">
-                <span className="w-1 h-1 bg-emerald-500 rounded-full" /> Encrypted_Link
+            <div className="flex gap-4 mt-1">
+              <span className="text-[7px] font-black opacity-40 uppercase tracking-[0.2em]">Sector: Global_Admin</span>
+              <span className="text-[7px] font-black opacity-40 uppercase tracking-[0.2em]">Priority: Alpha_Clearance</span>
+              <span className="text-[7px] font-black text-emerald-500 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                <span className="w-0.5 h-0.5 bg-emerald-500 rounded-full" /> Encrypted_Link
               </span>
             </div>
           </div>
           
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <div className="text-right hidden sm:block">
-              <p className="text-[9px] font-black text-[var(--first-color)] uppercase tracking-[0.4em] mb-1">Authenticated Operator</p>
-              <div className="flex items-center justify-end gap-4">
-                 <span className="text-[8px] font-bold text-emerald-500/60 hud-text uppercase">UP: 12:44:02</span>
-                 <p className="text-sm font-black tracking-tight">AMAN KUMAR</p>
+              <p className="text-[8px] font-black text-[var(--first-color)] uppercase tracking-[0.3em] mb-0.5">Authenticated Operator</p>
+              <div className="flex items-center justify-end gap-3">
+                 <span className="text-[7px] font-bold text-emerald-500/60 hud-text uppercase">UP: 12:44:02</span>
+                 <p className="text-xs font-black tracking-tight">AMAN KUMAR</p>
               </div>
             </div>
             <div className="relative group">
-              <div className="absolute -inset-1.5 bg-[var(--first-color)] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative h-12 w-12 rounded-2xl bg-[var(--container-color)] border border-[var(--border-color)] flex items-center justify-center font-black text-sm shadow-2xl">
+              <div className="absolute -inset-1 bg-[var(--first-color)] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative h-10 w-10 rounded-xl bg-[var(--container-color)] border border-[var(--border-color)] flex items-center justify-center font-black text-xs shadow-2xl">
                 AK
               </div>
             </div>

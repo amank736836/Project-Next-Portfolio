@@ -61,7 +61,7 @@ export async function DELETE(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { id } = await request.json();
   const { error } = await supabase.from('education').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

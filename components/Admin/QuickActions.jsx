@@ -108,50 +108,6 @@ export default function QuickActions({ className = '' }) {
         ))}
       </div>
 
-      {/* Recent Activity Preview */}
-      <div className="mt-6 pt-6 border-t border-t">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-            Recent Activity
-          </span>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Live
-          </span>
-        </div>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-slate-500">14:32</span>
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-400/20" />
-                <span className="text-xs text-slate-300">Project updated</span>
-              </div>
-            </div>
-            <span className="text-xs text-slate-400">Frame and Phrase</span>
-          </div>
-          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-slate-500">13:15</span>
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/20" />
-                <span className="text-xs text-slate-300">Skill added</span>
-              </div>
-            </div>
-            <span className="text-xs text-slate-400">TypeScript</span>
-          </div>
-          <div className="flex items-center justify-between py-3 px-5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/[0.03]">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-slate-500">11:48</span>
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400/20" />
-                <span className="text-xs text-slate-300">Identity synced</span>
-              </div>
-            </div>
-            <span className="text-xs text-slate-400">Profile data</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

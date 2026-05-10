@@ -10,15 +10,21 @@ export async function POST(request) {
 
     const host = request.headers.get('host') || 'localhost:3000';
     const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const appUrl = `${protocol}://${host}`;
+    const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
 
-    let logoutUrl = appUrl;
+    // Ensure we have a valid logout URL as fallback
+    let logoutUrl = appBaseUrl.endsWith('/') ? appBaseUrl : `${appBaseUrl}/`;
 
     if (session && session.tokens && session.tokens.id_token) {
+      // Scalekit is strict about trailing slashes, so we ensure consistency
+      const postLogoutRedirectUri = appBaseUrl.endsWith('/') ? appBaseUrl : `${appBaseUrl}/`;
+      
       logoutUrl = scalekit.getLogoutUrl({
         idTokenHint: session.tokens.id_token,
-        postLogoutRedirectUri: `${appUrl}/`, // Add trailing slash as it's common for Scalekit
+        postLogoutRedirectUri: postLogoutRedirectUri,
       });
+      
+      console.log(`[Auth] Redirecting to Scalekit logout with postLogoutRedirectUri: ${postLogoutRedirectUri}`);
     }
 
     // Clear local session

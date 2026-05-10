@@ -333,10 +333,10 @@ export default function ProjectManager() {
       )}
 
       {/* Header Section */}
-      <div className="flex-1 flex flex-col p-12 lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+      <div className="flex-1 flex flex-col p-6 lg:flex-row justify-between items-start lg:items-center gap-6 mb-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Asset Showcase</h2>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-2">
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
             Node Showcase v4.2 // Unified Asset Management
           </p>
         </div>
@@ -404,25 +404,29 @@ export default function ProjectManager() {
             </Button>
 
             {showFilters && (
-              <div className="absolute top-full right-0 mt-2 w-48 z-20">
-                {[ { value: 'all', label: 'All Projects', icon: <FiGrid size={14} /> },
-                  { value: 'online', label: 'Online Only', icon: <FiEye size={14} /> },
-                  { value: 'offline', label: 'Offline Only', icon: <FiEyeOff size={14} /> },
-                ].map((option) => (
-                  <Button
-                    key={option.value}
-                    variant="outline"
-                    onClick={() => {
-                      setFilterStatus(option.value);
-                      setShowFilters(false);
-                    }}
-                    className={`w-full flex items-center gap-2 px-4 py-2 ${filterStatus === option.value ? 'text-[var(--first-color)]' : ''}`}
-                  >
-                    {filterStatus === option.value && <FiCheck size={14} />}
-                    {option.icon}
-                    {option.label}
-                  </Button>
-                ))}
+              <div className="absolute top-full right-0 mt-3 w-56 z-50">
+                <div className="admin-dropdown-menu">
+                  {[ 
+                    { value: 'all', label: 'All Projects', icon: <FiGrid size={16} /> },
+                    { value: 'online', label: 'Online Only', icon: <FiEye size={16} /> },
+                    { value: 'offline', label: 'Offline Only', icon: <FiEyeOff size={16} /> },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setFilterStatus(option.value);
+                        setShowFilters(false);
+                      }}
+                      className={`admin-dropdown-item ${filterStatus === option.value ? 'active' : ''}`}
+                    >
+                      <span className="flex-1 flex items-center gap-3">
+                        {option.icon}
+                        {option.label}
+                      </span>
+                      {filterStatus === option.value && <FiCheck size={14} strokeWidth={3} />}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -448,7 +452,7 @@ export default function ProjectManager() {
 
         {/* Filter Pills & Stats */}
         <div className="mt-8 flex flex-wrap gap-3">
-          <div className="flex items-center gap-10 p-12">
+          <div className="flex items-center gap-10 p-6">
             {(searchQuery || filterStatus !== 'all') && (
               <>
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -600,7 +604,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
       </div>
 
       {/* Content Section */}
-      <div className="p-12">
+      <div className="p-6 lg:p-8 flex-1 flex flex-col gap-6">
         <div className="flex items-center gap-2 mb-3">
           <span className="px-2 py-1 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 uppercase tracking-tighter">
             {project.category || 'Portfolio Item'}
