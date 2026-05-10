@@ -5,7 +5,7 @@
   /* Dynamic Tokens from global theme */
   --admin-bg: #030712; /* Deeper dark for premium feel */
   --admin-card: rgba(17, 24, 39, 0.6);
-  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-border: rgba(255, 255, 255, 0.05);
   --admin-accent: #6366f1;
   --admin-accent-glow: rgba(99, 102, 241, 0.3);
   --admin-text: #9ca3af;
@@ -70,13 +70,43 @@
   display: flex;
   flex-direction: column;
   padding: 3rem 1.5rem;
-  z-index: 50;
+  z-index: 100;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
   scrollbar-width: none;
   box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    position: fixed;
+    left: 0;
+    transform: translateX(-100%);
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+  }
+  
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .deep-glass {
@@ -108,14 +138,14 @@
 }
 
 .admin-content-inner {
-  padding: 1.5rem 1rem 8rem;
-  max-width: 1550px;
+  padding: 3rem 1.5rem 10rem;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .admin-content-inner {
-    padding: 2.5rem 2rem 8rem;
+    padding: 5rem 4rem 10rem;
   }
 }
 
@@ -127,7 +157,7 @@
 
 /* Header Adjustments */
 .admin-header {
-  height: 70px; /* Reduced from 100px */
+  height: 70px;
   border-bottom: 1px solid var(--admin-border);
   background: var(--admin-card);
   backdrop-filter: blur(var(--glass-blur));
@@ -138,6 +168,12 @@
   position: sticky;
   top: 0;
   z-index: 40;
+}
+
+@media (max-width: 1024px) {
+  .admin-header {
+    padding-inline: 1.5rem;
+  }
 }
 
 /* Orbit Glass Cards */
@@ -462,29 +498,30 @@
 }
 
 .admin-btn-secondary {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--admin-title);
-  border-color: var(--admin-border);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
 }
 
 .admin-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .admin-btn-danger {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.05);
   color: #f87171;
-  border-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.1);
 }
 
 .admin-btn-danger:hover {
-  background: #ef4444;
-  color: #fff;
-  border-color: #ef4444;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  color: #ff7e7e;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }
 
 .admin-icon-btn {

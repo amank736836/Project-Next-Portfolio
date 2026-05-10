@@ -18,7 +18,6 @@ export default function Dashboard() {
   });
   const [uptime, setUptime] = useState('00:00:00');
   const [mounted, setMounted] = useState(false);
-  const [matrixData, setMatrixData] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +29,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     setMounted(true);
-    setMatrixData(Array.from({ length: 48 }).map(() => Math.random() > 0.4));
     
     fetchStats();
     fetchExternalStatuses();
@@ -118,9 +116,9 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-[1700px] mx-auto pb-10">
+    <div className="space-y-12 animate-fade-in max-w-[1700px] mx-auto pb-20">
       {/* HUD Header */}
-      <div className="flex flex-col gap-4 mb-2">
+      <div className="flex flex-col gap-4 mb-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(16,185,129,1)]" />
@@ -159,7 +157,7 @@ export default function Dashboard() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           { label: 'Projects', value: stats.projects, icon: FiLayers, color: 'indigo', desc: 'Total Nodes Active' },
           { label: 'Matrix', value: stats.skills, icon: FiTrendingUp, color: 'emerald', desc: 'Identified Skills' },
@@ -212,7 +210,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Left Column - High Density Data */}
         <div className="xl:col-span-8 space-y-6">
           {/* Operation Logs */}
@@ -230,7 +228,7 @@ export default function Dashboard() {
               <button className="text-[10px] font-black text-indigo-400 uppercase tracking-widest hover:text-indigo-300">Clear</button>
             </div>
             
-            <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 space-y-3">
+            <div className="max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 space-y-3">
               {logs.map((log, idx) => (
                 <div key={idx} className="flex items-start gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:bg-white/[0.04] transition-colors">
                   <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
@@ -246,35 +244,6 @@ export default function Dashboard() {
                     <p className="text-xs text-slate-400 leading-relaxed group-hover:whitespace-normal transition-all">{log.details}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Activity Matrix */}
-          <section className="admin-card !p-8 border-white/5 bg-gradient-to-br from-indigo-500/[0.02] to-transparent">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Neural Activity Matrix</h3>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span className="text-[10px] font-bold text-slate-500">Active</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-[10px] font-bold text-slate-500">Idle</span>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-12 gap-2">
-              {mounted && matrixData.map((isActive, i) => (
-                <div 
-                  key={i} 
-                  className={`aspect-square rounded-sm transition-all duration-500 hover:scale-125 hover:z-10 cursor-pointer ${
-                    isActive
-                      ? 'bg-indigo-500/20 hover:bg-indigo-500/40 shadow-[inset_0_0_10px_rgba(99,102,241,0.1)]' 
-                      : 'bg-white/[0.03] hover:bg-white/[0.08]'
-                  }`}
-                />
               ))}
             </div>
           </section>

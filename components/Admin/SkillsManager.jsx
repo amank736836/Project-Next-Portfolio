@@ -344,26 +344,26 @@ export default function SkillsManager() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => setEditingSkill(skill)}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-500/5 text-indigo-400 border-none hover:bg-indigo-500/10 transition-all"
                   title="Edit"
                 >
                   <FiEdit3 size={16} />
                 </button>
                 <button
                   onClick={() => removeSkill(skill.id)}
-                  className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all shadow-lg hover:shadow-rose-500/20"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-500/5 text-rose-400 border-none hover:bg-rose-500/10 transition-all shadow-lg hover:shadow-rose-500/10"
                   title="Delete"
                 >
-                  <FiTrash2 size={22} />
+                  <FiTrash2 size={20} />
                 </button>
               </div>
             </div>
 
             {/* Subtle Progress Indicator */}
-            <div className="mt-6 pt-4 border-t border-t/50 flex items-center justify-between">
+            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
                <div className="flex gap-1">
                   {[1,2,3].map(i => (
                     <div key={i} className={`h-1 w-4 rounded-full ${i <= 2 ? 'bg-indigo-500/40' : 'background/50'}`} />

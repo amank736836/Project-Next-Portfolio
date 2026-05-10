@@ -21,7 +21,9 @@ export default function ProjectManager() {
   const [selectedProjects, setSelectedProjects] = useState(new Set());
   const [editingProject, setEditingProject] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const modalRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
@@ -164,6 +166,37 @@ export default function ProjectManager() {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+ 
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+ 
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+ 
+      if (res.ok) {
+        const { url } = await res.json();
+        setEditingProject({ ...editingProject, image: url, img: url });
+        successToast('Image uploaded successfully');
+      } else {
+        errorToast('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      errorToast('Upload failed');
+    } finally {
+      setUploading(false);
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleBulkDelete = async () => {
     if (selectedProjects.size === 0) return;
     const confirmed = await confirmDelete(`${selectedProjects.size} projects`);
@@ -275,14 +308,48 @@ export default function ProjectManager() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div>
+                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">Image URL</label>
-                    <Input
-                      value={editingProject.image || editingProject.img || ''}
-                      onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value, img: e.target.value })}
-                      placeholder="https://..."
-                      className="w-full"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        value={editingProject.image || editingProject.img || ''}
+                        onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value, img: e.target.value })}
+                        placeholder="https://..."
+                        className="flex-1"
+                      />
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        accept="image/*"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="flex-shrink-0"
+                      >
+                        {uploading ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning />}
+                      </Button>
+                    </div>
+                    {uploading && <p className="text-[10px] text-indigo-500 mt-1 animate-pulse font-bold uppercase tracking-widest">Uploading to Cloudinary...</p>}
+                    
+                    {(editingProject.image || editingProject.img) && (
+                      <div className="mt-4 relative group">
+                        <div className="aspect-video w-full rounded-xl overflow-hidden border border-white/5 bg-slate-900/50">
+                          <img 
+                            src={editingProject.image || editingProject.img} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                          />
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.3em] bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">Preview Sync Active</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">Visibility</label>
@@ -322,7 +389,7 @@ export default function ProjectManager() {
               <Button
                 variant="primary"
                 onClick={updateProject}
-                disabled={saving}
+                disabled={saving || uploading}
               >
                 {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning />}
                 {saving ? 'Synchronizing...' : 'Update Mission'}
@@ -544,6 +611,7 @@ export default function ProjectManager() {
               isSelected={selectedProjects.has(project.id)}
               onToggleSelect={() => toggleSelection(project.id)}
               onToggleVisibility={() => toggleVisibility(project.id, project.is_hidden)}
+              onEdit={() => setEditingProject(project)}
               onDelete={() => handleDelete(project)}
             />
           ))}
@@ -622,7 +690,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
         </p>
 
         {/* Action Row */}
-        <div className="flex items-center justify-between pt-4 border-t border-t">
+        <div className="flex items-center justify-between pt-6 border-t border-white/5">
           <div className="flex gap-2 opacity-80 hover:opacity-100 transition-opacity">
             <Button
               variant="outline"
@@ -631,21 +699,21 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
                 e.stopPropagation();
                 onEdit();
               }}
-              className="px-4 py-2 text-xs font-bold hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+              className="px-6 py-2.5 font-bold hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all"
             >
               Edit Details
             </Button>
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
             }}
-            className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-rose-500/20 shadow-lg hover:shadow-rose-500/20"
+            className="w-11 h-11 rounded-xl bg-rose-500/5 text-rose-400 border-none hover:bg-rose-500/10 transition-all flex items-center justify-center shadow-lg hover:shadow-rose-500/10"
           >
-            <FiTrash2 size={22} />
+            <FiTrash2 size={20} />
           </Button>
         </div>
       </div>
@@ -653,7 +721,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
   );
 }
 
-function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleVisibility, onDelete }) {
+function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) {
   return (
     <div
       className={`flex items-center gap-6 transition-all duration-300 hover:bg-white/2 ${isSelected ? 'ring-2 ring-indigo-500/50 bg-indigo-500/[0.02]' : ''}`}
@@ -705,10 +773,18 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
           {project.is_hidden ? <FiEyeOff size={18} /> : <FiEye size={18} />}
         </Button>
         <Button
-          variant="outline"
+          variant="ghost"
+          size="icon"
+          onClick={onEdit}
+          className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 border-none hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+        >
+          <FiEdit3 size={18} />
+        </Button>
+        <Button
+          variant="ghost"
           size="icon"
           onClick={onDelete}
-          className="hover:bg-rose-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20"
+          className="hover:bg-rose-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border-none shadow-lg hover:shadow-rose-500/10"
         >
           <FiTrash2 size={18} />
         </Button>
@@ -716,7 +792,7 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
           href={project.details?.[3]?.desc?.props?.href || '#'}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:bg-indigo-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center"
+          className="hover:bg-indigo-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 border-none flex items-center justify-center shadow-lg hover:shadow-indigo-500/10"
         >
           <FiExternalLink size={18} />
         </a>

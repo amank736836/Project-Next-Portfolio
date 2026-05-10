@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { FiGrid, FiUser, FiCode, FiLogOut, FiPieChart, FiExternalLink, FiBook, FiBriefcase, FiTerminal } from 'react-icons/fi';
+import { FiGrid, FiUser, FiCode, FiLogOut, FiPieChart, FiExternalLink, FiBook, FiBriefcase, FiTerminal, FiX } from 'react-icons/fi';
 
-export default function Sidebar({ activeTab }) {
+export default function Sidebar({ activeTab, isOpen, onClose }) {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: <FiPieChart />, path: '/admin' },
     { id: 'showcase', label: 'Showcase', icon: <FiGrid />, path: '/admin/showcase' },
@@ -23,8 +23,8 @@ export default function Sidebar({ activeTab }) {
   };
 
   return (
-    <div className="admin-sidebar">
-      <div className="mb-12 px-4">
+    <div className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
+      <div className="mb-12 px-4 flex items-center justify-between">
         <div className="flex items-center gap-4 group cursor-pointer">
           <div className="relative">
             <div className="absolute -inset-2 bg-indigo-500/20 rounded-2xl blur-lg group-hover:bg-indigo-500/40 transition duration-500"></div>
@@ -37,6 +37,13 @@ export default function Sidebar({ activeTab }) {
             <p className="text-[9px] font-black text-indigo-500 tracking-[0.3em] uppercase mt-1">Admin Node v4.2</p>
           </div>
         </div>
+
+        <button 
+          className="lg:hidden text-slate-500 hover:text-white transition-colors"
+          onClick={onClose}
+        >
+          <FiX size={24} />
+        </button>
       </div>
 
       <nav className="flex-1 space-y-1">
@@ -96,3 +103,4 @@ export default function Sidebar({ activeTab }) {
     </div>
   );
 }
+
