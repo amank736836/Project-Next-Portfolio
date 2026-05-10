@@ -335,7 +335,7 @@ export default function SkillsManager() {
                   {idx + 1}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-white tracking-tight truncate group-hover:text-indigo-300 transition-colors">
+                  <h4 className="text-sm font-bold text-white tracking-tight group-hover:text-indigo-300 transition-colors">
                     {skill.title}
                   </h4>
                   <p className="text-xs text-slate-500 uppercase tracking-widest mt-0.5">

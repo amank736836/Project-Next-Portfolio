@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, FiCommand, FiCpu, FiGlobe, FiShield, FiClock, FiZap } from 'react-icons/fi';
+import { 
+  FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, 
+  FiCommand, FiCpu, FiGlobe, FiShield, FiClock, FiZap, 
+  FiDatabase, FiGithub, FiExternalLink, FiPieChart 
+} from 'react-icons/fi';
 import QuickActions from './QuickActions';
 import { Card } from '@/components/ui';
 
@@ -13,47 +17,23 @@ export default function Dashboard() {
     experience: 0
   });
   const [uptime, setUptime] = useState('00:00:00');
+  const [mounted, setMounted] = useState(false);
+  const [matrixData, setMatrixData] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [externalStatus, setExternalStatus] = useState({
+    github: { status: 'Checking...', indicator: 'none' },
+    vercel: { status: 'Checking...', indicator: 'none' },
+    database: { status: 'Checking...' }
+  });
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const responses = await Promise.all([
-          fetch('/api/admin/projects'),
-          fetch('/api/admin/skills'),
-          fetch('/api/admin/education'),
-          fetch('/api/admin/experience'),
-        ]);
-
-        // Check for 401s
-        const unauthorized = responses.find(r => r.status === 401);
-        if (unauthorized) {
-          setError('Authentication failed. Please log in again.');
-          return;
-        }
-
-        const [p, s, ed, ex] = await Promise.all(responses.map(r => r.json()));
-
-        console.log('Admin Stats Debug:', { projects: p, skills: s, education: ed, experience: ex });
-
-        setStats({
-          projects: Array.isArray(p) ? p.length : 0,
-          skills: Array.isArray(s) ? s.length : 0,
-          education: Array.isArray(ed) ? ed.length : 0,
-          experience: Array.isArray(ex) ? ex.length : 0,
-        });
-        setError(null);
-      } catch (err) {
-        console.error('Stats fetch failed', err);
-        setError('Failed to connect to the matrix server.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    setMounted(true);
+    setMatrixData(Array.from({ length: 48 }).map(() => Math.random() > 0.4));
+    
     fetchStats();
+    fetchExternalStatuses();
 
     const timer = setInterval(() => {
       const now = new Date();
@@ -61,6 +41,73 @@ export default function Dashboard() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const fetchExternalStatuses = async () => {
+    // GitHub Status
+    try {
+      const ghRes = await fetch('https://www.githubstatus.com/api/v2/status.json');
+      const ghData = await ghRes.json();
+      setExternalStatus(prev => ({ 
+        ...prev, 
+        github: { 
+          status: ghData.status.description, 
+          indicator: ghData.status.indicator 
+        } 
+      }));
+    } catch (e) {
+      setExternalStatus(prev => ({ ...prev, github: { status: 'Protocol Offline', indicator: 'minor' } }));
+    }
+
+    // Vercel Status
+    try {
+      const vRes = await fetch('https://www.vercel-status.com/api/v2/status.json');
+      const vData = await vRes.json();
+      setExternalStatus(prev => ({ 
+        ...prev, 
+        vercel: { 
+          status: vData.status.description, 
+          indicator: vData.status.indicator 
+        } 
+      }));
+    } catch (e) {
+      setExternalStatus(prev => ({ ...prev, vercel: { status: 'Edge Offline', indicator: 'minor' } }));
+    }
+  };
+
+  const fetchStats = async () => {
+    setLoading(true);
+    try {
+      const responses = await Promise.all([
+        fetch('/api/admin/projects', { cache: 'no-store' }),
+        fetch('/api/admin/skills', { cache: 'no-store' }),
+        fetch('/api/admin/education', { cache: 'no-store' }),
+        fetch('/api/admin/experience', { cache: 'no-store' }),
+      ]);
+
+      const unauthorized = responses.find(r => r.status === 401);
+      if (unauthorized) {
+        setError('Authentication failed. Please log in again.');
+        return;
+      }
+
+      const [p, s, ed, ex] = await Promise.all(responses.map(r => r.json()));
+
+      setStats({
+        projects: Array.isArray(p) ? p.length : 0,
+        skills: Array.isArray(s) ? s.length : 0,
+        education: Array.isArray(ed) ? ed.length : 0,
+        experience: Array.isArray(ex) ? ex.length : 0,
+      });
+      setExternalStatus(prev => ({ ...prev, database: { status: 'Operational' } }));
+      setError(null);
+    } catch (err) {
+      console.error('Stats fetch failed', err);
+      setError('Failed to connect to the matrix server.');
+      setExternalStatus(prev => ({ ...prev, database: { status: 'Degraded' } }));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logs = [
     { action: 'AUTH_GATEWAY', details: 'Admin session established via Secure ID', time: '12s ago', type: 'auth' },
@@ -196,7 +243,7 @@ export default function Dashboard() {
                       <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{log.action}</span>
                       <span className="text-[9px] font-medium text-slate-500 font-mono">{log.time}</span>
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed truncate">{log.details}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed group-hover:whitespace-normal transition-all">{log.details}</p>
                   </div>
                 </div>
               ))}
@@ -219,11 +266,11 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="grid grid-cols-12 gap-2">
-              {Array.from({ length: 48 }).map((_, i) => (
+              {mounted && matrixData.map((isActive, i) => (
                 <div 
                   key={i} 
                   className={`aspect-square rounded-sm transition-all duration-500 hover:scale-125 hover:z-10 cursor-pointer ${
-                    Math.random() > 0.4 
+                    isActive
                       ? 'bg-indigo-500/20 hover:bg-indigo-500/40 shadow-[inset_0_0_10px_rgba(99,102,241,0.1)]' 
                       : 'bg-white/[0.03] hover:bg-white/[0.08]'
                   }`}
@@ -246,13 +293,60 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="space-y-4">
+              {/* GitHub Status */}
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Database Sync</span>
-                  <span className="text-[10px] font-bold text-emerald-400 font-mono">STABLE</span>
+                  <div className="flex items-center gap-2">
+                    <FiGithub className="text-slate-400" size={14} />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">GitHub Protocol</span>
+                  </div>
+                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.github.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 animate-pulse'}`} />
+                </div>
+                <div className="flex items-end justify-between">
+                  <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.github.status}</p>
+                  <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">Status.json</span>
+                </div>
+              </div>
+
+              {/* Vercel Status */}
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <FiGlobe className="text-slate-400" size={14} />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Vercel Edge</span>
+                  </div>
+                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.vercel.indicator === 'none' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 animate-pulse'}`} />
+                </div>
+                <div className="flex items-end justify-between">
+                  <p className="text-xs font-bold text-white truncate max-w-[150px]">{externalStatus.vercel.status}</p>
+                  <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">Vercel-Status</span>
+                </div>
+              </div>
+
+              {/* DB Status */}
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <FiDatabase className="text-slate-400" size={14} />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Supabase Instance</span>
+                  </div>
+                  <div className={`w-1.5 h-1.5 rounded-full ${externalStatus.database.status === 'Operational' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 animate-pulse'}`} />
+                </div>
+                <div className="flex items-end justify-between">
+                  <p className="text-xs font-bold text-white">{externalStatus.database.status}</p>
+                  <span className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">PostgreSQL v15</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Neural Link</span>
+                  <div className="flex gap-1">
+                    {[1,2,3,4].map(i => <div key={i} className="w-1 h-1 rounded-full bg-emerald-500/40" />)}
+                  </div>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full w-[94%] bg-emerald-500/50 rounded-full" />
+                  <div className="h-full w-4/5 bg-indigo-500 animate-pulse" />
                 </div>
               </div>
             </div>

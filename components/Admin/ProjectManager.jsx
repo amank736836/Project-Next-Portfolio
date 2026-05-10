@@ -613,11 +613,11 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
           </span>
         </div>
 
-        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-indigo-300 transition-colors truncate">
+        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-indigo-300 transition-colors">
           {project.title}
         </h4>
 
-        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-6 opacity-70 group-hover:opacity-100 transition-opacity">
+        <p className="text-xs text-slate-400 line-clamp-2 group-hover:line-clamp-none leading-relaxed mb-6 opacity-70 group-hover:opacity-100 transition-opacity">
           {project.description}
         </p>
 

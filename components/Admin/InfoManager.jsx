@@ -185,14 +185,24 @@ export default function InfoManager() {
             <div className="p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Value</label>
-                <input
-                  autoFocus
-                  type="text"
-                  value={editingItem.value}
-                  onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
-                  onKeyDown={(e) => e.key === 'Enter' && updateInfo(editingItem.id, editingItem.value)}
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                />
+                {editingItem.id === 'about_description' || editingItem.id === 'address' ? (
+                  <textarea
+                    autoFocus
+                    rows={editingItem.id === 'about_description' ? 6 : 3}
+                    value={editingItem.value}
+                    onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
+                  />
+                ) : (
+                  <input
+                    autoFocus
+                    type="text"
+                    value={editingItem.value}
+                    onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
+                    onKeyDown={(e) => e.key === 'Enter' && updateInfo(editingItem.id, editingItem.value)}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                  />
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
@@ -278,22 +288,22 @@ export default function InfoManager() {
                 <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => setEditingItem(item)}
-                    className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-sm"
+                    className="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-lg hover:shadow-indigo-500/20"
                     title="Edit"
                   >
-                    <FiEdit3 size={16} />
+                    <FiEdit3 size={18} />
                   </button>
                   <button
                     onClick={() => deleteInfo(item.id)}
-                    className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-sm"
+                    className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-lg hover:shadow-rose-500/20"
                     title="Delete"
                   >
-                    <FiTrash2 size={16} />
+                    <FiTrash2 size={22} />
                   </button>
                 </div>
              </div>
-             <h4 
-               className="text-xl font-bold text-white tracking-tight mb-2 truncate group-hover:text-indigo-200 transition-colors" 
+             <div 
+               className={`text-lg font-bold text-white tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
                dangerouslySetInnerHTML={{ __html: item.value }} 
              />
              <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
