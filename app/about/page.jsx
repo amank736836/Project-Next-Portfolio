@@ -24,7 +24,7 @@ export default async function About() {
           <div className="about__info">
             <h3 className="section__subtitle">Personal Infos</h3>
             {aboutDescription && (
-              <p className="about__description mb-8 text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="about__description mb-8 text-slate-400 leading-relaxed">
                 {aboutDescription}
               </p>
             )}

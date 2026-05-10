@@ -85,43 +85,6 @@ const Navbar = () => {
               </li>
             );
           })}
-          {!user ? (
-            <li key="login" className="nav__item">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleLogin}
-                className="nav__link"
-              >
-                <span className="nav__icon">🔐</span>
-                <span className="nav__name">Login</span>
-              </Button>
-            </li>
-          ) : (
-            <>
-              <li key="admin" className="nav__item">
-                <Link
-                  href="/admin"
-                  className={pathname.startsWith('/admin') ? "nav__link active-nav" : "nav__link"}
-                  onClick={() => setShowMenu(false)}
-                >
-                  <span className="nav__icon">⚙️</span>
-                  <h3 className="nav__name">Admin</h3>
-                </Link>
-              </li>
-              <li key="logout" className="nav__item">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleLogout}
-                  className="nav__link"
-                >
-                  <span className="nav__icon">🚪</span>
-                  <h3 className="nav__name">Logout</h3>
-                </Button>
-              </li>
-            </>
-          )}
         </ul>
       </div>
 

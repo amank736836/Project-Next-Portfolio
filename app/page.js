@@ -4,20 +4,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
+import { useState, useEffect } from "react";
 import "./Home.css";
 
 export default function Home() {
+  const [clickCount, setClickCount] = useState(0);
+
+  // Reset click count after 2 seconds of inactivity
+  useEffect(() => {
+    if (clickCount === 0) return;
+    const timer = setTimeout(() => setClickCount(0), 2000);
+    return () => clearTimeout(timer);
+  }, [clickCount]);
+
+  const handleImageClick = () => {
+    const nextCount = clickCount + 1;
+    if (nextCount >= 3) {
+      window.location.href = '/api/auth/login';
+      setClickCount(0);
+    } else {
+      setClickCount(nextCount);
+    }
+  };
+
   return (
     <section className="home section grid">
-      <Image 
-        src="/assets/profile_v4.png" 
-        alt="Profile" 
-        className="home__img" 
-        width={600} 
-        height={600} 
-        quality={100}
-        priority
-      />
+      <div className="home__img-wrapper cursor-pointer" onClick={handleImageClick}>
+        <Image 
+          src="/assets/profile_v4.png" 
+          alt="Profile" 
+          className="home__img" 
+          width={600} 
+          height={600} 
+          quality={100}
+          priority
+        />
+      </div>
       <div className="home__content">
         <div className="home__data">
           <h1 className="home__title">
