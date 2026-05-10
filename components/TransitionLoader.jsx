@@ -114,7 +114,7 @@ const TransitionLoader = () => {
         .loader-bar {
           width: 200px;
           height: 2px;
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--glass-edge, rgba(255, 255, 255, 0.05));
           border-radius: 2px;
           overflow: hidden;
           margin: 0 auto;

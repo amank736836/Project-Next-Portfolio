@@ -358,23 +358,19 @@ export default function Dashboard() {
               </div>
 
               {/* Mode Selector */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)]">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] protocol-panel">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Visual Protocol</p>
                   <p className="text-sm font-bold text-[var(--admin-title)] capitalize">{themeSettings.mode.split('-')[0]} Mode</p>
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => saveThemeSettings(themeSettings.color, 'light-theme')}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'light-theme' ? 'bg-amber-500 text-white' : 'bg-white/5 text-slate-500 hover:bg-white/10'}`}
+                    onClick={() => saveThemeSettings(themeSettings.color, themeSettings.mode === 'dark-theme' ? 'light-theme' : 'dark-theme')}
+                    aria-label="Toggle theme"
+                    title="Toggle theme"
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'dark-theme' ? 'bg-[var(--admin-accent)] text-white' : 'bg-[var(--admin-card)] text-[var(--admin-title)] hover:bg-[color-mix(in srgb, var(--admin-card) 85%, white 15%)]'}`}
                   >
-                    <FiSun size={18} />
-                  </button>
-                  <button
-                    onClick={() => saveThemeSettings(themeSettings.color, 'dark-theme')}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${themeSettings.mode === 'dark-theme' ? 'bg-[var(--admin-accent)] text-white' : 'bg-[var(--admin-accent)]/10 text-slate-500 hover:bg-[var(--admin-accent)]/20'}`}
-                  >
-                    <FiMoon size={18} />
+                    {themeSettings.mode === 'dark-theme' ? <FiMoon size={18} /> : <FiSun size={18} />}
                   </button>
                 </div>
               </div>

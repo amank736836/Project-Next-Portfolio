@@ -87,7 +87,7 @@
 }
 
 .home .button__icon {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--glass-edge);
   top: 0;
   bottom: 0;
   display: flex;

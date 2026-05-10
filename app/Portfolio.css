@@ -106,11 +106,11 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: var(--weight-500);
-  background: rgba(255, 255, 255, 0.1);
   padding: 4px 12px;
   border-radius: 20px;
   margin-top: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(var(--admin-card-rgb, 255,255,255), 0.08);
+  border: 1px solid var(--glass-border);
   transform: translateY(20px);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);

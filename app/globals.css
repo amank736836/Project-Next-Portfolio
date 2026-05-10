@@ -14,9 +14,10 @@
   
   /* Glassmorphism Tokens */
   --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --glass-blur: 12px;
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 14px;
+  --glass-shadow: 0 12px 34px 0 rgba(2,6,23,0.08);
+  --glass-edge: rgba(255, 255, 255, 0.05);
   --text-white: #fff;
 
   /* Typography */
@@ -509,7 +510,7 @@ img {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--glass-edge);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
