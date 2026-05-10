@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff, FiEdit3 } from 'react-icons/fi';
+import { useSuccessToast, useErrorToast } from './Toast';
+import { useEjectConfirm } from './ConfirmModal';
 
 export default function ResumeManager({ type }) {
   const [items, setItems] = useState([]);
@@ -10,6 +12,9 @@ export default function ResumeManager({ type }) {
   const [success, setSuccess] = useState(false);
 
   const [editingItem, setEditingItem] = useState(null);
+
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
 
   const title = type === 'education' ? 'Academy' : 'Logbook';
   const subtitle = type === 'education' ? 'Academic Achievement Configuration' : 'Professional Mission History';
@@ -25,7 +30,7 @@ export default function ResumeManager({ type }) {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch(apiPath);
+      const res = await fetch(apiPath, { cache: 'no-store' });
       const data = await res.json();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -51,6 +56,7 @@ export default function ResumeManager({ type }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newItem),
+        cache: 'no-store'
       });
       if (res.ok) {
         const added = await res.json();
@@ -71,12 +77,18 @@ export default function ResumeManager({ type }) {
         body: JSON.stringify(item),
       });
       if (res.ok) {
+        successToast(`${title} record synchronized successfully`);
         setSuccess(true);
         setTimeout(() => setSuccess(false), 2000);
         setEditingItem(null);
+        await fetchItems(); // Refresh to get correct IDs
+      } else {
+        const err = await res.json();
+        errorToast(err.error || `Failed to synchronize ${title}`);
       }
     } catch (error) {
       console.error('Failed to save item:', error);
+      errorToast(`Network error while saving ${title}`);
     } finally {
       setSaving(false);
     }
@@ -108,9 +120,14 @@ export default function ResumeManager({ type }) {
       });
       if (res.ok) {
         setItems(items.filter(item => item.id !== id));
+        successToast(`${title} record expunged from database`);
+      } else {
+        const err = await res.json();
+        errorToast(err.error || `Protocol failure: Could not delete ${title}`);
       }
     } catch (error) {
       console.error('Failed to delete item:', error);
+      errorToast(`Network error while deleting ${title}`);
     }
   };
 
@@ -200,7 +217,7 @@ export default function ResumeManager({ type }) {
         </div>
       )}
 
-      <div className="admin-card mb-[100px] overflow-hidden border-white/5 bg-white/[0.015] relative z-30 p-12 lg:p-16">
+      <div className="admin-card mb-12 overflow-hidden border-white/5 bg-white/[0.015] relative z-30 p-8 lg:p-10">
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
@@ -258,11 +275,11 @@ export default function ResumeManager({ type }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 mt-[100px] relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-12 relative z-10">
         {items.map((item, idx) => (
           <div key={item.id} className={`admin-card group/card stagger-${(idx % 4) + 1} p-0 overflow-hidden border-white/5 hover:border-indigo-500/30 bg-white/[0.01] flex flex-col transition-all duration-500`}>
             {/* Card Header */}
-            <div className="flex items-start justify-between gap-10 border-b border-white/[0.05] bg-white/[0.02] px-24 py-20">
+            <div className="flex items-start justify-between gap-6 border-b border-white/[0.05] bg-white/[0.02] px-6 py-4">
               <div className="flex items-center gap-4 min-w-0">
                 <div className="h-11 w-11 rounded-xl border border-indigo-500/20 bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-inner">
                   <FiBookOpen size={16} />
@@ -290,27 +307,27 @@ export default function ResumeManager({ type }) {
                   }`}
                   title={item.is_hidden ? 'Show' : 'Hide'}
                 >
-                  {item.is_hidden ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                  {item.is_hidden ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                 </button>
                 <button 
                   onClick={() => setEditingItem(item)}
                   className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-sm"
                   title="Edit"
                 >
-                  <FiEdit3 size={16} />
+                  <FiEdit3 size={18} />
                 </button>
                 <button 
                   onClick={() => deleteItem(item.id)}
-                  className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-sm"
+                  className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-lg hover:shadow-rose-500/20"
                   title="Delete"
                 >
-                  <FiTrash2 size={16} />
+                  <FiTrash2 size={22} />
                 </button>
               </div>
             </div>
 
             {/* Card Body */}
-            <div className="p-24 lg:p-28 flex-1 flex flex-col gap-12">
+            <div className="p-6 flex-1 flex flex-col gap-4">
               <div className="mb-4">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Entity / Position</p>
                 <h5 className="text-sm font-bold text-slate-200 leading-tight" dangerouslySetInnerHTML={{ __html: item.title }} />

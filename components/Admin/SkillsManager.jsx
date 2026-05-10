@@ -354,10 +354,10 @@ export default function SkillsManager() {
                 </button>
                 <button
                   onClick={() => removeSkill(skill.id)}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all shadow-lg hover:shadow-rose-500/20"
                   title="Delete"
                 >
-                  <FiTrash2 size={16} />
+                  <FiTrash2 size={22} />
                 </button>
               </div>
             </div>

@@ -389,7 +389,7 @@ export default function ProjectManager() {
           </div>
 
           {/* Filter Dropdown */}
-          <div className="relative">
+          <div className="relative w-fit">
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
@@ -404,7 +404,7 @@ export default function ProjectManager() {
             </Button>
 
             {showFilters && (
-              <div className="absolute top-full right-0 mt-3 w-56 z-50">
+              <div className="absolute top-full left-0 mt-3 w-56 z-50">
                 <div className="admin-dropdown-menu">
                   {[ 
                     { value: 'all', label: 'All Projects', icon: <FiGrid size={16} /> },
@@ -571,17 +571,16 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
         <div className="absolute top-4 right-4">
           <Button
             variant="outline"
-            size="icon"
             onClick={(e) => {
               e.stopPropagation();
               onToggleVisibility();
             }}
-            className={`px-3 py-1.5 rounded-xl backdrop-blur-xl border transition-all flex items-center gap-2 ${project.is_hidden
+            className={`px-4 py-2 rounded-xl backdrop-blur-xl border transition-all flex items-center gap-3 ${project.is_hidden
                 ? 'bg-rose-500/10 border-rose-500/20 text-rose-400'
                 : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'}`}
           >
-            {project.is_hidden ? <FiEyeOff size={12} /> : <FiEye size={12} />}
-            <span className="text-xs font-bold uppercase tracking-wider">
+            {project.is_hidden ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
               {project.is_hidden ? 'Private' : 'Public'}
             </span>
           </Button>
@@ -644,9 +643,9 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
               e.stopPropagation();
               onDelete();
             }}
-            className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-rose-500/20 shadow-sm"
+            className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-rose-500/20 shadow-lg hover:shadow-rose-500/20"
           >
-            <FiTrash2 size={16} />
+            <FiTrash2 size={22} />
           </Button>
         </div>
       </div>
@@ -697,29 +696,29 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
           variant="outline"
           size="icon"
           onClick={onToggleVisibility}
-          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border ${
+          className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all border ${
             project.is_hidden
               ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
               : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
           }`}
         >
-          {project.is_hidden ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+          {project.is_hidden ? <FiEyeOff size={18} /> : <FiEye size={18} />}
         </Button>
         <Button
           variant="outline"
           size="icon"
           onClick={onDelete}
-          className="hover:bg-rose-500 hover:text-white transition-all w-8 h-8 rounded-lg"
+          className="hover:bg-rose-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20"
         >
-          <FiTrash size={14} />
+          <FiTrash2 size={18} />
         </Button>
         <a
           href={project.details?.[3]?.desc?.props?.href || '#'}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:bg-rose-500 hover:text-white transition-all w-8 h-8 rounded-lg"
+          className="hover:bg-indigo-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center"
         >
-          <FiExternalLink size={14} />
+          <FiExternalLink size={18} />
         </a>
       </div>
     </div>

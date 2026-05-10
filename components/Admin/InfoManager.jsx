@@ -201,12 +201,12 @@ export default function InfoManager() {
                   className="px-6 py-3 rounded-xl text-xs font-bold text-slate-500 hover:text-white transition-colors"
                 >
                   Cancel
-                <button
-                  onClick={() => setEditingItem(null)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
-                >
-                  <FiX size={14} />
                 </button>
+                <button
+                  onClick={() => updateInfo(editingItem.id, editingItem.value)}
+                  disabled={saving}
+                  className="px-8 py-3 rounded-xl bg-indigo-500 text-white text-xs font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all shadow-[0_4px_15px_rgba(99,102,241,0.3)]"
+                >
                   {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -229,7 +229,7 @@ export default function InfoManager() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-white/[0.03] border border-white/10 rounded-2xl pr-10 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/40 focus:ring-4 focus:ring-indigo-500/5 transition-all w-full"
+              className="bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-10 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/40 focus:ring-4 focus:ring-indigo-500/5 transition-all w-full"
               placeholder="Search identity..."
             />
             {searchQuery && (

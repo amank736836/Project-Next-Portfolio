@@ -108,9 +108,21 @@
 }
 
 .admin-content-inner {
-  padding: 2rem 4rem 10rem; /* Reduced top padding from 4rem to 2rem */
-  max-width: 1850px; /* Slightly wider for ultra-wide screens */
+  padding: 1.5rem 1rem 8rem;
+  max-width: 1550px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .admin-content-inner {
+    padding: 2.5rem 2rem 8rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .admin-content-inner {
+    padding: 3rem 4rem 10rem;
+  }
 }
 
 /* Header Adjustments */
@@ -220,7 +232,7 @@
 
 .input-icon-wrapper input,
 .input-icon-wrapper .admin-input {
-  padding-left: 3.5rem !important;
+  padding-left: 4.5rem !important;
 }
 
 .neon-input {

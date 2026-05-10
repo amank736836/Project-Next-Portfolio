@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, FiCommand, FiCpu, FiGlobe, FiShield, FiClock } from 'react-icons/fi';
+import { FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, FiArrowUpRight, FiCommand, FiCpu, FiGlobe, FiShield, FiClock, FiZap } from 'react-icons/fi';
 import QuickActions from './QuickActions';
 import { Card } from '@/components/ui';
 
@@ -61,6 +61,14 @@ export default function Dashboard() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const logs = [
+    { action: 'AUTH_GATEWAY', details: 'Admin session established via Secure ID', time: '12s ago', type: 'auth' },
+    { action: 'DB_SYNC', details: 'Project matrix synchronization completed', time: '1m ago', type: 'write' },
+    { action: 'CACHE_PURGE', details: 'Global edge cache invalidated successfully', time: '5m ago', type: 'system' },
+    { action: 'ENTRY_CREATED', details: 'New academy record injected into sector 7', time: '12m ago', type: 'write' },
+    { action: 'SEC_AUDIT', details: 'Routine integrity check passed: 0 vulnerabilities', time: '1h ago', type: 'auth' },
+  ];
 
   return (
     <div className="space-y-6 animate-fade-in max-w-[1700px] mx-auto pb-10">
@@ -157,118 +165,105 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* 3-Column Mission Control Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        {/* Column 1: Recent Activity (Far Left) */}
-        <div className="xl:col-span-3">
-          <Card className="h-full">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                <FiActivity size={20} />
+        {/* Left Column - High Density Data */}
+        <div className="xl:col-span-8 space-y-6">
+          {/* Operation Logs */}
+          <section className="admin-card !p-0 overflow-hidden border-white/5">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.05] bg-white/[0.02]">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                  <FiActivity size={16} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">Operation Logs</h3>
+                  <p className="text-[10px] text-slate-500 font-bold tracking-tighter">Real-time system synchronization</p>
+                </div>
+              </div>
+              <button className="text-[10px] font-black text-indigo-400 uppercase tracking-widest hover:text-indigo-300">Clear</button>
+            </div>
+            
+            <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 space-y-3">
+              {logs.map((log, idx) => (
+                <div key={idx} className="flex items-start gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:bg-white/[0.04] transition-colors">
+                  <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
+                    log.type === 'auth' ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : 
+                    log.type === 'write' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
+                    'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
+                  }`} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{log.action}</span>
+                      <span className="text-[9px] font-medium text-slate-500 font-mono">{log.time}</span>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed truncate">{log.details}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Activity Matrix */}
+          <section className="admin-card !p-8 border-white/5 bg-gradient-to-br from-indigo-500/[0.02] to-transparent">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Neural Activity Matrix</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                  <span className="text-[10px] font-bold text-slate-500">Active</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-slate-700" />
+                  <span className="text-[10px] font-bold text-slate-500">Idle</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-12 gap-2">
+              {Array.from({ length: 48 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`aspect-square rounded-sm transition-all duration-500 hover:scale-125 hover:z-10 cursor-pointer ${
+                    Math.random() > 0.4 
+                      ? 'bg-indigo-500/20 hover:bg-indigo-500/40 shadow-[inset_0_0_10px_rgba(99,102,241,0.1)]' 
+                      : 'bg-white/[0.03] hover:bg-white/[0.08]'
+                  }`}
+                />
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column - Status */}
+        <div className="xl:col-span-4 space-y-6">
+          <section className="admin-card border-indigo-500/20 bg-indigo-500/[0.02]">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <FiZap size={20} className="animate-pulse" />
               </div>
               <div>
-                <h3 className="text-sm font-black uppercase tracking-widest">Activity</h3>
-                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Live Mission Feed</p>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Status Report</h3>
+                <p className="text-[10px] text-slate-500 font-bold">Priority Status</p>
               </div>
             </div>
-
             <div className="space-y-4">
-              {[
-                { time: '14:32', title: 'Project updated', desc: 'Frame and Phrase' },
-                { time: '13:15', title: 'Skill added', desc: 'TypeScript' },
-                { time: '11:48', title: 'Identity synced', desc: 'Profile data' },
-                { time: '10:05', title: 'Session start', desc: 'Admin login' },
-                { time: '09:22', title: 'Database fix', desc: 'Skills matrix' },
-              ].map((act, i) => (
-                <div key={i} className="py-4 px-5 rounded-xl bg-white/[0.02] hover:bg-white/5 border border-white/5 transition-all">
-                  <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-mono text-slate-500">{act.time}</span>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-slate-200">{act.title}</span>
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{act.desc}</span>
-                    </div>
-                  </div>
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 group hover:border-indigo-500/30 transition-all">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Database Sync</span>
+                  <span className="text-[10px] font-bold text-emerald-400 font-mono">STABLE</span>
                 </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-
-        {/* Column 2: Operation Logs (Center) */}
-        <div className="xl:col-span-5">
-          <Card className="h-full">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-lg font-bold tracking-tighter flex items-center gap-3">
-                <FiCommand className="text-[var(--first-color)]" /> Operation Logs
-              </h3>
-              <div className="flex items-center gap-3">
-                <div className="h-1 w-20 bg-indigo-500/10 rounded-full overflow-hidden">
-                  <div className="h-full w-1/2 bg-indigo-500 animate-[shimmer_2s_infinite]" />
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full w-[94%] bg-emerald-500/50 rounded-full" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Live</span>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-4">
-              {[
-                { time: '14:16:55', msg: 'API Node Handshake successful', type: 'Verified', color: 'emerald' },
-                { time: '14:15:22', msg: 'Showcase database synchronized', type: 'Info', color: 'indigo' },
-                { time: '14:12:30', msg: 'Matrix Refactoring Node #9021', type: 'Info', color: 'indigo' },
-                { time: '14:08:45', msg: 'Security Packet verification', type: 'Info', color: 'amber' },
-                { time: '13:55:12', msg: 'System telemetry update', type: 'Info', color: 'amber' },
-                { time: '13:42:01', msg: 'Identity sequence validated', type: 'Verified', color: 'emerald' },
-              ].map((log, i) => (
-                <div key={i} className="flex items-center gap-4 py-4 px-6 rounded-xl border border-white/5 hover:bg-white/5 transition-all">
-                  <span className="text-[10px] font-bold text-slate-500 font-mono">{log.time}</span>
-                  <div className="flex-1 flex items-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full bg-${log.color}-500/40`} />
-                    <p className="text-xs font-medium text-slate-300">{log.msg}</p>
-                  </div>
-                  <span className={`text-[9px] font-black uppercase tracking-wider text-${log.color}-400`}>{log.type}</span>
-                </div>
-              ))}
+          </section>
+
+          <section className="grid grid-cols-1 gap-4">
+            <div className="admin-card !p-6 border-white/5 bg-white/[0.01]">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Hits</p>
+              <h4 className="text-2xl font-black text-white tracking-tighter">12.4K</h4>
             </div>
-          </Card>
-        </div>
-
-        {/* Column 3: Quick Actions + Security (Right) */}
-        <div className="xl:col-span-4 space-y-6">
-          <QuickActions />
-
-          <div className="grid grid-cols-2 gap-4">
-            <Card>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                  <FiGlobe size={14} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-wider">Network</span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div>
-                  <p className="text-lg font-black tracking-tighter">Vercel</p>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">Edge Node</p>
-                </div>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">ACTIVE</span>
-              </div>
-            </Card>
-
-            <Card>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                  <FiShield size={14} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-wider">Security</span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-indigo-400">Protected</p>
-                  <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-1">SSL 256-bit</p>
-                </div>
-                <div className="h-1.5 w-12 bg-indigo-500/20 rounded-full overflow-hidden">
-                  <div className="h-full w-full bg-indigo-500" />
-                </div>
-              </div>
-            </Card>
-          </div>
+          </section>
         </div>
       </div>
     </div>

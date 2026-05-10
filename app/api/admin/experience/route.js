@@ -61,9 +61,25 @@ export async function DELETE(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = await createAdminClient();
-  const { id } = await request.json();
-  const { error } = await supabase.from('experience').delete().eq('id', id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  try {
+    const supabase = await createAdminClient();
+    const { id } = await request.json();
+    
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+
+    console.log(`[API] Deleting experience record ID: ${id}`);
+    const { error } = await supabase.from('experience').delete().eq('id', Number(id));
+    
+    if (error) {
+      console.error('[API] Experience Delete Error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error('[API] Experience Delete Runtime Error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }
