@@ -824,7 +824,7 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
               e.stopPropagation();
               onDelete();
             }}
-            className="w-11 h-11 rounded-xl bg-rose-500/5 text-rose-400 border-none hover:bg-rose-500/10 transition-all flex items-center justify-center shadow-lg hover:shadow-rose-500/10"
+            className="w-11 h-11 rounded-xl bg-rose-500/5 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 hover:bg-rose-500/10 transition-all flex items-center justify-center shadow-lg hover:shadow-rose-500/10"
           >
             <FiTrash2 size={20} />
           </Button>
@@ -897,7 +897,7 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
           variant="ghost"
           size="icon"
           onClick={onDelete}
-          className="hover:bg-rose-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border-none shadow-lg hover:shadow-rose-500/10"
+          className="hover:bg-rose-500 hover:text-white transition-all w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 shadow-lg hover:shadow-rose-500/10"
         >
           <FiTrash2 size={18} />
         </Button>

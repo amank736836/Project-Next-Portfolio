@@ -133,7 +133,7 @@ export default function ResumeManager({ type }) {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center py-20 space-y-4">
-      <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin shadow-[0_0_20px_rgba(99,102,241,0.2)]" />
+      <div className="w-12 h-12 border-4 border-[var(--admin-accent)]/20 border-t-[var(--admin-accent)] rounded-full animate-spin shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.2)]" />
       <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Retrieving Mission Logs...</p>
     </div>
   );
@@ -144,7 +144,7 @@ export default function ResumeManager({ type }) {
       {editingItem && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-xl animate-fade-in" onClick={() => setEditingItem(null)} />
-          <div className="admin-card w-full max-w-3xl relative z-10 !p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-indigo-500/40">
+          <div className="admin-card w-full max-w-3xl relative z-10 !p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-[var(--admin-accent)]/40">
             <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
               <div>
                 <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-1">Mission Log Overwrite // {title}</p>
@@ -248,9 +248,9 @@ export default function ResumeManager({ type }) {
               </button>
               <button
                 onClick={fetchItems}
-                className="admin-btn admin-btn-secondary group"
+                className="admin-btn admin-btn-secondary group !text-[var(--admin-title)]"
               >
-                <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                <FiRefreshCw className={`${loading ? 'animate-spin' : ''} text-[var(--admin-accent)]`} />
                 <span>Refresh Sector</span>
               </button>
             </div>

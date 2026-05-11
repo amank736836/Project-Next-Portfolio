@@ -170,7 +170,7 @@ export default function InfoManager() {
       {editingItem && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#030712]/80 backdrop-blur-md" onClick={() => setEditingItem(null)} />
-          <div className="admin-card w-full max-w-lg relative z-10 !p-0 overflow-hidden !rounded-[2rem] border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+          <div className="admin-card identity-card holographic-card w-full max-w-lg relative z-10 !p-0 overflow-hidden !rounded-[2rem] border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             {/* Modal Header */}
             <div className="bg-gradient-to-br from-indigo-500/10 to-transparent p-8 border-b border-white/[0.05]">
               <div className="flex items-center gap-3">
@@ -282,7 +282,7 @@ export default function InfoManager() {
           {filteredInfo.map((item, idx) => (
           <div
             key={item.id}
-            className="admin-card group !p-6 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[1.5rem]"
+            className="admin-card identity-card group !p-6 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[1.5rem]"
             style={{ animationDelay: `${idx * 50}ms` }}
           >
              <div className="flex justify-between items-start mb-6">
@@ -320,7 +320,7 @@ export default function InfoManager() {
         {/* Quick Add Node */}
         <button
           onClick={() => successToast('Add identity feature coming soon')}
-          className="admin-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
+          className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
         >
            <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
               <FiPlus size={28} />

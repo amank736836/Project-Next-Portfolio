@@ -6,6 +6,7 @@ import ThemeItem from "./ThemeItem";
 import { BsMoon, BsSun } from "react-icons/bs";
 import "./Themes.css";
 import { useEffect, useState, useRef } from "react";
+import { syncThemeCssVars } from "@/lib/utils";
 
 const Themes = () => {
   const [showSwitcher, setShowSwitcher] = useState(false);
@@ -99,7 +100,7 @@ const Themes = () => {
   }, []);
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--first-color", color);
+    syncThemeCssVars(color);
   }, [color]);
 
   useEffect(() => {

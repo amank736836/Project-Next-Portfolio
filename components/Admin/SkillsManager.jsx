@@ -177,9 +177,9 @@ export default function SkillsManager() {
           <div className="fixed inset-0 bg-black/90 backdrop-blur-xl animate-fade-in" />
           <div
             ref={modalRef}
-            className="w-full max-w-lg relative z-10 p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-border/50"
+            className="matrix-modal w-full max-w-lg relative z-10 p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-border/50"
           >
-            <div className="p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
+            <div className="matrix-modal-header p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-[var(--admin-accent)]">
                   Matrix Refactoring // Node #{editingSkill.id.toString().slice(-4)}
@@ -191,7 +191,7 @@ export default function SkillsManager() {
               </button>
             </div>
 
-            <div className="p-10">
+            <div className="matrix-modal-body p-10">
               <div className="mb-6">
                  <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 block">Skill Signature</label>
                  <Input
@@ -236,7 +236,7 @@ export default function SkillsManager() {
         <Button
           onClick={saveChanges}
           disabled={saving}
-          className="flex items-center gap-2"
+          className="matrix-primary-action flex items-center gap-2"
         >
           {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning className="text-lg" />}
           {saving ? 'Transmitting...' : 'Commit Matrix'}
@@ -245,7 +245,7 @@ export default function SkillsManager() {
 
       {/* Search & Add Section */}
       <div className="mb-8">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="matrix-toolbar grid gap-4 md:grid-cols-2">
           {/* Search */}
           <div className="input-icon-wrapper">
             <FiSearch className="icon" />
@@ -292,7 +292,7 @@ export default function SkillsManager() {
           </div>
 
           {/* Stats */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-t">
+          <div className="matrix-stat-strip flex items-center justify-between mt-4 pt-4 border-t border-t">
             <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
               <span className="font-mono">{filteredSkills.length} capabilities</span>
               {searchQuery && (
@@ -326,7 +326,7 @@ export default function SkillsManager() {
           {filteredSkills.map((skill, idx) =>
           <div
             key={skill.id}
-            className="group admin-card p-6 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
+            className="matrix-skill-card group admin-card p-6 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
             style={{ animationDelay: `${idx * 40}ms` }}
           >
             <div className="flex items-center justify-between gap-4">
@@ -344,7 +344,7 @@ export default function SkillsManager() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="matrix-skill-actions flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => setEditingSkill(skill)}
                   className="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-500/5 text-indigo-400 border-none hover:bg-indigo-500/10 transition-all"
@@ -363,7 +363,7 @@ export default function SkillsManager() {
             </div>
 
             {/* Subtle Progress Indicator */}
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+            <div className="matrix-skill-footer mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
                <div className="flex gap-1">
                   {[1,2,3].map(i => (
                     <div key={i} className={`h-1 w-4 rounded-full ${i <= 2 ? 'bg-indigo-500/40' : 'background/50'}`} />

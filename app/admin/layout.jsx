@@ -13,8 +13,10 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  // Extract active tab from pathname
-  const activeTab = pathname.split('/').pop() || 'dashboard';
+  // Extract active tab from pathname — normalize root '/admin' to 'dashboard'
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const lastSegment = pathSegments.length ? pathSegments[pathSegments.length - 1] : '';
+  const activeTab = (lastSegment === 'admin' || lastSegment === '') ? 'dashboard' : lastSegment;
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -99,14 +101,14 @@ export default function AdminLayout({ children }) {
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="text-right hidden md:block">
+            <div className="admin-operator-panel text-right hidden md:block">
               <p className="text-[8px] font-black text-[var(--first-color)] uppercase tracking-[0.3em] mb-0.5">Authenticated Operator</p>
               <div className="flex items-center justify-end gap-3">
                  <span className="text-[7px] font-bold text-emerald-500/60 hud-text uppercase">UP: 12:44:02</span>
                  <p className="text-xs font-black tracking-tight">AMAN KUMAR</p>
               </div>
             </div>
-            <div className="relative group">
+            <div className="relative group admin-avatar-chip">
               <div className="absolute -inset-1 bg-[var(--first-color)] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative h-10 w-10 rounded-xl bg-[var(--container-color)] border border-[var(--border-color)] flex items-center justify-center font-black text-xs shadow-2xl">
                 AK

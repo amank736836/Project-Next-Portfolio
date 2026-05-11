@@ -9,6 +9,7 @@ import {
 import { themes } from '@/data';
 import QuickActions from './QuickActions';
 import { Card } from '@/components/ui';
+import { syncThemeCssVars } from '@/lib/utils';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -161,7 +162,7 @@ export default function Dashboard() {
         // Force apply to current session immediately for the admin
         localStorage.setItem("color", color);
         localStorage.setItem("theme", mode);
-        document.documentElement.style.setProperty("--first-color", color);
+        syncThemeCssVars(color);
         document.documentElement.className = mode;
         window.dispatchEvent(new Event("themeChange"));
 
@@ -202,7 +203,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-wrap gap-8 mb-4">
-            <div className="flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-[var(--admin-accent)]/30 group/hud">
+            <div className="dashboard-glass-chip flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-[var(--admin-accent)]/30 group/hud">
               <div className="w-11 h-11 rounded-xl bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)] group-hover/hud:scale-110 transition-transform">
                 <FiClock size={20} />
               </div>
@@ -211,7 +212,7 @@ export default function Dashboard() {
                 <p className="text-xl font-black tracking-tight hud-text">{uptime}</p>
               </div>
             </div>
-            <div className="flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-emerald-500/30 group/hud">
+            <div className="dashboard-glass-chip flex items-center gap-5 p-5 px-6 rounded-2xl bg-[var(--admin-card)] border border-[var(--admin-border)] backdrop-blur-md transition-all hover:border-emerald-500/30 group/hud">
               <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover/hud:scale-110 transition-transform">
                 <FiActivity size={20} />
               </div>
@@ -232,7 +233,7 @@ export default function Dashboard() {
           { label: 'Logs', value: stats.experience, icon: FiMessageSquare, color: 'amber', desc: 'Experience Entries' },
           { label: 'Academy', value: stats.education, icon: FiGlobe, color: 'rose', desc: 'Education Data' }
         ].map((stat, i) => (
-          <div key={i} className="telemetry-card group relative overflow-hidden">
+          <div key={i} className="telemetry-card dashboard-glass-card group relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
               <stat.icon size={120} />
             </div>
@@ -285,7 +286,7 @@ export default function Dashboard() {
         {/* Left Column - High Density Data */}
         <div className="xl:col-span-8 space-y-6">
           {/* Operation Logs */}
-          <section className="admin-card !p-0 overflow-hidden border-[var(--admin-border)]">
+          <section className="admin-card dashboard-glass-card !p-0 overflow-hidden border-[var(--admin-border)]">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--admin-border)] bg-[var(--admin-accent)]/5">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)]">
@@ -301,7 +302,7 @@ export default function Dashboard() {
             
             <div className="max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 space-y-3">
               {logs.map((log, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:bg-white/[0.04] transition-colors">
+                <div key={idx} className="dashboard-log-row flex items-start gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:bg-white/[0.04] transition-colors">
                   <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
                     log.type === 'auth' ? 'bg-[var(--admin-accent)] shadow-[0_0_15px_var(--admin-accent-glow)]' : 
                     log.type === 'write' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
@@ -320,7 +321,7 @@ export default function Dashboard() {
           </section>
 
           {/* Theme Settings */}
-          <section className="admin-card border-[var(--admin-border)] bg-[var(--admin-card)] p-8">
+          <section className="admin-card dashboard-theme-panel border-[var(--admin-border)] bg-[var(--admin-card)] p-8">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
                 <FiZap size={20} />
@@ -358,7 +359,7 @@ export default function Dashboard() {
               </div>
 
               {/* Mode Selector */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] protocol-panel">
+              <div className="dashboard-mode-toggle flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] protocol-panel">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Visual Protocol</p>
                   <p className="text-sm font-bold text-[var(--admin-title)] capitalize">{themeSettings.mode.split('-')[0]} Mode</p>
@@ -384,7 +385,7 @@ export default function Dashboard() {
 
         {/* Right Column - Status */}
         <div className="xl:col-span-4 space-y-8">
-          <section className="admin-card">
+          <section className="admin-card dashboard-status-panel">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/20 flex items-center justify-center text-[var(--admin-accent)]">
                 <FiZap size={20} className="animate-pulse" />
@@ -396,7 +397,7 @@ export default function Dashboard() {
             </div>
             <div className="space-y-4">
               {/* GitHub Status */}
-              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
+              <div className="dashboard-status-card p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <FiGithub className="text-slate-400" size={14} />
@@ -411,7 +412,7 @@ export default function Dashboard() {
               </div>
 
               {/* Vercel Status */}
-              <div className="p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
+              <div className="dashboard-status-card p-4 rounded-2xl bg-[var(--admin-accent)]/5 border border-[var(--admin-border)] group hover:border-[var(--admin-accent)]/30 transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <FiGlobe className="text-slate-400" size={14} />

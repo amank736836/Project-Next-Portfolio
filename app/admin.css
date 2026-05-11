@@ -5,20 +5,23 @@
   /* Dynamic Tokens from global theme */
   --admin-bg: #020617; 
   --admin-card-rgb: 30, 41, 59;
-  --admin-card: rgba(var(--admin-card-rgb), 0.34);
-  --admin-border: rgba(255, 255, 255, 0.08);
-  --admin-border-strong: rgba(255, 255, 255, 0.12);
-  --glass-blur: 18px;
-  --glass-surface-opacity: 0.28;
-  --glass-edge-glow: rgba(255,255,255,0.02);
+  --admin-card: rgba(var(--admin-card-rgb), 0.45);
+  --admin-border: rgba(255, 255, 255, 0.15);
+  --admin-border-strong: rgba(255, 255, 255, 0.22);
+  --glass-blur: 40px;
+  --glass-surface-opacity: 0.38;
+  --glass-edge-glow: rgba(255,255,255,0.08);
   --admin-accent: var(--first-color);
-  --admin-accent-glow: color-mix(in srgb, var(--first-color) 25%, transparent);
+  --admin-accent-glow: color-mix(in srgb, var(--first-color) 35%, transparent);
   --admin-text: #94a3b8;
   --admin-title: #f1f5f9;
   
+  /* Accent RGB - computed from HSL(250, 84%, 60%) for rgba() usage */
+  --admin-accent-rgb: 99, 102, 241;
+
   /* Layout Constants */
-  --admin-sidebar-bg: rgba(15, 23, 42, 0.5);
-  --glass-blur: 32px;
+  --admin-sidebar-bg: rgba(15, 23, 42, 0.6);
+  --glass-blur: 48px;
 }
 
 /* Base Styles */
@@ -210,17 +213,239 @@
   }
 }
 
+.admin-operator-panel {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 1rem;
+  background: rgba(var(--admin-card-rgb), 0.14);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 10px 24px rgba(2,6,23,0.08);
+}
+
+.admin-operator-panel p,
+.admin-operator-panel span {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.admin-avatar-chip .relative.h-10.w-10 {
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.95), rgba(var(--admin-card-rgb), 0.8));
+  color: var(--admin-title);
+  border-color: var(--admin-border-strong);
+}
+
+.admin-avatar-chip .absolute {
+  filter: blur(10px);
+}
+
+/* Matrix glassmorphism layer */
+.matrix-modal,
+.matrix-toolbar,
+.matrix-stat-strip,
+.matrix-skill-card,
+.matrix-primary-action {
+  backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(165%);
+}
+
+.matrix-modal {
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.58), rgba(var(--admin-card-rgb), 0.34));
+  border: 1px solid var(--admin-border);
+  border-radius: 1.75rem;
+  box-shadow: 0 30px 80px rgba(2, 6, 23, 0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.matrix-modal-header,
+.matrix-modal-body,
+.matrix-toolbar,
+.matrix-stat-strip,
+.matrix-skill-card {
+  background: rgba(var(--admin-card-rgb), 0.42);
+  border-color: var(--admin-border-strong);
+}
+
+.matrix-modal-header {
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.62), rgba(var(--admin-card-rgb), 0.28));
+}
+
+.matrix-modal-body {
+  background: rgba(var(--admin-card-rgb), 0.3);
+}
+
+.matrix-toolbar {
+  padding: 1rem;
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 42px rgba(2, 6, 23, 0.26), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.matrix-stat-strip {
+  padding-inline: 0.25rem;
+  border-color: var(--admin-border-strong);
+}
+
+.matrix-primary-action {
+  border: 1px solid rgba(var(--admin-accent-rgb), 0.28);
+  box-shadow: 0 10px 28px rgba(var(--admin-accent-rgb), 0.28), inset 0 1px 0 rgba(255,255,255,0.14);
+}
+
+.matrix-skill-card {
+  border: 1px solid var(--admin-border-strong);
+  background:
+    radial-gradient(ellipse 550px 350px at 0% 0%, rgba(var(--admin-accent-rgb), 0.35), transparent 50%),
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.72), rgba(var(--admin-card-rgb), 0.42)),
+    linear-gradient(45deg, rgba(2,6,23,0.35), transparent 50%),
+    radial-gradient(circle at 18% 18%, rgba(var(--admin-accent-rgb), 0.24), transparent 36%),
+    radial-gradient(circle at 85% 12%, rgba(96, 165, 250, 0.16), transparent 30%),
+    radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.08), transparent 40%),
+    linear-gradient(135deg, rgba(2,6,23,0.1), rgba(2,6,23,0.25)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 22px 50px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
+  border-radius: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-skill-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 22%),
+    radial-gradient(circle at 10% 10%, rgba(255,255,255,0.14), transparent 18%),
+    radial-gradient(circle at 100% 100%, rgba(var(--admin-accent-rgb), 0.12), transparent 36%);
+  pointer-events: none;
+}
+
+.matrix-skill-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 34%);
+  pointer-events: none;
+}
+
+.matrix-skill-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--admin-accent-rgb), 0.32);
+  box-shadow:
+    0 28px 64px rgba(2, 6, 23, 0.42),
+    0 0 0 1px rgba(var(--admin-accent-rgb), 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.matrix-skill-actions button {
+  border: 1px solid var(--admin-border-strong);
+  background: rgba(var(--admin-card-rgb), 0.22);
+  backdrop-filter: blur(14px) saturate(160%);
+}
+
+.matrix-skill-footer {
+  border-top-color: var(--admin-border) !important;
+}
+
+/* Dashboard glassmorphism layer */
+.dashboard-glass-card,
+.dashboard-glass-chip,
+.dashboard-status-card,
+.dashboard-theme-panel,
+.dashboard-status-panel,
+.dashboard-mode-toggle,
+.dashboard-log-row {
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(165%);
+}
+
+.dashboard-glass-card,
+.dashboard-theme-panel,
+.dashboard-status-panel {
+  background:
+    radial-gradient(ellipse 550px 380px at 0% 0%, rgba(var(--admin-accent-rgb), 0.3), transparent 50%),
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.6), rgba(var(--admin-card-rgb), 0.38)),
+    linear-gradient(45deg, rgba(2,6,23,0.3), transparent 50%),
+    radial-gradient(circle at 14% 12%, rgba(var(--admin-accent-rgb), 0.16), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08), transparent 45%),
+    linear-gradient(135deg, rgba(2,6,23,0.08), rgba(2,6,23,0.2)),
+    rgba(255,255,255,0.04);
+  border: 1px solid var(--admin-border-strong) !important;
+  box-shadow:
+    0 18px 44px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
+  border-radius: 1.5rem;
+}
+
+.dashboard-glass-chip,
+.dashboard-status-card,
+.dashboard-mode-toggle {
+  background:
+    radial-gradient(ellipse 450px 300px at 0% 0%, rgba(var(--admin-accent-rgb), 0.25), transparent 50%),
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.48), rgba(var(--admin-card-rgb), 0.3)),
+    linear-gradient(45deg, rgba(2,6,23,0.2), transparent 50%),
+    radial-gradient(circle at 20% 20%, rgba(var(--admin-accent-rgb), 0.08), transparent 35%),
+    linear-gradient(135deg, rgba(2,6,23,0.06), rgba(2,6,23,0.15)),
+    rgba(255,255,255,0.04);
+  border: 1px solid var(--admin-border-strong) !important;
+  box-shadow:
+    0 14px 34px rgba(2, 6, 23, 0.24),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.dashboard-log-row {
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.38), rgba(var(--admin-card-rgb), 0.22)),
+    linear-gradient(45deg, rgba(2,6,23,0.15), transparent 50%),
+    linear-gradient(135deg, rgba(2,6,23,0.06), rgba(2,6,23,0.12)),
+    rgba(255,255,255,0.03) !important;
+  border-color: var(--admin-border-strong) !important;
+}
+
+.dashboard-glass-card:hover,
+.dashboard-theme-panel:hover,
+.dashboard-status-panel:hover,
+.dashboard-status-card:hover,
+.dashboard-glass-chip:hover,
+.dashboard-mode-toggle:hover,
+.dashboard-log-row:hover {
+  border-color: rgba(var(--admin-accent-rgb), 0.28) !important;
+  box-shadow:
+    0 22px 50px rgba(2, 6, 23, 0.42),
+    0 0 24px rgba(var(--admin-accent-rgb), 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.dashboard-log-row:hover {
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.34), rgba(var(--admin-card-rgb), 0.2)),
+    rgba(255,255,255,0.03) !important;
+}
+
 /* Orbit Glass Cards */
 .admin-card {
-  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.36), rgba(var(--admin-card-rgb), 0.28));
-  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(150%);
-  border: 1px solid var(--admin-border);
+  background:
+    radial-gradient(ellipse 600px 400px at 0% 0%, rgba(var(--admin-accent-rgb), 0.4), transparent 50%),
+    linear-gradient(135deg, rgba(var(--admin-card-rgb), 0.8), rgba(var(--admin-card-rgb), 0.55)),
+    linear-gradient(45deg, rgba(2,6,23,0.4), transparent 50%),
+    radial-gradient(circle at 14% 12%, rgba(var(--admin-accent-rgb), 0.32), transparent 42%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.2), transparent 50%),
+    radial-gradient(circle at 0% 0%, rgba(2,6,23,0.2), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.12), transparent 55%),
+    linear-gradient(180deg, rgba(2,6,23,0.1), rgba(2,6,23,0.3)),
+    rgba(255,255,255,0.08);
+  backdrop-filter: blur(calc(var(--glass-blur) + 12px)) saturate(220%);
+  border: 2px solid var(--admin-accent);
   border-radius: 1.5rem;
   padding: 2.25rem;
   transition: transform 0.36s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.36s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 16px 36px rgba(2,6,23,0.45), inset 0 1px 0 var(--glass-edge-glow);
+  box-shadow:
+    0 32px 72px rgba(2,6,23,0.72),
+    0 0 48px rgba(var(--admin-accent-rgb), 0.22),
+    0 0 64px rgba(168, 85, 247, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 0 0 1px rgba(255,255,255,0.12);
 }
 
 .admin-card::before {
@@ -239,11 +464,13 @@
 }
 
 .admin-card:hover {
-  border-color: rgba(var(--admin-accent-rgb), 0.5);
-  transform: translateY(-8px) scale(1.005);
+  border-color: var(--admin-accent);
+  transform: translateY(-12px) scale(1.012);
   box-shadow: 
-    0 40px 80px -20px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(var(--admin-accent-rgb), 0.1);
+    0 52px 108px -8px rgba(0, 0, 0, 0.62),
+    0 0 64px color-mix(in srgb, var(--admin-accent) 50%, transparent),
+    0 0 80px rgba(168, 85, 247, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 /* HUD Typography */
@@ -267,19 +494,87 @@
   justify-content: space-between;
   min-height: 160px;
   border-radius: 1.25rem;
-  background: var(--admin-card);
-  backdrop-filter: blur(var(--glass-blur)) saturate(200%);
-  border: 1px solid var(--admin-border);
+  background:
+    radial-gradient(ellipse 500px 350px at 0% 0%, rgba(var(--admin-accent-rgb), 0.3), transparent 50%),
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.56), rgba(var(--admin-card-rgb), 0.35)),
+    linear-gradient(45deg, rgba(2,6,23,0.25), transparent 50%),
+    radial-gradient(circle at 18% 18%, rgba(var(--admin-accent-rgb), 0.14), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.06), transparent 40%),
+    linear-gradient(135deg, rgba(2,6,23,0.1), rgba(2,6,23,0.2)),
+    rgba(255,255,255,0.04);
+  backdrop-filter: blur(calc(var(--glass-blur) + 2px)) saturate(170%);
+  border: 1px solid var(--admin-border-strong);
   transition: all 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
   box-shadow: 
-    0 12px 30px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 var(--glass-edge-glow);
+    0 14px 34px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
 }
 
+/* Ensure telemetry numbers and labels use theme-aware colors (fix light-mode visibility) */
+.telemetry-card {
+  color: var(--admin-text);
+}
+
+.telemetry-card p.text-6xl,
+.telemetry-card p.text-2xl {
+  color: var(--admin-title) !important;
+}
+
+.telemetry-card .text-slate-500 {
+  color: var(--admin-text) !important;
+  opacity: 0.85;
+}
+
+.telemetry-card .text-slate-600,
+.telemetry-card p.text-\[10px\] {
+  color: var(--admin-text) !important;
+  opacity: 0.7;
+}
+
+/* Strong overrides specifically for light-theme to ensure contrast */
+.light-theme .telemetry-card {
+  background: var(--admin-card); /* keep token-driven */
+}
+
+.light-theme .telemetry-card p.text-6xl,
+.light-theme .telemetry-card p.text-2xl {
+  color: var(--admin-title) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.light-theme .telemetry-card p[class*="text-"] {
+  color: var(--admin-title) !important;
+}
+
+/* Header and user-badge contrast in light mode */
+.light-theme .admin-header {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  color: var(--admin-title);
+  box-shadow: 0 6px 30px rgba(2,6,23,0.06);
+}
+
+.light-theme .admin-header .relative.h-10.w-10,
+.light-theme .admin-header .relative .h-10.w-10 {
+  background: var(--container-color) !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  color: var(--admin-title) !important;
+}
+
+/* Ensure small badges inside header are visible in light theme */
+.light-theme .admin-header .w-1.h-1,
+.light-theme .admin-header .w-1.h-1 {
+  box-shadow: 0 0 8px rgba(var(--admin-accent-rgb), 0.12) !important;
+}
+
 .telemetry-card:hover {
-  background: rgba(var(--admin-card-rgb), calc(var(--glass-surface-opacity) + 0.08));
-  border-color: rgba(var(--admin-accent-rgb), 0.14);
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.54), rgba(var(--admin-card-rgb), 0.3)),
+    radial-gradient(circle at 18% 18%, rgba(var(--admin-accent-rgb), 0.12), transparent 30%),
+    rgba(255,255,255,0.03);
+  border-color: rgba(var(--admin-accent-rgb), 0.22);
 }
 
 /* Make cards breathe: outside margins and constraints to avoid visual overlap */
@@ -351,8 +646,13 @@
 
 .neon-input {
   width: 100%;
-  background: var(--body-color);
-  border: 1px solid var(--admin-border);
+  background:
+    radial-gradient(ellipse 400px 280px at 0% 0%, rgba(var(--admin-accent-rgb), 0.2), transparent 50%),
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.38), rgba(var(--admin-card-rgb), 0.25)),
+    linear-gradient(45deg, rgba(2,6,23,0.15), transparent 50%),
+    linear-gradient(135deg, rgba(2,6,23,0.06), rgba(2,6,23,0.12)),
+    rgba(255,255,255,0.03);
+  border: 1px solid var(--admin-border-strong);
   border-radius: 1.5rem;
   padding: 1.25rem 1.75rem;
   color: var(--admin-title);
@@ -378,22 +678,22 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--text-color);
+  color: var(--admin-text);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 0.4rem;
 }
 
 .nav-item:hover {
   color: var(--admin-accent);
-  background: var(--admin-bg);
+  background: rgba(var(--admin-card-rgb), 0.06);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, var(--admin-accent), rgba(var(--admin-accent-rgb), 0.8));
+  background: linear-gradient(135deg, var(--admin-accent), rgba(var(--admin-accent-rgb), 0.88));
   color: #fff !important;
   box-shadow: 
-    0 10px 25px -5px rgba(var(--admin-accent-rgb), 0.5),
-    0 0 15px rgba(var(--admin-accent-rgb), 0.3);
+    0 12px 30px -8px rgba(var(--admin-accent-rgb), 0.45),
+    0 0 20px rgba(var(--admin-accent-rgb), 0.28);
   position: relative;
 }
 
@@ -401,17 +701,18 @@
   content: '';
   position: absolute;
   left: -1px;
-  top: 25%;
-  height: 50%;
-  width: 3px;
-  background: #fff;
-  border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 10px #fff;
+  top: 22%;
+  height: 56%;
+  width: 4px;
+  background: var(--admin-accent);
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 0 14px rgba(var(--admin-accent-rgb), 0.32);
 }
 
 .nav-item.active .icon-box {
-  background: rgba(var(--admin-card-rgb), 0.2);
+  background: rgba(var(--admin-accent-rgb), 0.12);
   color: #fff;
+  border: 1px solid rgba(var(--admin-accent-rgb), 0.16);
 }
 
 .icon-box {
@@ -495,6 +796,87 @@
   box-shadow: 0 0 20px rgba(var(--admin-accent-rgb), 0.1);
 }
 
+/* Identity-specific glassmorphism. Applied to identity cards and modal. */
+.identity-card {
+  background:
+    radial-gradient(ellipse 700px 500px at 0% 0%, rgba(var(--admin-accent-rgb), 0.5), transparent 55%),
+    linear-gradient(135deg, rgba(var(--admin-card-rgb), 0.9), rgba(var(--admin-card-rgb), 0.58)),
+    linear-gradient(45deg, rgba(2,6,23,0.5), transparent 55%),
+    radial-gradient(circle at 10% 10%, rgba(var(--admin-accent-rgb), 0.38), transparent 38%),
+    radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.26), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 70%),
+    radial-gradient(circle at 0% 50%, rgba(236, 72, 153, 0.1), transparent 55%),
+    radial-gradient(circle at 100% 0%, rgba(var(--admin-accent-rgb), 0.08), transparent 45%),
+    linear-gradient(180deg, rgba(2,6,23,0.15), rgba(2,6,23,0.4)),
+    rgba(255,255,255,0.1);
+  backdrop-filter: blur(calc(var(--glass-blur) + 16px)) saturate(240%);
+  border: 2px solid var(--admin-accent);
+  box-shadow:
+    0 40px 92px rgba(2,6,23,0.76),
+    0 0 52px rgba(99, 102, 241, 0.28),
+    0 0 76px rgba(168, 85, 247, 0.16),
+    0 0 100px rgba(59, 130, 246, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.12);
+  border-radius: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.identity-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(135deg, rgba(255,255,255,0.12), transparent 35%),
+    radial-gradient(circle at 0% 0%, rgba(var(--admin-accent-rgb), 0.08), transparent 45%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  border-radius: 1.5rem;
+}
+
+.identity-card:hover {
+  border-color: var(--admin-accent) !important;
+  transform: translateY(-10px) scale(1.02);
+  box-shadow:
+    0 56px 116px rgba(2,6,23,0.78),
+    0 0 72px color-mix(in srgb, var(--admin-accent) 60%, transparent),
+    0 0 96px rgba(168, 85, 247, 0.24),
+    0 0 120px rgba(59, 130, 246, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+/* Light-theme aggressive overrides for identity glassmorphism */
+.light-theme .identity-card {
+  background:
+    radial-gradient(ellipse 700px 500px at 0% 0%, rgba(var(--admin-accent-rgb), 0.3), transparent 55%),
+    linear-gradient(135deg, rgba(200, 214, 229, 0.96), rgba(220, 226, 241, 0.92)),
+    linear-gradient(45deg, rgba(0,0,0,0.08), transparent 50%),
+    radial-gradient(circle at 10% 10%, rgba(var(--admin-accent-rgb), 0.22), transparent 38%),
+    radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.14), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 70%),
+    radial-gradient(circle at 100% 0%, rgba(var(--admin-accent-rgb), 0.06), transparent 45%),
+    linear-gradient(180deg, rgba(255,255,255,0.6), rgba(200,200,220,0.4)),
+    rgba(255,255,255,0.5) !important;
+  backdrop-filter: blur(calc(var(--glass-blur) + 16px)) saturate(220%) brightness(1.1);
+  border: 2px solid var(--admin-accent) !important;
+  box-shadow:
+    0 40px 92px rgba(0,0,0,0.12),
+    0 0 52px color-mix(in srgb, var(--admin-accent) 30%, transparent),
+    0 0 76px rgba(168, 85, 247, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 0 0 1px rgba(255,255,255,0.3) !important;
+}
+
+.light-theme .identity-card:hover {
+  border-color: var(--admin-accent) !important;
+  box-shadow:
+    0 56px 116px rgba(0,0,0,0.18),
+    0 0 72px color-mix(in srgb, var(--admin-accent) 40%, transparent),
+    0 0 96px rgba(168, 85, 247, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.7) !important;
+}
+
 .floating-icon {
   animation: float 4s ease-in-out infinite;
 }
@@ -530,9 +912,6 @@
 }
 
 /* --- Admin System Tokens --- */
-:root {
-  --admin-accent-rgb: 99, 102, 241; /* Default indigo */
-}
 
 .light-theme {
   --admin-bg: #f8fafc;
@@ -546,6 +925,12 @@
 
 .dark-theme {
   --admin-card-rgb: 15, 15, 15;
+  --admin-bg: #020617;
+  --admin-card: rgba(var(--admin-card-rgb), 0.34);
+  --admin-sidebar-bg: rgba(12, 14, 20, 0.6);
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-text: #94a3b8;
+  --admin-title: #f1f5f9;
 }
 
 @keyframes fadeIn {
@@ -559,22 +944,28 @@
 
 /* Premium Button System */
 .admin-btn {
-  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.36), rgba(var(--admin-card-rgb), 0.28));
-  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(150%);
-  border: 1px solid var(--admin-border);
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.46), rgba(var(--admin-card-rgb), 0.3)),
+    radial-gradient(circle at 18% 18%, rgba(var(--admin-accent-rgb), 0.08), transparent 32%),
+    rgba(255,255,255,0.02);
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(160%);
+  border: 1px solid var(--admin-border-strong);
   border-radius: 1.5rem;
   padding: 2.25rem;
   transition: transform 0.36s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.36s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 16px 36px rgba(2,6,23,0.45), inset 0 1px 0 var(--glass-edge-glow);
+  box-shadow:
+    0 16px 38px rgba(2,6,23,0.44),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
 }
 
 .admin-btn-primary {
   background: linear-gradient(135deg, var(--admin-accent), #4f46e5);
   color: #fff;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-  border: 1px solid var(--admin-border);
+  border: 1px solid rgba(var(--admin-accent-rgb), 0.18);
 }
 
 .admin-btn-primary:hover {
@@ -584,14 +975,18 @@
 }
 
 .admin-btn-secondary {
-  background: rgba(var(--admin-card-rgb), 0.08);
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.28), rgba(var(--admin-card-rgb), 0.18)),
+    rgba(255,255,255,0.02);
   color: var(--admin-title);
-  border: 1px solid var(--admin-border);
-  backdrop-filter: blur(10px);
+  border: 1px solid var(--admin-border-strong);
+  backdrop-filter: blur(14px) saturate(160%);
 }
 
 .admin-btn-secondary:hover {
-  background: rgba(var(--admin-card-rgb), 0.14);
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.34), rgba(var(--admin-card-rgb), 0.2)),
+    rgba(255,255,255,0.03);
   border-color: var(--admin-border-strong);
   transform: translateY(-1px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -617,9 +1012,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background: var(--admin-card);
-  border: 1px solid var(--admin-border);
+  background:
+    linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.44), rgba(var(--admin-card-rgb), 0.28)),
+    rgba(255,255,255,0.02);
+  border: 1px solid var(--admin-border-strong);
   color: var(--admin-title);
+  backdrop-filter: blur(14px) saturate(160%);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -634,6 +1032,37 @@
   background: var(--admin-accent);
   color: #fff;
   border-color: var(--admin-accent);
+}
+
+/* Remove persistent white border/outline on Delete buttons specifically */
+/* Stronger override for Delete buttons: remove white ring and use subtle red border */
+button[title="Delete"] {
+  border: 1px solid rgba(239, 68, 68, 0.12) !important;
+  background: rgba(239, 68, 68, 0.04) !important;
+  color: rgba(239, 68, 68, 0.9) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove any default focus ring for these controls */
+button[title="Delete"]:focus,
+button[title="Delete"]:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 0 transparent !important;
+}
+
+/* Slightly stronger hover to make action visible without white border */
+button[title="Delete"]:hover {
+  border-color: rgba(239, 68, 68, 0.22) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* Defensive selector: some buttons are rendered with utility classes setting width/height — increase specificity */
+.admin-card .w-11.h-11[title="Delete"],
+.admin-card button.w-11.h-11[title="Delete"] {
+  border: 1px solid rgba(239, 68, 68, 0.12) !important;
+  background: rgba(239, 68, 68, 0.04) !important;
 }
 
 /* Academy / logbook layout refinements without changing JSX structure */
@@ -696,19 +1125,28 @@
 
 /* Premium Dropdown System */
 .admin-dropdown-menu {
-  background: rgba(13, 15, 23, 0.85);
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.66), rgba(var(--admin-card-rgb), 0.42));
   backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--admin-border);
+  border: 1px solid var(--admin-border-strong);
   border-radius: 1.25rem;
   padding: 0.75rem;
   box-shadow: 
-    0 20px 50px rgba(0, 0, 0, 0.5),
-    0 0 0 1px var(--admin-border);
+    0 22px 54px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.02);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   transform-origin: top right;
   animation: dropdown-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.light-theme .admin-dropdown-menu {
+  background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.68));
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 22px 54px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
 @keyframes dropdown-pop {
@@ -761,6 +1199,25 @@
 
 .admin-main .animate-fade-in.relative > .grid > .admin-card .text-slate-400 {
   color: color-mix(in srgb, var(--admin-text) 68%, white 12%);
+}
+
+/* Light mode readability for Academy / Logbook entity cards */
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card h4,
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card h5,
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .text-white {
+  color: var(--admin-title) !important;
+}
+
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .text-slate-400,
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .text-slate-500,
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .text-slate-600 {
+  color: var(--admin-text) !important;
+  opacity: 0.9;
+}
+
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .border-white\/\[0\.05\],
+.light-theme .admin-main .animate-fade-in.relative > .grid > .admin-card .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
 /* Visual Protocol panel spacing fix */
@@ -836,16 +1293,25 @@
   right: 1.5rem;
   min-width: 320px;
   max-width: 480px;
-  background: rgba(var(--admin-card-rgb), 0.95);
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.72), rgba(var(--admin-card-rgb), 0.5));
   backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--admin-border);
+  border: 1px solid var(--admin-border-strong);
   border-radius: 1.25rem;
   overflow: hidden;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    0 0 0 1px var(--admin-border);
+    0 25px 50px -12px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.02);
   pointer-events: auto;
   transform-origin: bottom right;
+}
+
+.light-theme .toast-item {
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72));
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.75);
 }
 
 .toast-glow {
@@ -1024,8 +1490,8 @@
 .search-input-wrapper .search-input {
   width: 100%;
   padding: 1rem 1.5rem 1rem 3.5rem;
-  background: var(--admin-card);
-  border: 1px solid var(--admin-border);
+  background: linear-gradient(180deg, rgba(var(--admin-card-rgb), 0.32), rgba(var(--admin-card-rgb), 0.22));
+  border: 1px solid var(--admin-border-strong);
   border-radius: 1.25rem;
   color: var(--admin-title);
   font-size: 0.9rem;
