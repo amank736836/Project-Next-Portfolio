@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import Image from 'next/image';
 import {
   FiEye, FiEyeOff, FiEdit, FiEdit3, FiTrash, FiTrash2, FiPlus, FiExternalLink,
   FiCode, FiActivity, FiSearch, FiFilter, FiGrid, FiList,
@@ -394,10 +395,12 @@ export default function ProjectManager() {
                     {(editingProject.image || editingProject.img) && (
                       <div className="mt-4 relative group">
                         <div className="aspect-video w-full rounded-xl overflow-hidden border border-white/5 bg-slate-900/50">
-                          <img 
-                            src={editingProject.image || editingProject.img} 
-                            alt="Preview" 
-                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                          <Image
+                            src={editingProject.image || editingProject.img}
+                            alt={editingProject.title || 'Preview'}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 800px"
+                            className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
                           />
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -741,10 +744,12 @@ function ProjectCard({ project, index, isSelected, onToggleSelect, onToggleVisib
     >
       {/* Image Section */}
       <div className="relative h-48 w-full overflow-hidden bg-slate-900">
-        <img
+        <Image
           src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'}
-          alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+          alt={project.title || 'Project image'}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-1000 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-transparent opacity-90" />
 
@@ -851,10 +856,12 @@ function ProjectListItem({ project, index, isSelected, onToggleSelect, onToggleV
       </button>
 
       <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 flex-shrink-0 border border-white/5">
-        <img
+        <Image
           src={project.image || project.img || 'https://via.placeholder.com/150'}
-          alt={project.title}
-          className="w-full h-full object-cover"
+          alt={project.title || 'Project thumbnail'}
+          fill
+          sizes="64px"
+          className="object-cover"
         />
       </div>
 

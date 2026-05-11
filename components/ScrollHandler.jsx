@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { links } from "@/data";
 
@@ -66,4 +66,4 @@ const ScrollHandler = () => {
   return null;
 };
 
-export default ScrollHandler;
+export default memo(ScrollHandler);

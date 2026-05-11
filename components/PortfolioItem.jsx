@@ -16,10 +16,8 @@ const iconMap = {
 
 const PortfolioItem = ({ img, title, details, category }) => {
   const [modal, setModal] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     if (modal) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -111,7 +109,7 @@ const PortfolioItem = ({ img, title, details, category }) => {
         {category && <span className="portfolio__category">{category}</span>}
       </div>
       
-      {modal && mounted && createPortal(ModalContent, document.body)}
+      {modal && createPortal(ModalContent, document.body)}
     </div>
   );
 };

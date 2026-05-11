@@ -10,19 +10,25 @@ const TransitionLoader = () => {
 
   useEffect(() => {
     // Show loader when pathname changes
-    setLoading(true);
-    setShouldRender(true);
+    const enterTimer = setTimeout(() => {
+      setShouldRender(true);
+      setLoading(true);
+    }, 0);
 
     const timer = setTimeout(() => {
       setLoading(false);
-      // Wait for exit animation to finish
-      const exitTimer = setTimeout(() => {
-        setShouldRender(false);
-      }, 400);
-      return () => clearTimeout(exitTimer);
     }, 600);
 
-    return () => clearTimeout(timer);
+    // Wait for exit animation to finish
+    const exitTimer = setTimeout(() => {
+      setShouldRender(false);
+    }, 1000);
+
+    return () => {
+      clearTimeout(enterTimer);
+      clearTimeout(timer);
+      clearTimeout(exitTimer);
+    };
   }, [pathname]);
 
   if (!shouldRender) return null;

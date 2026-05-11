@@ -5,6 +5,19 @@ import ScrollHandler from "@/components/ScrollHandler";
 import TransitionLoader from "@/components/TransitionLoader";
 import { Analytics } from "@vercel/analytics/react";
 import RootShell from "@/components/RootShell";
+import { Outfit, Poppins } from 'next/font/google';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['300','400','500','600','700','800'],
+  variable: '--body-font'
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300','400','500','600','700'],
+  variable: '--second-font'
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const siteName = "Aman Portfolio";
@@ -45,7 +58,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${outfit.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
         {/* Portfolio-level chrome: hidden on /admin routes */}
         <RootShell>

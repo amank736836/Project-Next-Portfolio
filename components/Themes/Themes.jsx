@@ -5,7 +5,7 @@ import { themes } from "@/data";
 import ThemeItem from "./ThemeItem";
 import { BsMoon, BsSun } from "react-icons/bs";
 import "./Themes.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import { syncThemeCssVars } from "@/lib/utils";
 
 const Themes = () => {
@@ -141,4 +141,4 @@ const Themes = () => {
   );
 };
 
-export default Themes;
+export default memo(Themes);

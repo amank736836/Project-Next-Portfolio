@@ -11,11 +11,11 @@ import { FiMenu } from 'react-icons/fi';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarState, setSidebarState] = useState({ open: false, path: '' });
   const [operatorName, setOperatorName] = useState('Operator');
   const [operatorInitials, setOperatorInitials] = useState('OP');
   const [sessionStartedAt, setSessionStartedAt] = useState(null);
-  const [uptimeLabel, setUptimeLabel] = useState('UP: --:--:--');
+  const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000));
 
   const appVersionRaw = process.env.APP_VERSION || process.env.NEXT_PUBLIC_APP_VERSION || 'dev';
   const appVersion = String(appVersionRaw).replace(/^v/i, '');
@@ -40,26 +40,28 @@ export default function AdminLayout({ children }) {
   const pathSegments = pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments.length ? pathSegments[pathSegments.length - 1] : '';
   const activeTab = (lastSegment === 'admin' || lastSegment === '') ? 'dashboard' : lastSegment;
+  const isSidebarOpen = sidebarState.open && sidebarState.path === pathname;
 
-  // Close sidebar on route change (mobile)
-  useEffect(() => {
-    setIsSidebarOpen(false);
-  }, [pathname]);
+  const closeSidebar = () => {
+    setSidebarState((prev) => ({ ...prev, open: false }));
+  };
+
+  const openSidebar = () => {
+    setSidebarState({ open: true, path: pathname });
+  };
+
+  const uptimeLabel = sessionStartedAt
+    ? `UP: ${formatDuration(nowSeconds - sessionStartedAt)}`
+    : 'UP: --:--:--';
 
   // Live session uptime ticker.
   useEffect(() => {
-    if (!sessionStartedAt) {
-      setUptimeLabel('UP: --:--:--');
-      return;
-    }
+    if (!sessionStartedAt) return;
 
-    const updateUptime = () => {
-      const nowSeconds = Math.floor(Date.now() / 1000);
-      setUptimeLabel(`UP: ${formatDuration(nowSeconds - sessionStartedAt)}`);
-    };
+    const interval = setInterval(() => {
+      setNowSeconds(Math.floor(Date.now() / 1000));
+    }, 1000);
 
-    updateUptime();
-    const interval = setInterval(updateUptime, 1000);
     return () => clearInterval(interval);
   }, [sessionStartedAt]);
 
@@ -121,17 +123,17 @@ export default function AdminLayout({ children }) {
 
       <div 
         className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
-        onClick={() => setIsSidebarOpen(false)} 
+        onClick={closeSidebar} 
       />
       
-      <Sidebar activeTab={activeTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar activeTab={activeTab} isOpen={isSidebarOpen} onClose={closeSidebar} />
 
       <div className="admin-main custom-scrollbar z-10 relative">
         <header className="admin-header">
           <div className="flex items-center gap-4">
             <button 
               className="lg:hidden relative group h-10 w-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--admin-accent)]/50"
-              onClick={() => setIsSidebarOpen(true)}
+              onClick={openSidebar}
               type="button"
               aria-label="Open admin sidebar"
             >

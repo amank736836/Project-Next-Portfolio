@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { links } from "@/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -100,4 +100,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);
