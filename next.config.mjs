@@ -3,6 +3,10 @@ const nextConfig = {
 	poweredByHeader: false,
 	reactStrictMode: true,
 
+	env: {
+		APP_VERSION: process.env.npm_package_version || 'dev',
+	},
+
 	// Control stale-while-revalidate window for ISR cache-control headers.
 	expireTime: 60 * 60,
 

@@ -7,11 +7,34 @@ import Themes from '@/components/Themes/Themes';
 import { usePathname } from 'next/navigation';
 import { ToastProvider } from '@/components/Admin/Toast';
 import { ConfirmProvider } from '@/components/Admin/ConfirmModal';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [operatorName, setOperatorName] = useState('Operator');
+  const [operatorInitials, setOperatorInitials] = useState('OP');
+  const [sessionStartedAt, setSessionStartedAt] = useState(null);
+  const [uptimeLabel, setUptimeLabel] = useState('UP: --:--:--');
+
+  const appVersionRaw = process.env.APP_VERSION || process.env.NEXT_PUBLIC_APP_VERSION || 'dev';
+  const appVersion = String(appVersionRaw).replace(/^v/i, '');
+
+  const toInitials = (name) => {
+    if (!name || typeof name !== 'string') return 'OP';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'OP';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  };
+
+  const formatDuration = (totalSeconds) => {
+    const safeSeconds = Math.max(0, Math.floor(totalSeconds));
+    const hours = Math.floor(safeSeconds / 3600).toString().padStart(2, '0');
+    const minutes = Math.floor((safeSeconds % 3600) / 60).toString().padStart(2, '0');
+    const seconds = (safeSeconds % 60).toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
   
   // Extract active tab from pathname — normalize root '/admin' to 'dashboard'
   const pathSegments = pathname.split('/').filter(Boolean);
@@ -23,6 +46,23 @@ export default function AdminLayout({ children }) {
     setIsSidebarOpen(false);
   }, [pathname]);
 
+  // Live session uptime ticker.
+  useEffect(() => {
+    if (!sessionStartedAt) {
+      setUptimeLabel('UP: --:--:--');
+      return;
+    }
+
+    const updateUptime = () => {
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      setUptimeLabel(`UP: ${formatDuration(nowSeconds - sessionStartedAt)}`);
+    };
+
+    updateUptime();
+    const interval = setInterval(updateUptime, 1000);
+    return () => clearInterval(interval);
+  }, [sessionStartedAt]);
+
   // Periodic authentication check
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,9 +71,23 @@ export default function AdminLayout({ children }) {
         const data = await res.json();
         
         if (!data.authenticated) {
-          console.log('[Auth] Token expired or session invalid, triggering logout');
           // Redirect to logout page which will handle Scalekit logout and clear cookies
           window.location.href = '/api/auth/logout';
+          return;
+        }
+
+        const resolvedName =
+          data?.user?.name ||
+          data?.user?.preferred_username ||
+          data?.user?.email ||
+          'Operator';
+
+        setOperatorName(resolvedName);
+        setOperatorInitials(toInitials(resolvedName));
+
+        const startedAt = Number(data?.sessionStartedAt);
+        if (Number.isFinite(startedAt) && startedAt > 0) {
+          setSessionStartedAt(startedAt);
         }
       } catch (error) {
         console.error('[Auth] Check failed:', error);
@@ -78,6 +132,8 @@ export default function AdminLayout({ children }) {
             <button 
               className="lg:hidden relative group h-10 w-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--admin-accent)]/50"
               onClick={() => setIsSidebarOpen(true)}
+              type="button"
+              aria-label="Open admin sidebar"
             >
               <div className="absolute -inset-1 bg-[var(--admin-accent)] rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
               <FiMenu size={20} className="relative z-10" />
@@ -104,14 +160,14 @@ export default function AdminLayout({ children }) {
             <div className="admin-operator-panel text-right hidden md:block">
               <p className="text-[8px] font-black text-[var(--first-color)] uppercase tracking-[0.3em] mb-0.5">Authenticated Operator</p>
               <div className="flex items-center justify-end gap-3">
-                 <span className="text-[7px] font-bold text-emerald-500/60 hud-text uppercase">UP: 12:44:02</span>
-                 <p className="text-xs font-black tracking-tight">AMAN KUMAR</p>
+                 <span className="text-[7px] font-bold text-emerald-500/60 hud-text uppercase">{uptimeLabel}</span>
+                 <p className="text-xs font-black tracking-tight">{operatorName}</p>
               </div>
             </div>
             <div className="relative group admin-avatar-chip">
               <div className="absolute -inset-1 bg-[var(--first-color)] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative h-10 w-10 rounded-xl bg-[var(--container-color)] border border-[var(--border-color)] flex items-center justify-center font-black text-xs shadow-2xl">
-                AK
+                {operatorInitials}
               </div>
             </div>
           </div>
@@ -126,7 +182,7 @@ export default function AdminLayout({ children }) {
           
           <footer className="mt-20 pb-12 text-center">
             <p className="text-[9px] font-bold opacity-30 uppercase tracking-[0.5em]">
-              Portfolio Control Systems // v4.2.0
+              Portfolio Control Systems // v{appVersion}
             </p>
           </footer>
         </main>

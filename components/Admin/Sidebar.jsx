@@ -41,6 +41,8 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
         <button 
           className="lg:hidden text-slate-500 hover:text-white transition-colors"
           onClick={onClose}
+          type="button"
+          aria-label="Close admin sidebar"
         >
           <FiX size={24} />
         </button>
@@ -86,6 +88,8 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
         <a 
           href="/about" 
           target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open live portfolio page in a new tab"
           className="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-[var(--admin-accent)] transition-all text-[10px] font-bold uppercase tracking-widest group"
         >
           <FiExternalLink className="text-lg group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -94,6 +98,8 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
         
         <button 
           onClick={handleLogout}
+          type="button"
+          aria-label="Log out of admin dashboard"
           className="flex items-center gap-4 px-4 py-3 text-slate-500 hover:text-red-400 transition-all text-[10px] font-bold uppercase tracking-widest group w-full"
         >
           <FiLogOut className="text-lg group-hover:-translate-x-1 transition-transform" />

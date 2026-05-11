@@ -21,6 +21,8 @@ const Modal = ({ isOpen, onClose, title, children, className = "" }) => {
           </div>
           <button 
             onClick={onClose} 
+            type="button"
+            aria-label="Close modal"
             className="hover:rotate-90 transition-transform p-2 rounded-xl hover:bg-white/5"
           >
             <FiX size={20} />
