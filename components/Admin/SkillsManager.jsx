@@ -6,6 +6,9 @@ import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptySkills } from './EmptyState';
 import { Button, Input } from '@/components/ui';
+import SkillEditModal from './SkillEditModal';
+import { SkillCard } from './SkillCard';
+import { useCallback } from 'react';
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState([]);
@@ -45,7 +48,7 @@ export default function SkillsManager() {
     };
   }, [editingSkill]);
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/skills');
@@ -57,13 +60,13 @@ export default function SkillsManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [errorToast]);
 
   const handleUpdate = (id, value) => {
     setSkills(skills.map(s => s.id === id ? { ...s, title: value } : s));
   };
 
-  const addSkill = async () => {
+  const addSkill = useCallback(async () => {
     if (!newSkill.trim()) return;
     setSaving(true);
     const skill = { title: newSkill.trim() };
@@ -88,9 +91,9 @@ export default function SkillsManager() {
     } finally {
       setSaving(false);
     }
-  };
+  }, [newSkill, skills, fetchSkills, successToast, errorToast]);
 
-  const removeSkill = async (id) => {
+  const removeSkill = useCallback(async (id) => {
     const skill = skills.find(s => s.id === id);
     const confirmed = await confirmEject(skill?.title);
     if (confirmed) {
@@ -114,9 +117,9 @@ export default function SkillsManager() {
         setSaving(false);
       }
     }
-  };
+  }, [skills, confirmEject, fetchSkills, successToast, errorToast]);
 
-  const saveChanges = async (manualData = null) => {
+  const saveChanges = useCallback(async (manualData = null) => {
     // If called from an event handler, manualData will be the event object.
     // We only want to use it if it's an array of skills.
     const data = Array.isArray(manualData) ? manualData : skills;
@@ -142,7 +145,7 @@ export default function SkillsManager() {
     } finally {
       setSaving(false);
     }
-  };
+  }, [skills, fetchSkills, successToast, errorToast]);
 
   // Filter skills based on search
   const filteredSkills = skills.filter(s =>
@@ -172,61 +175,15 @@ export default function SkillsManager() {
   return (
     <div className="animate-fade-in relative">
       {/* Edit Dialog / Modal */}
-      {editingSkill && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="fixed inset-0 bg-black/90 backdrop-blur-xl animate-fade-in" />
-          <div
-            ref={modalRef}
-            className="matrix-modal w-full max-w-lg relative z-10 p-0 overflow-hidden animate-slide-up shadow-[0_0_100px_rgba(0,0,0,0.8)] border-border/50"
-          >
-            <div className="matrix-modal-header p-10 border-b border-border/50 flex items-center justify-between bg-background/50">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[var(--admin-accent)]">
-                  Matrix Refactoring // Node #{editingSkill.id.toString().slice(-4)}
-                </p>
-                <h3 className="text-xl font-bold tracking-tight text-[var(--admin-title)]">{editingSkill.title}</h3>
-              </div>
-              <button onClick={() => setEditingSkill(null)} className="hover:rotate-90 transition-transform">
-                <FiX />
-              </button>
-            </div>
-
-            <div className="matrix-modal-body p-10">
-              <div className="mb-6">
-                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 block">Skill Signature</label>
-                 <Input
-                   autoFocus
-                   type="text"
-                   value={editingSkill.title}
-                   onChange={(e) => {
-                     handleUpdate(editingSkill.id, e.target.value);
-                     setEditingSkill({ ...editingSkill, title: e.target.value });
-                   }}
-                   className="w-full text-lg font-bold"
-                   placeholder="Enter skill name..."
-                 />
-              </div>
-
-              <div className="flex items-center justify-end gap-4 pt-6 border-t border-border/50">
-                <button
-                  onClick={() => setEditingSkill(null)}
-                  className="text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-white transition-colors px-4 py-2"
-                >
-                  Cancel
-                </button>
-                <Button
-                  onClick={saveChanges}
-                  disabled={saving}
-                   className="px-10 py-4 bg-[var(--admin-accent)] text-white shadow-[0_0_15px_var(--admin-accent-glow)]"
-                >
-                  {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning />}
-                  {saving ? 'Synchronizing...' : 'Update Matrix'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <SkillEditModal 
+        skill={editingSkill}
+        onClose={() => setEditingSkill(null)}
+        onUpdate={handleUpdate}
+        onSave={saveChanges}
+        setSkill={setEditingSkill}
+        saving={saving}
+        modalRef={modalRef}
+      />
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4">
         <div>
@@ -323,58 +280,15 @@ export default function SkillsManager() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
-          {filteredSkills.map((skill, idx) =>
-          <div
-            key={skill.id}
-            className="matrix-skill-card group admin-card p-6 hover:border-indigo-500/40 bg-background/50 hover:bg-background/10 transition-all duration-500 animate-fade-in"
-            style={{ animationDelay: `${idx * 40}ms` }}
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/10 border border-[var(--admin-accent)]/20 flex items-center justify-center text-[var(--admin-accent)] font-bold text-xs shadow-inner">
-                  {idx + 1}
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-[var(--admin-title)] tracking-tight group-hover:text-[var(--admin-accent)] transition-colors">
-                    {skill.title}
-                  </h4>
-                  <p className="text-xs text-slate-500 uppercase tracking-widest mt-0.5">
-                    {skill.category || 'Capability'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="matrix-skill-actions flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-                <button
-                  onClick={() => setEditingSkill(skill)}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-500/5 text-indigo-400 border-none hover:bg-indigo-500/10 transition-all"
-                  title="Edit"
-                >
-                  <FiEdit3 size={16} />
-                </button>
-                <button
-                  onClick={() => removeSkill(skill.id)}
-                  className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-500/5 text-rose-400 border-none hover:bg-rose-500/10 transition-all shadow-lg hover:shadow-rose-500/10"
-                  title="Delete"
-                >
-                  <FiTrash2 size={20} />
-                </button>
-              </div>
-            </div>
-
-            {/* Subtle Progress Indicator */}
-            <div className="matrix-skill-footer mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-               <div className="flex gap-1">
-                  {[1,2,3].map(i => (
-                    <div key={i} className={`h-1 w-4 rounded-full ${i <= 2 ? 'bg-indigo-500/40' : 'background/50'}`} />
-                  ))}
-               </div>
-               <span className="text-xs text-slate-600 font-medium uppercase tracking-tighter">
-                 Modified: {skill.updated_at ? new Date(skill.updated_at).toLocaleDateString() : 'Just Now'}
-               </span>
-            </div>
-          </div>
-          )}
+          {filteredSkills.map((skill, idx) => (
+            <SkillCard
+              key={skill.id}
+              skill={skill}
+              index={idx}
+              onEdit={setEditingSkill}
+              onDelete={removeSkill}
+            />
+          ))}
         </div>
       )}
     </div>

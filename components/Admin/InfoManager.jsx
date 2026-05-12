@@ -6,6 +6,9 @@ import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptyInfo } from './EmptyState';
 import { calculateAge } from '@/lib/utils';
+import IdentityModal from './IdentityModal';
+import { IdentityCard, IdentityEmptySearch } from './IdentityCard';
+import { useCallback } from 'react';
 
 export default function InfoManager() {
   const [info, setInfo] = useState([]);
@@ -22,7 +25,7 @@ export default function InfoManager() {
     fetchInfo();
   }, []);
 
-  const fetchInfo = async () => {
+  const fetchInfo = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/info');
@@ -41,9 +44,9 @@ export default function InfoManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const updateInfo = async (id, newValue) => {
+  const updateInfo = useCallback(async (id, newValue) => {
     setSaving(true);
     try {
       const updatedInfo = info.map(item => item.id === id ? { ...item, value: newValue, description: newValue } : item);
@@ -71,9 +74,9 @@ export default function InfoManager() {
     } finally {
       setSaving(false);
     }
-  };
+  }, [info, successToast, errorToast]);
 
-  const addInfo = async () => {
+  const addInfo = useCallback(async () => {
     setSaving(true);
     try {
       const draft = {
@@ -108,9 +111,9 @@ export default function InfoManager() {
     } finally {
       setSaving(false);
     }
-  };
+  }, [successToast, errorToast]);
 
-  const deleteInfo = async (id) => {
+  const deleteInfo = useCallback(async (id) => {
     const item = info.find(i => i.id === id);
     const confirmed = await confirmEject(item?.label);
     if (confirmed) {
@@ -137,7 +140,7 @@ export default function InfoManager() {
         errorToast('Failed to eject identity node');
       }
     }
-  };
+  }, [info, confirmEject, successToast, errorToast]);
 
   // Filter info based on search
   const filteredInfo = info.filter(i => 
@@ -167,69 +170,13 @@ export default function InfoManager() {
   return (
     <div className="animate-fade-in relative">
       {/* Edit Modal */}
-      {editingItem && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#030712]/80 backdrop-blur-md" onClick={() => setEditingItem(null)} />
-          <div className="admin-card identity-card holographic-card w-full max-w-lg relative z-10 !p-0 overflow-hidden !rounded-[2rem] border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            {/* Modal Header */}
-            <div className="bg-gradient-to-br from-indigo-500/10 to-transparent p-8 border-b border-white/[0.05]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                  <FiZap size={20} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-[var(--admin-title)] tracking-tight">Modify Identity Node</h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Field: {editingItem.label}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-8 space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">
-                  Value {editingItem.id === 'age' && <span className="text-indigo-400 normal-case ml-2">(Enter DOB as DD/MM/YYYY for dynamic age)</span>}
-                </label>
-                {editingItem.id === 'about_description' || editingItem.id === 'address' ? (
-                  <textarea
-                    autoFocus
-                    rows={editingItem.id === 'about_description' ? 6 : 3}
-                    value={editingItem.value}
-                    onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
-                  />
-                ) : (
-                  <input
-                    autoFocus
-                    type="text"
-                    value={editingItem.value}
-                    onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
-                    onKeyDown={(e) => e.key === 'Enter' && updateInfo(editingItem.id, editingItem.value)}
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white font-bold focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                  />
-                )}
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  onClick={() => setEditingItem(null)}
-                  className="px-6 py-3 rounded-xl text-xs font-bold text-slate-500 hover:text-white transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => updateInfo(editingItem.id, editingItem.value)}
-                  disabled={saving}
-                  className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-[0_4px_15px_var(--admin-accent-glow)]"
-                >
-                  {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <IdentityModal 
+        item={editingItem}
+        onClose={() => setEditingItem(null)}
+        onSave={updateInfo}
+        setItem={setEditingItem}
+        saving={saving}
+      />
 
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
@@ -270,52 +217,18 @@ export default function InfoManager() {
       {info.length === 0 ? (
         <EmptyInfo onAdd={addInfo} />
       ) : filteredInfo.length === 0 ? (
-        <div className="admin-card mb-12 !p-8 bg-white/[0.02] text-center !rounded-[1.5rem]">
-          <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">
-            <FiSearch className="text-slate-600" size={32} />
-          </div>
-          <p className="text-slate-400 text-lg font-medium">No results for "{searchQuery}"</p>
-          <button onClick={() => setSearchQuery('')} className="mt-4 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300">Clear Search</button>
-        </div>
+        <IdentityEmptySearch query={searchQuery} onClear={() => setSearchQuery('')} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
           {filteredInfo.map((item, idx) => (
-          <div
-            key={item.id}
-            className="admin-card identity-card group !p-6 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 !rounded-[1.5rem]"
-            style={{ animationDelay: `${idx * 50}ms` }}
-          >
-             <div className="flex justify-between items-start mb-6">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: item.label }} />
-                  <div className="h-1 w-8 bg-indigo-500/30 rounded-full group-hover:w-full transition-all duration-700" />
-                </div>
-                <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => setEditingItem(item)}
-                    className="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20 shadow-lg hover:shadow-indigo-500/20"
-                    title="Edit"
-                  >
-                    <FiEdit3 size={18} />
-                  </button>
-                  <button
-                    onClick={() => deleteInfo(item.id)}
-                    className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20 shadow-lg hover:shadow-rose-500/20"
-                    title="Delete"
-                  >
-                    <FiTrash2 size={22} />
-                  </button>
-                </div>
-             </div>
-             <div 
-               className={`text-lg font-bold text-[var(--admin-title)] tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
-               dangerouslySetInnerHTML={{ __html: item.id === 'age' && item.value.includes('/') ? calculateAge(item.value) + ' Years' : item.value }} 
-             />
-             <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
-               Synchronized: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Secure'}
-             </p>
-          </div>
-        ))}
+            <IdentityCard
+              key={item.id}
+              item={item}
+              index={idx}
+              onEdit={setEditingItem}
+              onDelete={deleteInfo}
+            />
+          ))}
 
         {/* Quick Add Node */}
         <button
