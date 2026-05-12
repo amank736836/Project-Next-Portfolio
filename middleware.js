@@ -135,6 +135,24 @@ export default async function middleware(request) {
       
       return NextResponse.redirect(loginUrl);
     }
+
+    // Email Authorization Check
+    const AUTHORIZED_EMAIL = 'amankarguwal0@gmail.com';
+    const userEmail = session.user?.email;
+
+    if (userEmail !== AUTHORIZED_EMAIL) {
+      console.log(`[Middleware] Unauthorized access attempt by ${userEmail}. Restricting to ${AUTHORIZED_EMAIL}`);
+      
+      // If it's an API route, return 403 Forbidden
+      if (isApiAdminRoute) {
+        return NextResponse.json({ error: 'Forbidden: Unauthorized Email' }, { status: 403 });
+      }
+      
+      // For page routes, redirect to home with an unauthorized error flag
+      const unauthorizedUrl = new URL('/', request.url);
+      unauthorizedUrl.searchParams.set('error', 'unauthorized_email');
+      return NextResponse.redirect(unauthorizedUrl);
+    }
   }
 
   return NextResponse.next();

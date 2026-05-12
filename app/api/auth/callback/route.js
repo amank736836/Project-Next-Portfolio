@@ -94,6 +94,16 @@ export async function GET(request) {
       permissions,
     };
 
+    // Authorized Email Check
+    const AUTHORIZED_EMAIL = 'amankarguwal0@gmail.com';
+    if (user.email !== AUTHORIZED_EMAIL) {
+      console.log(`[Auth Callback] Unauthorized email: ${user.email}. Restricting to ${AUTHORIZED_EMAIL}`);
+      // Redirect to home with error instead of creating session
+      const unauthorizedUrl = new URL('/', request.url);
+      unauthorizedUrl.searchParams.set('error', 'unauthorized_email');
+      return NextResponse.redirect(unauthorizedUrl);
+    }
+
     // Save session in cookie
     await setSession(session);
 
