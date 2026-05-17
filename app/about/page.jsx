@@ -12,10 +12,40 @@ export default async function About() {
   const { data: infoData } = await supabase.from('personal_info').select('*');
 
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
-  const personalInfo = infoData?.filter(i => 
+  let personalInfo = infoData?.filter(i => 
     i.key !== 'about_description' && 
     !i.key.startsWith('default_theme_')
   );
+
+  if (personalInfo) {
+    const desiredOrder = [
+      'first name', 'last name',
+      'email', 'phone',
+      'address', 'nationality',
+      'languages', 'linkedin'
+    ];
+
+    personalInfo.sort((a, b) => {
+      const aTitle = (a.title || '').toLowerCase().trim();
+      const bTitle = (b.title || '').toLowerCase().trim();
+      
+      let aIndex = desiredOrder.findIndex(key => aTitle.includes(key));
+      let bIndex = desiredOrder.findIndex(key => bTitle.includes(key));
+      
+      if (aIndex === -1) {
+        aIndex = aTitle.includes('custom') ? 9999 : 999;
+      }
+      if (bIndex === -1) {
+        bIndex = bTitle.includes('custom') ? 9999 : 999;
+      }
+      
+      if (aIndex === bIndex && aIndex >= 999) {
+        return aTitle.localeCompare(bTitle);
+      }
+      
+      return aIndex - bIndex;
+    });
+  }
 
   return (
     <main className="section container">

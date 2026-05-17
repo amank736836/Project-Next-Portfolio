@@ -8,7 +8,7 @@
   --admin-card: rgba(var(--admin-card-rgb), 0.45);
   --admin-border: rgba(255, 255, 255, 0.15);
   --admin-border-strong: rgba(255, 255, 255, 0.22);
-  --glass-blur: 40px;
+  --glass-blur: 20px;
   --glass-surface-opacity: 0.38;
   --glass-edge-glow: rgba(255,255,255,0.08);
   --admin-accent: var(--first-color);
@@ -24,7 +24,7 @@
 
   /* Layout Constants */
   --admin-sidebar-bg: rgba(15, 23, 42, 0.6);
-  --glass-blur: 48px;
+  --glass-blur: 20px;
 }
 
 .light-theme {
@@ -64,13 +64,36 @@
   border-color: rgba(0, 0, 0, 0.06);
 }
 
+.premium-input {
+  width: 100%;
+  background: var(--admin-card) !important;
+  border: 1px solid var(--admin-border-strong) !important;
+  color: var(--admin-title) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.premium-input::placeholder {
+  color: var(--admin-text) !important;
+  opacity: 0.4;
+}
+
+.premium-input:focus {
+  outline: none !important;
+  border-color: var(--admin-accent) !important;
+  box-shadow: 
+    0 0 0 4px var(--admin-accent-glow),
+    0 8px 24px rgba(var(--admin-accent-rgb), 0.1),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
 .light-theme .premium-input {
   background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(15, 23, 42, 0.16) !important;
   color: #0f172a !important;
   box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.01), 
-    inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    0 2px 6px rgba(15, 23, 42, 0.03), 
+    inset 0 2px 4px rgba(0, 0, 0, 0.03) !important;
 }
 
 .light-theme .premium-input::placeholder {
@@ -1936,4 +1959,35 @@ button[title="Delete"]:hover {
 .search-clear:hover {
   background: rgba(var(--admin-card-rgb), 0.14);
   color: var(--admin-title);
+}
+
+/* Redesigned Matrix Modal Spacing and Alignment to resolve HMR & Purge clipping issues */
+.matrix-modal .matrix-modal-header {
+  padding: 2.5rem 2.5rem 2rem 2.5rem !important;
+}
+
+.matrix-modal .matrix-modal-body {
+  padding: 2rem 2.5rem !important;
+}
+
+.matrix-modal .matrix-modal-footer {
+  padding: 1.75rem 2.5rem 2.25rem 2.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Support responsive padding scales */
+@media (max-width: 640px) {
+  .matrix-modal .matrix-modal-header {
+    padding: 1.75rem 1.75rem 1.25rem 1.75rem !important;
+  }
+  .matrix-modal .matrix-modal-body {
+    padding: 1.5rem 1.75rem !important;
+  }
+  .matrix-modal .matrix-modal-footer {
+    padding: 1.25rem 1.75rem 1.75rem 1.75rem !important;
+  }
 }

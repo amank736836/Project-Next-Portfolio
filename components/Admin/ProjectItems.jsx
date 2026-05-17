@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { FiEye, FiEyeOff, FiCheck, FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 
 export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) => {
   return (

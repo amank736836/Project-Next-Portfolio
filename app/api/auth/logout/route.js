@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { clearSession, getSession } from '@/lib/cookies';
 import { getScalekitClient } from '@/lib/scalekit';
 
-export async function POST(request) {
+async function handleLogout(request) {
   try {
     // Get Scalekit logout URL
     const scalekit = getScalekitClient();
@@ -30,17 +30,30 @@ export async function POST(request) {
     // Clear local session
     await clearSession();
 
-    // Return logout URL for client-side redirect
-    return NextResponse.json({ logoutUrl });
+    // For POST requests, return JSON so client-side code can do window.location.href
+    if (request.method === 'POST') {
+      return NextResponse.json({ logoutUrl });
+    }
+    
+    // For GET requests (e.g. direct link or window.location redirect), perform an HTTP Redirect
+    return NextResponse.redirect(logoutUrl);
   } catch (error) {
     console.error('Logout error:', error);
     // Even if there's an error, clear the session and redirect home
     await clearSession();
-    return NextResponse.json({ logoutUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}` });
+    const fallbackUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    if (request.method === 'POST') {
+      return NextResponse.json({ logoutUrl: fallbackUrl });
+    }
+    return NextResponse.redirect(fallbackUrl);
   }
+}
+
+export async function POST(request) {
+  return await handleLogout(request);
 }
 
 // Also handle GET for compatibility
 export async function GET(request) {
-  return await POST(request);
+  return await handleLogout(request);
 }

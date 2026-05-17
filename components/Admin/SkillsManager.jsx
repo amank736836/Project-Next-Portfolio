@@ -5,7 +5,8 @@ import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode, FiEdit3, FiSea
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptySkills } from './EmptyState';
-import { Button, Input } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import SkillEditModal from './SkillEditModal';
 import { SkillCard } from './SkillCard';
 import { useCallback } from 'react';
@@ -24,6 +25,20 @@ export default function SkillsManager() {
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
   const confirmEject = useEjectConfirm();
+
+  const fetchSkills = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/skills');
+      const data = await res.json();
+      setSkills(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to fetch skills:', error);
+      errorToast('Failed to load skill matrix');
+    } finally {
+      setLoading(false);
+    }
+  }, [errorToast]);
 
   // Fetch skills once on mount
   useEffect(() => {
@@ -52,20 +67,6 @@ export default function SkillsManager() {
       window.removeEventListener('mousedown', handleClickOutside);
     };
   }, [editingSkill]);
-
-  const fetchSkills = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/skills');
-      const data = await res.json();
-      setSkills(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Failed to fetch skills:', error);
-      errorToast('Failed to load skill matrix');
-    } finally {
-      setLoading(false);
-    }
-  }, [errorToast]);
 
   const handleUpdate = (id, value) => {
     setSkills(skills.map(s => s.id === id ? { ...s, title: value } : s));

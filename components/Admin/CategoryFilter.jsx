@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { FiGrid, FiChevronDown } from 'react-icons/fi';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 
 export default function CategoryFilter({ categories, currentCategory, onSelect, isOpen, onToggle }) {
   if (categories.length <= 1) return null;

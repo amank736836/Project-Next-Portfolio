@@ -4,7 +4,8 @@ import { useState, useEffect, memo } from "react";
 import { links } from "@/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, Avatar } from "@/components/ui";
+import { Button } from '@/components/ui/Button';
+import { Avatar } from '@/components/ui/Avatar';
 import "./Navbar.css";
 
 const Navbar = () => {

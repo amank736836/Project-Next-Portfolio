@@ -6,7 +6,8 @@ import {
   FiEye, FiEyeOff, FiX, FiChevronDown, FiRefreshCw, FiCloudLightning, FiGithub, FiExternalLink, FiGrid, FiCode
 } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
-import { Button, Input } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 export default function EditProjectForm({
   editingProject,

@@ -1,4 +1,7 @@
-import { Button, Input, Card, Badge } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 
 export default function TestUI() {
   return (

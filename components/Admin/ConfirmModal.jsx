@@ -119,9 +119,9 @@ function ConfirmModal({
     position: 'fixed', inset: 0, zIndex: 9999,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '20px',
-    backgroundColor: 'rgba(0,0,0,0.82)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
+    backgroundColor: 'rgba(0,0,0,0.76)',
+    backdropFilter: 'blur(6px)',
+    WebkitBackdropFilter: 'blur(6px)',
   };
 
   const cardStyle = {
@@ -131,8 +131,8 @@ function ConfirmModal({
     borderRadius: '20px',
     border: `1px solid ${cfg.cardBorder}`,
     backgroundColor: 'rgba(10,14,28,0.96)',
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 40px 80px -12px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.07)`,
     overflow: 'hidden',
     color: '#ffffff',           /* ← Forces white on ALL children */

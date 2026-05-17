@@ -12,7 +12,7 @@ import {
   FiExternalLink,
   FiCommand
 } from 'react-icons/fi';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 
 const actions = [
   {
