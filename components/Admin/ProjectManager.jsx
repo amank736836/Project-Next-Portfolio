@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import {
   FiEye, FiEyeOff, FiTrash, FiTrash2, FiPlus, FiExternalLink,
@@ -72,41 +73,16 @@ export default function ProjectManager() {
     }
   }, [errorToast]);
 
-  const addProject = async () => {
-    setSaving(true);
-    try {
-      const draft = {
-        title: 'New Mission',
-        img: '',
-        is_hidden: false,
-        details: [],
-        category: 'sideproject',
-        description: 'Describe this project and its outcome.',
-      };
-
-      const res = await fetch('/api/admin/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...draft,
-          details: JSON.stringify(draft.details)
-        }),
-      });
-
-      if (res.ok) {
-        const created = await res.json();
-        setProjects((current) => [created, ...current]);
-        setEditingProject(created);
-        successToast('New project created');
-      } else {
-        errorToast('Failed to create project');
-      }
-    } catch (error) {
-      console.error('Failed to create project:', error);
-      errorToast('Failed to create project');
-    } finally {
-      setSaving(false);
-    }
+  const openNewProjectForm = () => {
+    setEditingProject({
+      title: '',
+      img: '',
+      image: '',
+      is_hidden: false,
+      details: [],
+      category: '',
+      description: '',
+    });
   };
 
   const toggleVisibility = async (id, currentStatus) => {
@@ -225,17 +201,20 @@ const handleBulkDelete = async () => {
 
   return (
     <div className="animate-fade-in pb-10">
-      {/* Edit Form Component */}
-      <EditProjectForm
-        editingProject={editingProject}
-        setEditingProject={setEditingProject}
-        categories={categories}
-        setIsAddingCategory={setIsAddingCategory}
-        isAddingCategory={isAddingCategory}
-        onUpdateProject={fetchProjects}
-        onRequestClose={() => setEditingProject(null)}
-        modalRef={modalRef}
-      />
+      {/* Edit Form rendered via portal to escape CSS transform containing block */}
+      {typeof window !== 'undefined' && createPortal(
+        <EditProjectForm
+          editingProject={editingProject}
+          setEditingProject={setEditingProject}
+          categories={categories}
+          setIsAddingCategory={setIsAddingCategory}
+          isAddingCategory={isAddingCategory}
+          onUpdateProject={fetchProjects}
+          onRequestClose={() => setEditingProject(null)}
+          modalRef={modalRef}
+        />,
+        document.body
+      )}
 
       {/* Header Section */}
       <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
@@ -259,7 +238,7 @@ const handleBulkDelete = async () => {
           )}
           <Button
             variant="outline"
-            onClick={addProject}
+            onClick={openNewProjectForm}
             className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 h-10 sm:h-12 rounded-lg sm:rounded-xl border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all group text-xs sm:text-sm"
           >
             <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />
@@ -418,7 +397,7 @@ const handleBulkDelete = async () => {
 
       {/* Empty States */}
       {projects.length === 0 ? (
-        <EmptyProjects onAdd={addProject} />
+        <EmptyProjects onAdd={openNewProjectForm} />
       ) : filteredProjects.length === 0 ? (
         <EmptySearch
           searchTerm={searchQuery}

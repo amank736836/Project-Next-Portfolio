@@ -19,14 +19,19 @@ export default function SkillsManager() {
   const [editingSkill, setEditingSkill] = useState(null);
 
   const modalRef = useRef(null);
+  const newSkillInputRef = useRef(null);
 
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
   const confirmEject = useEjectConfirm();
 
+  // Fetch skills once on mount
   useEffect(() => {
     fetchSkills();
+  }, [fetchSkills]);
 
+  // Keyboard / click-outside listeners for the edit modal
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setEditingSkill(null);
     };
@@ -230,10 +235,11 @@ export default function SkillsManager() {
             <div className="input-icon-wrapper sm:w-64">
               <FiCode className="icon" size={18} />
               <Input
+                ref={newSkillInputRef}
                 type="text"
                 value={newSkill}
                 onChange={(e) => setNewSkill(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                onKeyDown={(e) => e.key === 'Enter' && addSkill()}
                 className="admin-input"
                 placeholder="New skill..."
               />
@@ -272,7 +278,7 @@ export default function SkillsManager() {
 
       {/* Empty State */}
       {skills.length === 0 ? (
-        <EmptySkills onAdd={() => document.querySelector('.pl-12')?.focus()} />
+        <EmptySkills onAdd={() => newSkillInputRef.current?.focus()} />
       ) : filteredSkills.length === 0 ? (
         <div className="p-8 text-center">
           <FiSearch className="mx-auto mb-4 text-slate-500" size={32} />

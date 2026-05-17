@@ -121,9 +121,9 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
         {isSelected && <FiCheck size={10} className="sm:!size-3" strokeWidth={4} />}
       </button>
 
-      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl overflow-hidden bg-[var(--admin-bg)] flex-shrink-0 border border-border/50">
+      <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl overflow-hidden bg-[var(--admin-bg)] flex-shrink-0 border border-border/50">
         <Image
-          src={project.image || project.img || 'https://via.placeholder.com/150'}
+          src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop'}
           alt={project.title || 'Project thumbnail'}
           fill
           sizes="56px"

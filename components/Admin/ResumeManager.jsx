@@ -15,6 +15,7 @@ export default function ResumeManager({ type }) {
 
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
+  const ejectConfirm = useEjectConfirm();
 
   const title = type === 'education' ? 'Academy' : 'Logbook';
   const subtitle = type === 'education' ? 'Academic Achievement Configuration' : 'Professional Mission History';
@@ -61,10 +62,14 @@ export default function ResumeManager({ type }) {
       if (res.ok) {
         const added = await res.json();
         setItems([...items, added]);
-        setEditingItem(added); // Automatically open edit dialog for new items
+        setEditingItem(added);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        errorToast(err.error || `Failed to create ${title} entry`);
       }
     } catch (error) {
       console.error('Failed to add item:', error);
+      errorToast(`Network error while creating ${title} entry`);
     }
   };
 
@@ -110,7 +115,9 @@ export default function ResumeManager({ type }) {
   };
 
   const deleteItem = async (id) => {
-    if (!confirm('Abort this record? All data will be expunged.')) return;
+    const item = items.find(i => i.id === id);
+    const confirmed = await ejectConfirm(item?.title || 'this record');
+    if (!confirmed) return;
     
     try {
       const res = await fetch(apiPath, {
@@ -122,7 +129,7 @@ export default function ResumeManager({ type }) {
         setItems(items.filter(item => item.id !== id));
         successToast(`${title} record expunged from database`);
       } else {
-        const err = await res.json();
+        const err = await res.json().catch(() => ({}));
         errorToast(err.error || `Protocol failure: Could not delete ${title}`);
       }
     } catch (error) {

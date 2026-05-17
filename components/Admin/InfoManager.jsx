@@ -46,84 +46,47 @@ export default function InfoManager() {
     }
   }, []);
 
-  const updateInfo = useCallback(async (id, newValue) => {
+  const updateInfo = useCallback(async (id, newValue, newLabel) => {
     setSaving(true);
     try {
-      const updatedInfo = info.map(item => item.id === id ? { ...item, value: newValue, description: newValue } : item);
-      // API expects the original structure for PUT
-      const apiPayload = updatedInfo.map(item => ({
-        key: item.id,
-        title: item.title,
-        description: item.description
-      }));
-      const res = await fetch('/api/admin/info', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(apiPayload),
-      });
-      if (res.ok) {
-        setInfo(updatedInfo);
-        setEditingItem(null);
-        successToast('Identity node updated successfully');
-      } else {
-        errorToast('Failed to update identity node');
-      }
-    } catch (error) {
-      console.error('Failed to update info:', error);
-      errorToast('Failed to update identity node');
-    } finally {
-      setSaving(false);
-    }
-  }, [info, successToast, errorToast]);
+      const existingItem = info.find(i => i.id === id);
 
-  const addInfo = useCallback(async () => {
-    setSaving(true);
-    try {
-      const draft = {
-        key: `custom_${Date.now()}`,
-        title: 'Custom Field',
-        description: 'Edit me',
-      };
-
-      const res = await fetch('/api/admin/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(draft),
-      });
-
-      if (res.ok) {
-        const created = await res.json();
-        const mapped = {
-          ...created,
-          id: created.key,
-          label: created.title || created.key,
-          value: created.description || '',
+      if (!existingItem) {
+        // New item — POST
+        const draft = {
+          key: id,
+          title: newLabel?.trim() || 'Custom Field',
+          description: newValue,
         };
-        setInfo((current) => [...current, mapped]);
-        setEditingItem(mapped);
-        successToast('Identity node added successfully');
+        const res = await fetch('/api/admin/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(draft),
+        });
+        if (res.ok) {
+          const created = await res.json();
+          const mapped = {
+            ...created,
+            id: created.key,
+            label: created.title || created.key,
+            value: created.description || '',
+          };
+          setInfo(current => [...current, mapped]);
+          setEditingItem(null);
+          successToast(`Identity node "${mapped.label}" created successfully`);
+        } else {
+          errorToast('Failed to create identity node');
+        }
       } else {
-        errorToast('Failed to add identity node');
-      }
-    } catch (error) {
-      console.error('Failed to add info:', error);
-      errorToast('Failed to add identity node');
-    } finally {
-      setSaving(false);
-    }
-  }, [successToast, errorToast]);
-
-  const deleteInfo = useCallback(async (id) => {
-    const item = info.find(i => i.id === id);
-    const confirmed = await confirmEject(item?.label);
-    if (confirmed) {
-      const updatedInfo = info.filter(item => item.id !== id);
-      const apiPayload = updatedInfo.map(item => ({
-        key: item.id,
-        title: item.title,
-        description: item.description
-      }));
-      try {
+        // Existing item — PUT (full overwrite)
+        const updatedInfo = info.map(item =>
+          item.id === id ? { ...item, value: newValue, description: newValue } : item
+        );
+        const apiPayload = updatedInfo.map(item => ({
+          key: item.id,
+          title: item.title,
+          description: item.description
+        }));
         const res = await fetch('/api/admin/info', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -131,16 +94,53 @@ export default function InfoManager() {
         });
         if (res.ok) {
           setInfo(updatedInfo);
-          successToast(`Identity node "${item?.label}" ejected`);
+          setEditingItem(null);
+          successToast('Identity node updated successfully');
         } else {
-          errorToast('Failed to eject identity node');
+          errorToast('Failed to update identity node');
         }
-      } catch (error) {
-        console.error('Failed to delete info:', error);
-        errorToast('Failed to eject identity node');
       }
+    } catch (error) {
+      console.error('Failed to save info:', error);
+      errorToast('Failed to save identity node');
+    } finally {
+      setSaving(false);
+    }
+  }, [info, successToast, errorToast]);
+
+  const addInfo = useCallback(() => {
+    setEditingItem({
+      isNew: true,
+      id: `custom_${Date.now()}`,
+      label: '',
+      value: '',
+      title: '',
+      description: '',
+    });
+  }, []);
+
+  const deleteInfo = useCallback(async (id) => {
+    const item = info.find(i => i.id === id);
+    const confirmed = await confirmEject(item?.label);
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/admin/info?key=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setInfo(prev => prev.filter(i => i.id !== id));
+        successToast(`Identity node "${item?.label}" ejected`);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        errorToast(err.error || 'Failed to eject identity node');
+      }
+    } catch (error) {
+      console.error('Failed to delete info:', error);
+      errorToast('Network error while ejecting identity node');
     }
   }, [info, confirmEject, successToast, errorToast]);
+
 
   // Filter info based on search
   const filteredInfo = info.filter(i => 
@@ -232,7 +232,7 @@ export default function InfoManager() {
 
         {/* Quick Add Node */}
         <button
-          onClick={() => successToast('Add identity feature coming soon')}
+          onClick={addInfo}
           className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
         >
            <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">

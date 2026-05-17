@@ -93,7 +93,7 @@ export default function QuickActions({ className = '' }) {
             key={action.id}
             variant="outline"
             onClick={() => handleAction(action)}
-            className={`flex h-16 w-full items-center justify-start gap-6 text-left ${className}`}
+            className="flex h-16 w-full items-center justify-start gap-6 text-left"
           >
             <div className="flex-shrink-0">
               {action.icon}
