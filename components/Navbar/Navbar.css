@@ -33,7 +33,26 @@
 
 .active-nav .nav__icon,
 .active-nav .nav__name {
-  color: var(--text-white);
+  color: var(--first-color);
+}
+
+/* Mobile active highlight: left border in theme color, no bottom border */
+.active-nav {
+  border-bottom-color: transparent;
+  border-left: 3px solid var(--first-color);
+  padding-left: 16px;
+  background-color: color-mix(in srgb, var(--first-color) 8%, transparent);
+  border-radius: 0 8px 8px 0;
+}
+
+@media screen and (min-width: 1024px) {
+  .active-nav {
+    border-left: none;
+    border-bottom: none;
+    padding-left: 0;
+    background-color: transparent;
+    border-radius: 50%;
+  }
 }
 
 .nav__toggle {

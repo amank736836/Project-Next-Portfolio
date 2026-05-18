@@ -16,7 +16,7 @@ export default function SkillEditModal({
   return (
     <div className="fixed inset-0 z-[999] overflow-y-auto">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-[10px] animate-fade-in" onClick={onClose} />
+      <div className="modal-backdrop fixed inset-0 backdrop-blur-[10px] animate-fade-in" onClick={onClose} />
       
       {/* Centering Container */}
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
@@ -71,7 +71,7 @@ export default function SkillEditModal({
           <button
             onClick={onSave}
             disabled={saving}
-            className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_15px_var(--admin-accent-glow)] disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-wider"
+            className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_15px_var(--admin-accent-glow)] disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-wider modal-save-btn"
           >
             {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
             {saving ? 'Synchronizing...' : 'Update Matrix'}

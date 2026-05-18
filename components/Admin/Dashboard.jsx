@@ -294,9 +294,9 @@ export default function Dashboard() {
           </p>
         </div>
         
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-black/[0.05] dark:border-white/[0.06] pb-10">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-black/[0.05] dark:border-white/[0.06] pb-8">
           <div>
-            <h2 className="text-4xl font-black tracking-tight !mb-1" style={{ color: textTitle }}>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight !mb-1" style={{ color: textTitle }}>
               Core Telemetry
             </h2>
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-accent)] opacity-85" style={{ letterSpacing: '0.25em' }}>
@@ -305,36 +305,38 @@ export default function Dashboard() {
           </div>
 
           {/* HUD chips (Clock & Session status) */}
-          <div className="flex flex-wrap gap-6">
+          <div className="flex gap-3 sm:gap-6 w-full lg:w-auto">
             <div 
               style={{
                 ...hudChipStyle(isLight, hudBg, hudBorder),
+                flex: 1,
                 boxShadow: isLight ? 'inset 0 1px 0 rgba(255,255,255,0.9), 0 10px 25px rgba(0,0,0,0.03)' : 'inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 30px rgba(0,0,0,0.25)',
               }}
               className="hover:border-[var(--admin-accent)]/30 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)] group-hover:scale-105 transition-transform" style={{ border: '1px solid rgba(var(--admin-accent-rgb), 0.15)' }}>
-                <FiClock size={18} />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[var(--admin-accent)]/10 flex items-center justify-center text-[var(--admin-accent)] group-hover:scale-105 transition-transform shrink-0" style={{ border: '1px solid rgba(var(--admin-accent-rgb), 0.15)' }}>
+                <FiClock size={16} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-0.5">Local Time</p>
-                <p className="text-lg font-black tracking-wider hud-text" style={{ color: textTitle }}>{uptime}</p>
+                <p className="text-sm sm:text-lg font-black tracking-wider hud-text truncate" style={{ color: textTitle }}>{uptime}</p>
               </div>
             </div>
 
             <div 
               style={{
                 ...hudChipStyle(isLight, hudBg, hudBorder),
+                flex: 1,
                 boxShadow: isLight ? 'inset 0 1px 0 rgba(255,255,255,0.9), 0 10px 25px rgba(0,0,0,0.03)' : 'inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 30px rgba(0,0,0,0.25)',
               }}
               className="hover:border-emerald-500/30 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-105 transition-transform" style={{ border: '1px solid rgba(16, 185, 129, 0.15)' }}>
-                <FiActivity size={18} />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-105 transition-transform shrink-0" style={{ border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+                <FiActivity size={16} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-0.5">Session</p>
-                <p className="text-lg font-black tracking-wider text-emerald-500 hud-text" style={{ textShadow: '0 0 10px rgba(16,185,129,0.1)' }}>Active</p>
+                <p className="text-sm sm:text-lg font-black tracking-wider text-emerald-500 hud-text" style={{ textShadow: '0 0 10px rgba(16,185,129,0.1)' }}>Active</p>
               </div>
             </div>
           </div>
@@ -342,10 +344,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── 2. TELEMETRY STATS GRID (Cyber-Luxe Overhaul) ── */}
-      <div 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-        style={{ display: 'grid', gap: '32px' }}
-      >
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
         {[
           { label: 'Projects', value: stats.projects, icon: FiLayers, color: 'indigo', desc: 'Total Nodes Active' },
           { label: 'Matrix', value: stats.skills, icon: FiTrendingUp, color: 'emerald', desc: 'Identified Skills' },
@@ -357,7 +356,7 @@ export default function Dashboard() {
 
           const cardStyle = {
             position: 'relative',
-            padding: '24px',
+            padding: '16px',
             borderRadius: '20px',
             backgroundColor: cardBg,
             backdropFilter: 'blur(28px) saturate(220%)',
@@ -394,7 +393,7 @@ export default function Dashboard() {
               {/* Card Header */}
               <div className="relative z-10 flex items-center justify-between">
                 <div 
-                  className="w-[46px] h-[46px] rounded-xl flex items-center justify-center transition-all duration-300"
+                  className="w-9 h-9 sm:w-[46px] sm:h-[46px] rounded-xl flex items-center justify-center transition-all duration-300"
                   style={{
                     backgroundColor: t.bg,
                     border: `1px solid ${t.border}`,
@@ -402,16 +401,16 @@ export default function Dashboard() {
                     transform: isHovered ? 'scale(1.1) rotate(3deg)' : 'scale(1)',
                   }}
                 >
-                  <stat.icon size={20} />
+                  <stat.icon size={16} />
                 </div>
                 <span 
                   style={{
-                    fontSize: '9px', fontWeight: 900,
+                    fontSize: '8px', fontWeight: 900,
                     color: t.text,
                     backgroundColor: t.badgeBg,
                     border: `1px solid ${t.badgeBorder}`,
-                    padding: '6px 12px', borderRadius: '10px',
-                    textTransform: 'uppercase', letterSpacing: '0.18em',
+                    padding: '4px 8px', borderRadius: '8px',
+                    textTransform: 'uppercase', letterSpacing: '0.15em',
                   }}
                 >
                   {stat.label}
@@ -419,20 +418,20 @@ export default function Dashboard() {
               </div>
 
               {/* Card Main Value */}
-              <div className="relative z-10 mt-8">
+              <div className="relative z-10 mt-5 sm:mt-8">
                 {loading ? (
-                  <div className="h-14 w-20 bg-black/5 dark:bg-white/5 animate-pulse rounded-xl mb-2" />
+                  <div className="h-10 sm:h-14 w-16 sm:w-20 bg-black/5 dark:bg-white/5 animate-pulse rounded-xl mb-2" />
                 ) : error ? (
                   <p className="text-xs font-black text-rose-500/80 uppercase tracking-tighter">Signal Error</p>
                 ) : (
-                  <p className="text-5xl font-black tracking-tight" style={{ color: textTitle, textShadow: isLight ? 'none' : '0 2px 10px rgba(0,0,0,0.3)' }}>
+                  <p className="text-4xl sm:text-5xl font-black tracking-tight" style={{ color: textTitle, textShadow: isLight ? 'none' : '0 2px 10px rgba(0,0,0,0.3)' }}>
                     {stat.value}
                   </p>
                 )}
                 
-                <p className="text-[10px] font-bold uppercase tracking-wider mt-4 flex items-center gap-2" style={{ color: textDesc }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: t.bullet, boxShadow: `0 0 8px ${t.bullet}` }} />
-                  {stat.desc}
+                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mt-3 sm:mt-4 flex items-center gap-2" style={{ color: textDesc }}>
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: t.bullet, boxShadow: `0 0 8px ${t.bullet}` }} />
+                  <span className="truncate">{stat.desc}</span>
                 </p>
               </div>
             </div>
@@ -626,10 +625,14 @@ export default function Dashboard() {
                   <button
                     onClick={() => saveThemeSettings(themeSettings.color, themeSettings.mode === 'dark-theme' ? 'light-theme' : 'dark-theme')}
                     aria-label="Toggle visual protocol"
-                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all bg-[var(--admin-accent)] hover:bg-[var(--admin-accent)]/90 text-white shadow-lg cursor-pointer"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg cursor-pointer"
                     style={{ 
-                      boxShadow: '0 4px 15px rgba(var(--admin-accent-rgb), 0.3)',
-                      border: '1px solid rgba(255,255,255,0.15)'
+                      backgroundColor: isLight ? '#ffffff' : 'var(--admin-accent)',
+                      color: isLight ? '#0f172a' : '#ffffff',
+                      boxShadow: isLight 
+                        ? '0 4px 15px rgba(0,0,0,0.08)' 
+                        : '0 4px 15px rgba(var(--admin-accent-rgb), 0.3)',
+                      border: `2px solid var(--admin-accent)`,
                     }}
                   >
                     {themeSettings.mode === 'dark-theme' ? <FiMoon size={18} /> : <FiSun size={18} />}

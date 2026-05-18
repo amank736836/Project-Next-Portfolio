@@ -28,8 +28,8 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
         <div className="flex items-center gap-4 group cursor-pointer">
           <div className="relative">
             <div className="absolute -inset-2 bg-[var(--admin-accent)]/20 rounded-2xl blur-lg group-hover:bg-[var(--admin-accent)]/40 transition duration-500"></div>
-            <div className="relative bg-black border border-white/10 w-12 h-12 rounded-2xl flex items-center justify-center text-white transition-transform group-hover:rotate-12 duration-500 shadow-2xl">
-              <FiTerminal className="text-xl text-[var(--admin-accent)]" />
+            <div className="relative bg-[var(--admin-accent)] border border-[var(--admin-accent)]/30 w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 duration-500 shadow-2xl">
+              <FiTerminal className="text-xl text-black" />
             </div>
           </div>
           <div className="overflow-hidden">

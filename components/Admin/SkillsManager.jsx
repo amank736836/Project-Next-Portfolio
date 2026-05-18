@@ -194,7 +194,7 @@ export default function SkillsManager() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-[var(--admin-title)]">Matrix</h2>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">Technical Proficiency Configuration</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1 mb-4">Technical Proficiency Configuration</p>
         </div>
         <Button
           onClick={saveChanges}

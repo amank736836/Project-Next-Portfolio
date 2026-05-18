@@ -57,7 +57,7 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
       </div>
 
       {/* Content Section */}
-      <div className="p-3 sm:p-4 md:p-6 flex-1 flex flex-col gap-3 sm:gap-4">
+      <div className="p-3 sm:p-4 md:p-6 flex-1 flex flex-col gap-3 sm:gap-4 project-card-content">
         <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
           <span className="px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 uppercase tracking-tight sm:tracking-tighter">
             {project.category || 'Portfolio Item'}
@@ -95,9 +95,9 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
               e.stopPropagation();
               onDelete();
             }}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/5 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 hover:bg-rose-500/10 transition-all flex-shrink-0"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/5 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 hover:bg-rose-500/10 transition-all flex-shrink-0 admin-delete-btn"
           >
-            <FiTrash2 size={16} className="sm:!size-4.5" />
+            <FiTrash2 className="admin-delete-icon" />
           </Button>
         </div>
       </div>
@@ -170,9 +170,9 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
           variant="ghost"
           size="icon"
           onClick={onDelete}
-          className="hover:bg-rose-500 hover:text-white transition-all w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/10 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 shadow-sm hover:shadow-rose-500/10"
+          className="hover:bg-rose-500 hover:text-white transition-all w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/10 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 shadow-sm hover:shadow-rose-500/10 admin-delete-btn"
         >
-          <FiTrash2 size={14} className="sm:!size-4" />
+          <FiTrash2 className="admin-delete-icon" />
         </Button>
         <a
           href={project.details?.[3]?.desc?.props?.href || '#'}

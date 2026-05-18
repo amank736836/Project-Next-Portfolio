@@ -11,7 +11,7 @@ export default function IdentityModal({ item, onClose, onSave, saving, setItem }
     <div className="fixed inset-0 z-[100] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#030712]/75 backdrop-blur-[10px]"
+        className="modal-backdrop fixed inset-0 backdrop-blur-[10px]"
         onClick={onClose}
       />
       
@@ -96,7 +96,7 @@ export default function IdentityModal({ item, onClose, onSave, saving, setItem }
           <button
             onClick={() => onSave(item.id, item.value, item.label)}
             disabled={saving || (isNew && !item.label?.trim())}
-            className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_15px_var(--admin-accent-glow)] disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-wider"
+            className="px-8 py-3 rounded-xl bg-[var(--admin-accent)] text-white text-xs font-bold flex items-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_15px_var(--admin-accent-glow)] disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-wider modal-save-btn"
           >
             {saving ? <FiRefreshCw className="animate-spin" size={14} /> : <FiCloudLightning size={14} />}
             {saving ? 'Saving...' : (isNew ? 'Create Node' : 'Save Changes')}

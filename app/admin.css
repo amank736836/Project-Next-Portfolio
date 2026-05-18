@@ -35,7 +35,7 @@
   --admin-border-strong: rgba(0, 0, 0, 0.12);
   --admin-text: #64748b; /* slate-500 */
   --admin-title: #0f172a; /* slate-900 */
-  --admin-sidebar-bg: rgba(255, 255, 255, 0.85);
+  --admin-sidebar-bg: rgba(255, 255, 255, 0.97);
   --glass-edge-glow: rgba(255, 255, 255, 0.6);
   --admin-accent-glow: color-mix(in srgb, var(--first-color) 15%, transparent);
   --admin-ambient-a: rgba(var(--admin-accent-rgb), 0.08);
@@ -202,6 +202,10 @@
     transform: translateX(-100%);
     box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
   }
+
+  .light-theme .admin-sidebar {
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.08);
+  }
   
   .admin-sidebar.open {
     transform: translateX(0);
@@ -210,12 +214,17 @@
   .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
     z-index: 90;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
+  }
+
+  .light-theme .sidebar-overlay {
+    background: rgba(15, 23, 42, 0.2);
+    backdrop-filter: blur(6px);
   }
 
   .sidebar-overlay.active {
@@ -1014,7 +1023,7 @@
 .light-theme {
   --admin-bg: #f8fafc;
   --admin-card: rgba(255, 255, 255, 0.4);
-  --admin-sidebar-bg: rgba(255, 255, 255, 0.4);
+  --admin-sidebar-bg: rgba(255, 255, 255, 0.97);
   --admin-border: rgba(0, 0, 0, 0.08);
   --admin-text: #475569;
   --admin-title: #0f172a;
@@ -1240,7 +1249,7 @@ button[title="Delete"]:hover {
 }
 
 .light-theme .admin-dropdown-menu {
-  background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.68));
+  background: rgba(255, 255, 255, 0.98);
   border-color: rgba(15, 23, 42, 0.08);
   box-shadow:
     0 22px 54px rgba(15, 23, 42, 0.08),
@@ -1258,7 +1267,7 @@ button[title="Delete"]:hover {
   gap: 0.75rem !important;
   padding: 0.75rem 1rem !important;
   border-radius: 0.75rem !important;
-  color: rgba(var(--admin-card-rgb), 0.76) !important;
+  color: var(--admin-text) !important;
   font-size: 0.875rem !important;
   font-weight: 500 !important;
   transition: all 0.2s ease !important;
@@ -1270,15 +1279,20 @@ button[title="Delete"]:hover {
 }
 
 .admin-dropdown-item:hover {
-  background: rgba(var(--admin-card-rgb), 0.12) !important;
-  color: #fff !important;
+  background: rgba(var(--admin-accent-rgb), 0.08) !important;
+  color: var(--admin-title) !important;
   border-color: var(--admin-border) !important;
 }
 
+.light-theme .admin-dropdown-item:hover {
+  background: rgba(var(--admin-accent-rgb), 0.08) !important;
+  color: var(--admin-title) !important;
+}
+
 .admin-dropdown-item.active {
-  background: rgba(99, 102, 241, 0.1) !important;
-  color: rgb(165, 180, 252) !important;
-  border-color: rgba(99, 102, 241, 0.2) !important;
+  background: rgba(var(--admin-accent-rgb), 0.1) !important;
+  color: var(--admin-accent) !important;
+  border-color: rgba(var(--admin-accent-rgb), 0.2) !important;
 }
 
 .admin-dropdown-item svg {
@@ -1287,7 +1301,7 @@ button[title="Delete"]:hover {
 
 .admin-dropdown-item.active svg {
   opacity: 1;
-  color: rgb(129, 140, 248);
+  color: var(--admin-accent);
 }
 
 .admin-main .animate-fade-in.relative > .grid > .admin-card .text-xl,
@@ -1990,4 +2004,279 @@ button[title="Delete"]:hover {
   .matrix-modal .matrix-modal-footer {
     padding: 1.25rem 1.75rem 1.75rem 1.75rem !important;
   }
+}
+
+/* ==========================================================
+   Tailwind Spacing Fallbacks & Input Padding Hardening
+   Resolves compiler/purge omission issues in Next.js
+   ========================================================== */
+
+/* Spacing and Padding utilities fallback */
+.p-3 {
+  padding: 0.75rem !important;
+}
+
+.p-4 {
+  padding: 1rem !important;
+}
+
+.p-5 {
+  padding: 1.25rem !important;
+}
+
+.p-6,
+.matrix-card-body {
+  padding: 1.5rem !important;
+}
+
+.p-8 {
+  padding: 2rem !important;
+}
+
+.p-10 {
+  padding: 2.5rem !important;
+}
+
+/* Explicit Project Card padding to prevent border overlapping */
+.project-card-content {
+  padding: 1.5rem !important;
+}
+
+@media (max-width: 640px) {
+  .project-card-content {
+    padding: 1rem !important;
+  }
+}
+
+.px-4 {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.px-5 {
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+}
+
+.px-6,
+.matrix-card-header {
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.px-8 {
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
+.py-2 {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.py-3 {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.py-4 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.pb-8 {
+  padding-bottom: 2rem !important;
+}
+
+.pt-6 {
+  padding-top: 1.5rem !important;
+}
+
+.pt-8 {
+  padding-top: 2rem !important;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mb-12 {
+  margin-bottom: 3rem !important;
+}
+
+.mt-6 {
+  margin-top: 1.5rem !important;
+}
+
+.mt-8 {
+  margin-top: 2rem !important;
+}
+
+.mt-12 {
+  margin-top: 3rem !important;
+}
+
+/* Premium Inputs Layout Hardening */
+.premium-input {
+  box-sizing: border-box !important;
+}
+
+textarea.premium-input {
+  padding: 1.25rem 1.5rem !important;
+  min-height: 150px !important;
+  line-height: 1.625 !important;
+}
+
+input.premium-input {
+  padding: 1.25rem 1.5rem !important;
+  height: auto !important;
+  line-height: 1.5 !important;
+}
+
+/* ==========================================================
+   Width, Height & Layout Dimension Fallbacks
+   ========================================================== */
+.w-5 {
+  width: 1.25rem !important;
+}
+.h-5 {
+  height: 1.25rem !important;
+}
+.w-6 {
+  width: 1.5rem !important;
+}
+.h-6 {
+  height: 1.5rem !important;
+}
+.w-8 {
+  width: 2rem !important;
+}
+.h-8 {
+  height: 2rem !important;
+}
+.w-9 {
+  width: 2.25rem !important;
+}
+.h-9 {
+  height: 2.25rem !important;
+}
+.w-10 {
+  width: 2.5rem !important;
+}
+.h-10 {
+  height: 2.5rem !important;
+}
+.w-11 {
+  width: 2.75rem !important;
+}
+.h-11 {
+  height: 2.75rem !important;
+}
+.w-12 {
+  width: 3rem !important;
+}
+.h-12 {
+  height: 3rem !important;
+}
+.w-14 {
+  width: 3.5rem !important;
+}
+.h-14 {
+  height: 3.5rem !important;
+}
+.w-40 {
+  width: 10rem !important;
+}
+.h-40 {
+  height: 10rem !important;
+}
+.w-48 {
+  width: 12rem !important;
+}
+.h-48 {
+  height: 12rem !important;
+}
+.w-full {
+  width: 100% !important;
+}
+.h-full {
+  height: 100% !important;
+}
+
+/* ==========================================================
+   Premium Delete Button & Icon Spacing
+   ========================================================== */
+.admin-delete-btn {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0.75rem !important;
+  background-color: rgba(244, 63, 94, 0.08) !important;
+  color: rgb(251, 113, 133) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid rgba(244, 63, 94, 0.15) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+}
+
+.admin-delete-btn:hover {
+  background-color: rgba(244, 63, 94, 0.18) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
+  color: rgb(253, 164, 175) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+.admin-delete-btn:active {
+  transform: translateY(0) !important;
+}
+
+.admin-delete-icon {
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  color: inherit !important;
+  display: block !important;
+}
+
+@media (max-width: 640px) {
+  .admin-delete-btn {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 0.5rem !important;
+  }
+  .admin-delete-icon {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+/* ── Modal backdrop: theme-aware overlay ─────────────────────────────────── */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.light-theme .modal-backdrop {
+  background: rgba(15, 23, 42, 0.35);
+}
+
+/* ── Modal save button: always readable text on accent background ─────────── */
+.modal-save-btn {
+  color: #ffffff !important;
+}
+
+.light-theme .modal-save-btn {
+  /* indigo-600 is dark enough that white text is fine, but ensure it renders */
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35) !important;
+}
+
+/* ── Sidebar: solid background in light mode so blur doesn't show dark content ── */
+.light-theme .admin-sidebar {
+  background: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(20px);
+  border-right-color: rgba(0, 0, 0, 0.06) !important;
 }

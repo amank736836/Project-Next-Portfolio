@@ -103,7 +103,7 @@ export default function EditProjectForm({
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6">
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-md animate-fade-in" onClick={onRequestClose} />
+      <div className="modal-backdrop fixed inset-0 backdrop-blur-md animate-fade-in" onClick={onRequestClose} />
       <div
         ref={modalRef}
         tabIndex="-1"
@@ -327,59 +327,68 @@ export default function EditProjectForm({
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Asset URL / Path</label>
-                <div className="flex gap-2">
-                  <Input
-                    value={editingProject.image || editingProject.img || ''}
-                    onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value, img: e.target.value })}
-                    placeholder="https://... or /assets/..."
-                    className="flex-1 premium-input bg-white/5 border-white/10 focus:border-amber-500 h-11 px-4 font-bold text-[var(--admin-title)] text-sm rounded-lg min-w-0"
-                  />
-                  <button
-                    className="w-11 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-amber-400 transition-all hover:bg-amber-500/10 hover:border-amber-500/30 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    title={uploading ? 'Uploading...' : 'Upload image'}
-                  >
-                    {uploading
-                      ? <FiRefreshCw size={16} className="animate-spin text-amber-400" />
-                      : <FiCloudLightning size={16} />}
-                  </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+              {/* Left: URL input + upload */}
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Asset URL / Path</label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={editingProject.image || editingProject.img || ''}
+                      onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value, img: e.target.value })}
+                      placeholder="https://... or /assets/..."
+                      className="flex-1 premium-input bg-white/5 border-white/10 focus:border-amber-500 h-11 px-4 font-bold text-[var(--admin-title)] text-sm rounded-lg min-w-0"
+                    />
+                    <button
+                      className="w-11 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-amber-400 transition-all hover:bg-amber-500/10 hover:border-amber-500/30 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      title={uploading ? 'Uploading...' : 'Upload image'}
+                    >
+                      {uploading
+                        ? <FiRefreshCw size={16} className="animate-spin text-amber-400" />
+                        : <FiCloudLightning size={16} />}
+                    </button>
+                  </div>
+                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
                 </div>
-                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
+                <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                  Paste a URL or upload a local image. Supported: PNG, JPG, WebP, GIF.
+                </p>
               </div>
 
-              {/* Preview thumbnail */}
-              <div className="h-[130px] rounded-lg overflow-hidden border border-white/15 bg-white/5 relative group">
-                {(editingProject.image || editingProject.img) ? (
-                  <Image
-                    src={editingProject.image || editingProject.img}
-                    alt="Preview"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600 gap-2">
-                    <FiGrid size={28} className="opacity-30" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.25em]">No Preview</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-
-                {/* Upload progress overlay */}
-                {uploading && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin" />
-                      <FiCloudLightning size={14} className="absolute inset-0 m-auto text-amber-400" />
+              {/* Right: Preview thumbnail */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Preview</label>
+                <div className="h-[130px] rounded-lg overflow-hidden border border-white/15 bg-white/5 relative group">
+                  {(editingProject.image || editingProject.img) ? (
+                    <Image
+                      src={editingProject.image || editingProject.img}
+                      alt="Preview"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600 gap-2">
+                      <FiGrid size={28} className="opacity-30" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.25em]">No Preview</span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400 animate-pulse">
-                      Uploading...
-                    </span>
-                  </div>
-                )}
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
+                  {/* Upload progress overlay */}
+                  {uploading && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg">
+                      <div className="relative">
+                        <div className="w-10 h-10 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin" />
+                        <FiCloudLightning size={14} className="absolute inset-0 m-auto text-amber-400" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400 animate-pulse">
+                        Uploading...
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
