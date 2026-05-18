@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff, FiEdit3, FiX } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
+import DOMPurify from 'isomorphic-dompurify';
+
+const sanitize = (html) => DOMPurify.sanitize(html ?? '', { ALLOWED_TAGS: ['span', 'b', 'i', 'em', 'strong', 'br'], ALLOWED_ATTR: ['class'] });
 
 export default function ResumeManager({ type }) {
   const [items, setItems] = useState([]);
@@ -159,7 +162,7 @@ export default function ResumeManager({ type }) {
             <div className="matrix-modal-header p-8 border-b border-[var(--admin-border-strong)] flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-black text-[var(--admin-accent)] uppercase tracking-[0.4em] mb-1">Mission Log Overwrite // {title}</p>
-                <h3 className="text-xl font-bold tracking-tight text-[var(--admin-title)]" dangerouslySetInnerHTML={{ __html: editingItem.title }} />
+                <h3 className="text-xl font-bold tracking-tight text-[var(--admin-title)]" dangerouslySetInnerHTML={{ __html: sanitize(editingItem.title) }} />
               </div>
               <button 
                 onClick={() => setEditingItem(null)} 
@@ -345,12 +348,12 @@ export default function ResumeManager({ type }) {
             <div className="p-6 flex-1 flex flex-col gap-4 matrix-card-body">
               <div className="mb-4">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--admin-text)]/70 mb-1">Entity / Position</p>
-                <h5 className="text-sm font-bold text-[var(--admin-title)] leading-tight" dangerouslySetInnerHTML={{ __html: item.title }} />
+                <h5 className="text-sm font-bold text-[var(--admin-title)] leading-tight" dangerouslySetInnerHTML={{ __html: sanitize(item.title) }} />
               </div>
               
               <div className="flex-1">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--admin-text)]/70 mb-1">Brief Context</p>
-                <p className="text-xs text-[var(--admin-text)] leading-relaxed line-clamp-3 group-hover/card:line-clamp-none transition-all" dangerouslySetInnerHTML={{ __html: item.description }} />
+                <p className="text-xs text-[var(--admin-text)] leading-relaxed line-clamp-3 group-hover/card:line-clamp-none transition-all" dangerouslySetInnerHTML={{ __html: sanitize(item.description) }} />
               </div>
 
               <div className="mt-6 flex items-center justify-between pt-4 border-t border-[var(--admin-border-strong)]">

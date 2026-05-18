@@ -3,6 +3,9 @@
 import React from 'react';
 import { FiEdit3, FiTrash2, FiSearch } from 'react-icons/fi';
 import { calculateAge } from '@/lib/utils';
+import DOMPurify from 'isomorphic-dompurify';
+
+const sanitize = (html) => DOMPurify.sanitize(html ?? '', { ALLOWED_TAGS: ['span', 'b', 'i', 'em', 'strong', 'br'], ALLOWED_ATTR: ['class'] });
 
 export const IdentityCard = React.memo(({ item, index, onEdit, onDelete }) => {
   return (
@@ -12,7 +15,7 @@ export const IdentityCard = React.memo(({ item, index, onEdit, onDelete }) => {
     >
       <div className="flex justify-between items-start mb-6">
         <div className="space-y-1">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: item.label }} />
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: sanitize(item.label) }} />
           <div className="h-1 w-8 bg-indigo-500/30 rounded-full group-hover:w-full transition-all duration-700" />
         </div>
         <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
@@ -34,7 +37,7 @@ export const IdentityCard = React.memo(({ item, index, onEdit, onDelete }) => {
       </div>
       <div 
         className={`text-lg font-bold text-[var(--admin-title)] tracking-tight mb-4 transition-all duration-500 ${item.id === 'about_description' ? 'line-clamp-2 group-hover:line-clamp-none' : ''}`}
-        dangerouslySetInnerHTML={{ __html: item.id === 'age' && item.value.includes('/') ? calculateAge(item.value) + ' Years' : item.value }} 
+        dangerouslySetInnerHTML={{ __html: sanitize(item.id === 'age' && item.value.includes('/') ? calculateAge(item.value) + ' Years' : item.value) }} 
       />
       <p className="text-[9px] text-slate-600 font-medium uppercase tracking-tighter">
         Synchronized: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Secure'}

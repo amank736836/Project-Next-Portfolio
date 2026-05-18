@@ -137,7 +137,7 @@ export default async function middleware(request) {
     }
 
     // Email Authorization Check
-    const AUTHORIZED_EMAIL = 'amankarguwal0@gmail.com';
+    const AUTHORIZED_EMAIL = process.env.AUTHORIZED_ADMIN_EMAIL || 'amankarguwal0@gmail.com';
     const userEmail = session.user?.email;
 
     if (userEmail !== AUTHORIZED_EMAIL) {

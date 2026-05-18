@@ -2,6 +2,17 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
+const ALLOWED_PROJECT_FIELDS = [
+  'title', 'description', 'image', 'img', 'category',
+  'is_hidden', 'details'
+];
+
+function sanitizeProjectBody(body) {
+  return Object.fromEntries(
+    Object.entries(body).filter(([key]) => ALLOWED_PROJECT_FIELDS.includes(key))
+  );
+}
+
 export async function GET() {
   console.log('[API] GET /api/admin/projects hit');
   // Check authentication
@@ -24,8 +35,9 @@ export async function POST(request) {
 
   const supabase = await createAdminClient();
   const body = await request.json();
+  const safeBody = sanitizeProjectBody(body);
 
-  const { data, error } = await supabase.from('projects').insert([body]).select();
+  const { data, error } = await supabase.from('projects').insert([safeBody]).select();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data[0]);
@@ -39,7 +51,8 @@ export async function PUT(request) {
 
   const supabase = await createAdminClient();
   const body = await request.json();
-  const { id, ...updates } = body;
+  const { id, ...rest } = body;
+  const updates = sanitizeProjectBody(rest);
 
   const { data, error } = await supabase.from('projects').update(updates).eq('id', id).select();
 

@@ -6,14 +6,26 @@ import { decodeJwt } from 'jose';
 import crypto from 'node:crypto';
 
 // Premium Glassmorphic Cyber-Luxe Error Screen
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 function renderErrorPage(title, description, code = 'AUTH_ERROR') {
+  const safeTitle = escapeHtml(title);
+  const safeDescription = escapeHtml(description);
+  const safeCode = escapeHtml(code);
   return new NextResponse(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Node Alert - ${title}</title>
+  <title>Security Node Alert - ${safeTitle}</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -223,11 +235,11 @@ function renderErrorPage(title, description, code = 'AUTH_ERROR') {
 
     <div class="node-badge">
       <div class="node-badge-dot"></div>
-      Security Node // Error [${code}]
+      Security Node // Error [${safeCode}]
     </div>
 
-    <h1>${title}</h1>
-    <p>${description}</p>
+    <h1>${safeTitle}</h1>
+    <p>${safeDescription}</p>
 
     <a href="/admin" class="btn">Retry Authentication</a>
     <a href="/" class="btn btn-secondary">Return Home</a>
@@ -388,7 +400,7 @@ export async function GET(request) {
     };
 
     // Authorized Email Check
-    const AUTHORIZED_EMAIL = 'amankarguwal0@gmail.com';
+    const AUTHORIZED_EMAIL = process.env.AUTHORIZED_ADMIN_EMAIL || 'amankarguwal0@gmail.com';
     if (user.email !== AUTHORIZED_EMAIL) {
       console.log(`[Auth Callback] Unauthorized email: ${user.email}. Restricting to ${AUTHORIZED_EMAIL}`);
       return renderErrorPage(

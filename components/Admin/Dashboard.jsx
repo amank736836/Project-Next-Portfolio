@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   FiTrendingUp, FiLayers, FiMessageSquare, FiActivity, 
   FiCommand, FiCpu, FiGlobe, FiShield, FiClock, FiZap, 
@@ -8,6 +8,15 @@ import {
 } from 'react-icons/fi';
 import { themes } from '@/data';
 import { syncThemeCssVars } from '@/lib/utils';
+
+// Static log entries — defined outside component to avoid recreation on every render
+const OPERATION_LOGS = [
+  { action: 'AUTH_GATEWAY', details: 'Admin session established via Secure ID', time: '12s ago', type: 'auth' },
+  { action: 'DB_SYNC', details: 'Project matrix synchronization completed', time: '1m ago', type: 'write' },
+  { action: 'CACHE_PURGE', details: 'Global edge cache invalidated successfully', time: '5m ago', type: 'system' },
+  { action: 'ENTRY_CREATED', details: 'New academy record injected into sector 7', time: '12m ago', type: 'write' },
+  { action: 'SEC_AUDIT', details: 'Routine integrity check passed: 0 vulnerabilities', time: '1h ago', type: 'auth' },
+];
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ projects: 0, skills: 0, education: 0, experience: 0 });
@@ -208,71 +217,66 @@ export default function Dashboard() {
     }, 850);
   };
 
-  const logs = [
-    { action: 'AUTH_GATEWAY', details: 'Admin session established via Secure ID', time: '12s ago', type: 'auth' },
-    { action: 'DB_SYNC', details: 'Project matrix synchronization completed', time: '1m ago', type: 'write' },
-    { action: 'CACHE_PURGE', details: 'Global edge cache invalidated successfully', time: '5m ago', type: 'system' },
-    { action: 'ENTRY_CREATED', details: 'New academy record injected into sector 7', time: '12m ago', type: 'write' },
-    { action: 'SEC_AUDIT', details: 'Routine integrity check passed: 0 vulnerabilities', time: '1h ago', type: 'auth' },
-  ];
+  const logs = OPERATION_LOGS;
 
   // Helper variables for adaptive Light/Dark mode
   const isLight = themeSettings.mode === 'light-theme';
 
-  const cardBg = isLight ? 'rgba(255, 255, 255, 0.45)' : 'rgba(10, 14, 28, 0.72)';
-  const cardBorder = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-  const cardInset = isLight ? 'inset 0 1px 0 rgba(255, 255, 255, 0.8)' : 'inset 0 1px 0 rgba(255, 255, 255, 0.03)';
-  
-  const textTitle = isLight ? '#0f172a' : '#ffffff';
-  const textDesc = isLight ? '#475569' : '#94a3b8';
-  const textSub = isLight ? '#64748b' : '#64748b'; // standard subtext
-  
-  const hudBg = isLight ? 'rgba(255, 255, 255, 0.65)' : 'rgba(15, 23, 42, 0.45)';
-  const hudBorder = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-
-  // Static compiled colors that dynamically adjust contrast to light/dark themes
-  const STAT_THEMES = {
-    indigo: {
-      bg: isLight ? 'rgba(79, 70, 229, 0.05)' : 'rgba(99, 102, 241, 0.06)',
-      text: isLight ? '#4f46e5' : '#818cf8',
-      border: isLight ? 'rgba(79, 70, 229, 0.12)' : 'rgba(99, 102, 241, 0.16)',
-      borderHover: isLight ? 'rgba(79, 70, 229, 0.38)' : 'rgba(99, 102, 241, 0.45)',
-      bullet: isLight ? '#4f46e5' : '#6366f1',
-      badgeBg: isLight ? 'rgba(79, 70, 229, 0.07)' : 'rgba(99, 102, 241, 0.12)',
-      badgeBorder: isLight ? 'rgba(79, 70, 229, 0.18)' : 'rgba(99, 102, 241, 0.25)',
-      glowShadow: isLight ? '0 10px 30px rgba(79, 70, 229, 0.08)' : '0 0 25px rgba(99, 102, 241, 0.18)',
-    },
-    emerald: {
-      bg: isLight ? 'rgba(5, 150, 105, 0.05)' : 'rgba(16, 185, 129, 0.06)',
-      text: isLight ? '#059669' : '#34d399',
-      border: isLight ? 'rgba(5, 150, 105, 0.12)' : 'rgba(16, 185, 129, 0.16)',
-      borderHover: isLight ? 'rgba(5, 150, 105, 0.38)' : 'rgba(16, 185, 129, 0.45)',
-      bullet: isLight ? '#059669' : '#10b981',
-      badgeBg: isLight ? 'rgba(5, 150, 105, 0.07)' : 'rgba(16, 185, 129, 0.12)',
-      badgeBorder: isLight ? 'rgba(5, 150, 105, 0.18)' : 'rgba(16, 185, 129, 0.25)',
-      glowShadow: isLight ? '0 10px 30px rgba(5, 150, 105, 0.08)' : '0 0 25px rgba(16, 185, 129, 0.18)',
-    },
-    amber: {
-      bg: isLight ? 'rgba(217, 119, 6, 0.05)' : 'rgba(245, 158, 11, 0.06)',
-      text: isLight ? '#b45309' : '#fbbf24',
-      border: isLight ? 'rgba(217, 119, 6, 0.12)' : 'rgba(245, 158, 11, 0.16)',
-      borderHover: isLight ? 'rgba(217, 119, 6, 0.38)' : 'rgba(245, 158, 11, 0.45)',
-      bullet: isLight ? '#d97706' : '#f59e0b',
-      badgeBg: isLight ? 'rgba(217, 119, 6, 0.07)' : 'rgba(245, 158, 11, 0.12)',
-      badgeBorder: isLight ? 'rgba(217, 119, 6, 0.18)' : 'rgba(245, 158, 11, 0.25)',
-      glowShadow: isLight ? '0 10px 30px rgba(217, 119, 6, 0.08)' : '0 0 25px rgba(245, 158, 11, 0.18)',
-    },
-    rose: {
-      bg: isLight ? 'rgba(225, 29, 72, 0.05)' : 'rgba(244, 63, 94, 0.06)',
-      text: isLight ? '#e11d48' : '#fb7185',
-      border: isLight ? 'rgba(225, 29, 72, 0.12)' : 'rgba(244, 63, 94, 0.16)',
-      borderHover: isLight ? 'rgba(225, 29, 72, 0.38)' : 'rgba(244, 63, 94, 0.45)',
-      bullet: isLight ? '#e11d48' : '#f43f5e',
-      badgeBg: isLight ? 'rgba(225, 29, 72, 0.07)' : 'rgba(244, 63, 94, 0.12)',
-      badgeBorder: isLight ? 'rgba(225, 29, 72, 0.18)' : 'rgba(244, 63, 94, 0.25)',
-      glowShadow: isLight ? '0 10px 30px rgba(225, 29, 72, 0.08)' : '0 0 25px rgba(244, 63, 94, 0.18)',
-    }
-  };
+  const { cardBg, cardBorder, cardInset, textTitle, textDesc, textSub, hudBg, hudBorder, STAT_THEMES } = useMemo(() => {
+    const light = isLight;
+    return {
+      cardBg: light ? 'rgba(255, 255, 255, 0.45)' : 'rgba(10, 14, 28, 0.72)',
+      cardBorder: light ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+      cardInset: light ? 'inset 0 1px 0 rgba(255, 255, 255, 0.8)' : 'inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+      textTitle: light ? '#0f172a' : '#ffffff',
+      textDesc: light ? '#475569' : '#94a3b8',
+      textSub: light ? '#64748b' : '#64748b',
+      hudBg: light ? 'rgba(255, 255, 255, 0.65)' : 'rgba(15, 23, 42, 0.45)',
+      hudBorder: light ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+      STAT_THEMES: {
+        indigo: {
+          bg: light ? 'rgba(79, 70, 229, 0.05)' : 'rgba(99, 102, 241, 0.06)',
+          text: light ? '#4f46e5' : '#818cf8',
+          border: light ? 'rgba(79, 70, 229, 0.12)' : 'rgba(99, 102, 241, 0.16)',
+          borderHover: light ? 'rgba(79, 70, 229, 0.38)' : 'rgba(99, 102, 241, 0.45)',
+          bullet: light ? '#4f46e5' : '#6366f1',
+          badgeBg: light ? 'rgba(79, 70, 229, 0.07)' : 'rgba(99, 102, 241, 0.12)',
+          badgeBorder: light ? 'rgba(79, 70, 229, 0.18)' : 'rgba(99, 102, 241, 0.25)',
+          glowShadow: light ? '0 10px 30px rgba(79, 70, 229, 0.08)' : '0 0 25px rgba(99, 102, 241, 0.18)',
+        },
+        emerald: {
+          bg: light ? 'rgba(5, 150, 105, 0.05)' : 'rgba(16, 185, 129, 0.06)',
+          text: light ? '#059669' : '#34d399',
+          border: light ? 'rgba(5, 150, 105, 0.12)' : 'rgba(16, 185, 129, 0.16)',
+          borderHover: light ? 'rgba(5, 150, 105, 0.38)' : 'rgba(16, 185, 129, 0.45)',
+          bullet: light ? '#059669' : '#10b981',
+          badgeBg: light ? 'rgba(5, 150, 105, 0.07)' : 'rgba(16, 185, 129, 0.12)',
+          badgeBorder: light ? 'rgba(5, 150, 105, 0.18)' : 'rgba(16, 185, 129, 0.25)',
+          glowShadow: light ? '0 10px 30px rgba(5, 150, 105, 0.08)' : '0 0 25px rgba(16, 185, 129, 0.18)',
+        },
+        amber: {
+          bg: light ? 'rgba(217, 119, 6, 0.05)' : 'rgba(245, 158, 11, 0.06)',
+          text: light ? '#b45309' : '#fbbf24',
+          border: light ? 'rgba(217, 119, 6, 0.12)' : 'rgba(245, 158, 11, 0.16)',
+          borderHover: light ? 'rgba(217, 119, 6, 0.38)' : 'rgba(245, 158, 11, 0.45)',
+          bullet: light ? '#d97706' : '#f59e0b',
+          badgeBg: light ? 'rgba(217, 119, 6, 0.07)' : 'rgba(245, 158, 11, 0.12)',
+          badgeBorder: light ? 'rgba(217, 119, 6, 0.18)' : 'rgba(245, 158, 11, 0.25)',
+          glowShadow: light ? '0 10px 30px rgba(217, 119, 6, 0.08)' : '0 0 25px rgba(245, 158, 11, 0.18)',
+        },
+        rose: {
+          bg: light ? 'rgba(225, 29, 72, 0.05)' : 'rgba(244, 63, 94, 0.06)',
+          text: light ? '#e11d48' : '#fb7185',
+          border: light ? 'rgba(225, 29, 72, 0.12)' : 'rgba(244, 63, 94, 0.16)',
+          borderHover: light ? 'rgba(225, 29, 72, 0.38)' : 'rgba(244, 63, 94, 0.45)',
+          bullet: light ? '#e11d48' : '#f43f5e',
+          badgeBg: light ? 'rgba(225, 29, 72, 0.07)' : 'rgba(244, 63, 94, 0.12)',
+          badgeBorder: light ? 'rgba(225, 29, 72, 0.18)' : 'rgba(244, 63, 94, 0.25)',
+          glowShadow: light ? '0 10px 30px rgba(225, 29, 72, 0.08)' : '0 0 25px rgba(244, 63, 94, 0.18)',
+        },
+      },
+    };
+  }, [isLight]);
 
   return (
     <div 
