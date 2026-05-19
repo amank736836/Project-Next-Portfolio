@@ -80,7 +80,7 @@ export default function ProjectManager() {
       title: '',
       img: '',
       image: '',
-      is_hidden: false,
+      is_hidden: true,
       details: [],
       category: '',
       description: '',

@@ -36,6 +36,9 @@ export async function POST(request) {
   const supabase = await createAdminClient();
   const body = await request.json();
   const safeBody = sanitizeProjectBody(body);
+  if (safeBody.is_hidden === undefined) {
+    safeBody.is_hidden = true;
+  }
 
   const { data, error } = await supabase.from('projects').insert([safeBody]).select();
 
