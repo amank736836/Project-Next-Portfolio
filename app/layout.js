@@ -7,6 +7,8 @@ import { Analytics } from "@vercel/analytics/react";
 import RootShell from "@/components/RootShell";
 import { Outfit, Poppins } from 'next/font/google';
 
+import { getSiteUrl } from "@/lib/config";
+
 const outfit = Outfit({
   subsets: ['latin'],
   weight: ['300','400','500','600','700','800'],
@@ -19,7 +21,7 @@ const poppins = Poppins({
   variable: '--second-font'
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const siteUrl = getSiteUrl();
 const siteName = "Aman Portfolio";
 
 export const metadata = {

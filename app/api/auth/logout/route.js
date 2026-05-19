@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { clearSession, getSession } from '@/lib/cookies';
 import { getScalekitClient } from '@/lib/scalekit';
+import { getSiteUrl } from '@/lib/config';
 
 async function handleLogout(request) {
   try {
@@ -10,7 +11,7 @@ async function handleLogout(request) {
 
     const host = request.headers.get('host') || 'localhost:3000';
     const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+    const appBaseUrl = getSiteUrl() || `${protocol}://${host}`;
 
     // Ensure we have a valid logout URL as fallback
     let logoutUrl = appBaseUrl.endsWith('/') ? appBaseUrl : `${appBaseUrl}/`;
