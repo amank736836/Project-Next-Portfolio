@@ -282,11 +282,10 @@ export async function GET(request) {
 
       await setOAuthState(stateVal);
 
-      // Get redirect URI
-      const headersList = await headers();
-      const host = headersList.get('host');
-      const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-      const redirectUri = `${protocol}://${host}/api/auth/callback`;
+      // Get redirect URI - use fixed production URL from env var
+      const redirectUri = process.env.NODE_ENV === 'production'
+        ? `${process.env.NEXT_PUBLIC_APP_URL_PROD}/api/auth/callback`
+        : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/callback`;
 
       // Build authorization URL with claims to bounce user to Identity Provider
       const authUrl = scalekit.getAuthorizationUrl(redirectUri, {
@@ -333,11 +332,10 @@ export async function GET(request) {
     // Clear the OAuth state cookie after validation
     await clearOAuthState();
 
-    // Get redirect URI - must match exactly what's configured in Scalekit dashboard
-    const headersList = await headers();
-    const host = headersList.get('host');
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const redirectUri = `${protocol}://${host}/api/auth/callback`;
+    // Get redirect URI - use fixed production URL from env var
+    const redirectUri = process.env.NODE_ENV === 'production'
+      ? `${process.env.NEXT_PUBLIC_APP_URL_PROD}/api/auth/callback`
+      : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/callback`;
 
     // Exchange code for tokens
     const scalekit = getScalekitClient();

@@ -41,10 +41,10 @@ export async function GET(request) {
   await setOAuthState(state);
 
   // Get redirect URI - must match exactly what's configured in Scalekit dashboard
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const redirectUri = `${protocol}://${host}/api/auth/callback`;
+  // Use fixed production URL from env var to ensure exact match with Scalekit config
+  const redirectUri = process.env.NODE_ENV === 'production'
+    ? `${process.env.NEXT_PUBLIC_APP_URL_PROD}/api/auth/callback`
+    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/callback`;
 
   // Get default scopes
   const scopes = getDefaultScopes();
