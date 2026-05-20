@@ -1,7 +1,8 @@
 import { getScalekitClient } from '@/lib/scalekit';
 import { getDefaultScopes } from '@/lib/scalekit';
 import { setOAuthState } from '@/lib/cookies';
-import { cookies, headers } from 'next/headers';
+import { getAuthCallbackUrl } from '@/lib/config';
+import { cookies } from 'next/headers';
 import crypto from 'node:crypto';
 
 export async function GET(request) {
@@ -41,10 +42,8 @@ export async function GET(request) {
   await setOAuthState(state);
 
   // Get redirect URI - must match exactly what's configured in Scalekit dashboard
-  // Use fixed production URL from env var to ensure exact match with Scalekit config
-  const redirectUri = process.env.NODE_ENV === 'production'
-    ? `${process.env.NEXT_PUBLIC_APP_URL_PROD}/api/auth/callback`
-    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/callback`;
+  const redirectUri = getAuthCallbackUrl();
+  console.log('[Auth Login] Using redirect URI:', redirectUri, 'NODE_ENV:', process.env.NODE_ENV);
 
   // Get default scopes
   const scopes = getDefaultScopes();
