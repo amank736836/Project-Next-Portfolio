@@ -26,11 +26,12 @@ export default function EditProjectForm({
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
+  const isOpen = !!editingProject;
   useEffect(() => {
-    if (modalRef?.current) {
+    if (isOpen && modalRef?.current) {
       modalRef.current.focus();
     }
-  }, [editingProject, modalRef]);
+  }, [isOpen, modalRef]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -262,9 +263,23 @@ export default function EditProjectForm({
               <div className="space-y-2">
                 <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 px-1">GitHub Repository</label>
                 <div className="flex items-center gap-2">
-                  <div className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400">
+                  <a
+                    href={(() => {
+                      const details = editingProject?.details || [];
+                      const detail = details.find(d => d.title?.includes('Github'));
+                      return detail?.desc || '#';
+                    })()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      const details = editingProject?.details || [];
+                      const detail = details.find(d => d.title?.includes('Github'));
+                      if (!detail?.desc) e.preventDefault();
+                    }}
+                    className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  >
                     <FiGithub size={16} />
-                  </div>
+                  </a>
                   <Input
                     value={(() => {
                       const details = editingProject.details || [];
@@ -290,9 +305,23 @@ export default function EditProjectForm({
               <div className="space-y-2">
                 <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 px-1">Production Preview</label>
                 <div className="flex items-center gap-2">
-                  <div className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400">
+                  <a
+                    href={(() => {
+                      const details = editingProject?.details || [];
+                      const detail = details.find(d => d.title?.includes('Preview'));
+                      return detail?.desc || '#';
+                    })()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      const details = editingProject?.details || [];
+                      const detail = details.find(d => d.title?.includes('Preview'));
+                      if (!detail?.desc) e.preventDefault();
+                    }}
+                    className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  >
                     <FiExternalLink size={16} />
-                  </div>
+                  </a>
                   <Input
                     value={(() => {
                       const details = editingProject.details || [];
