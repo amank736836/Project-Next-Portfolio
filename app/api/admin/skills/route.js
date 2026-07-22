@@ -2,10 +2,11 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
+const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
+
 export async function GET() {
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
@@ -14,24 +15,21 @@ export async function GET() {
     .select('*')
     .order('id', { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json(data, { headers: NO_CACHE });
 }
 
 export async function PUT(request) {
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
   const skills = await request.json();
 
-  // For simplicity, we delete all and re-insert, or use upsert if they have stable IDs
-  // Since we're managing a small list, delete all and insert is often easier for re-ordering
   await supabase.from('skills').delete().neq('id', -1);
   const { error } = await supabase.from('skills').insert(skills);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+export const revalidate = 60;
+
 export async function GET() {
   const supabase = await createAdminClient();
   const { data, error } = await supabase
@@ -58,5 +60,9 @@ export async function GET() {
     return true;
   });
 
-  return NextResponse.json(verifiedProjects);
+  return NextResponse.json(verifiedProjects, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+    },
+  });
 }

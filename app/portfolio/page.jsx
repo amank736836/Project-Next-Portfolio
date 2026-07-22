@@ -1,38 +1,19 @@
-"use client";
-
-import { useState, useEffect, useMemo } from "react";
 import PortfolioItem from "@/components/PortfolioItem";
+import { createAdminClient } from "@/lib/supabase/server";
 import "../Portfolio.css";
 
-export default function Portfolio() {
-  const [projects, setProjects] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
+export const revalidate = 60;
 
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        const res = await fetch('/api/projects');
-        const data = await res.json();
-        setProjects(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error('Failed to fetch projects:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProjects();
-  }, []);
+export default async function PortfolioPage() {
+  const supabase = await createAdminClient();
+  const { data: projects } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('is_hidden', false)
+    .order('id', { ascending: true });
 
-  const categories = useMemo(() => {
-    const cats = new Set(projects.map(p => p.category).filter(Boolean));
-    return ['all', ...Array.from(cats).sort()];
-  }, [projects]);
-
-  const filteredProjects = useMemo(() => {
-    if (activeFilter === 'all') return projects;
-    return projects.filter(p => p.category === activeFilter);
-  }, [projects, activeFilter]);
+  const allProjects = Array.isArray(projects) ? projects : [];
+  const categories = ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort();
 
   return (
     <section className="portfolio section">
@@ -40,14 +21,13 @@ export default function Portfolio() {
         My <span>Projects</span>
       </h2>
 
-      {/* Category Filter Bar */}
       {categories.length > 2 && (
         <div className="portfolio__filters container">
           {categories.map((category) => (
-            <span 
+            <span
               key={category}
-              className={`portfolio__item ${activeFilter === category ? 'active-portfolio' : ''}`}
-              onClick={() => setActiveFilter(category)}
+              className={`portfolio__item ${category === 'all' ? 'active-portfolio' : ''}`}
+              data-filter={category}
             >
               {category}
             </span>
@@ -56,12 +36,8 @@ export default function Portfolio() {
       )}
 
       <div className="portfolio__container container grid">
-        {loading ? (
-          <div className="col-span-full text-center text-gray-400 py-10 animate-pulse">
-            Loading Missions...
-          </div>
-        ) : filteredProjects.length > 0 ? (
-          filteredProjects.map((item) => (
+        {allProjects.length > 0 ? (
+          allProjects.map((item) => (
             <PortfolioItem key={item.id} {...item} />
           ))
         ) : (

@@ -1,25 +1,38 @@
 import { NextResponse } from 'next/server';
-import { clearSession, clearOAuthState } from '@/lib/cookies';
-import { cookies } from 'next/headers';
+import { clearSession, getSession } from '@/lib/cookies';
+import { getScalekitClient } from '@/lib/scalekit';
+import { getSiteUrl } from '@/lib/config';
 
 export async function GET(request) {
-  // Clear all auth-related cookies
-  const cookieStore = await cookies();
-  
-  // Clear session cookie
-  cookieStore.delete('scalekit_session', { path: '/' });
-  
-  // Clear OAuth state cookie
-  cookieStore.delete('scalekit_oauth_state', { path: '/' });
-  
-  // Clear next URL cookie
-  cookieStore.delete('auth_next', { path: '/' });
-  
-  // Also call the utility functions for consistency
-  await clearSession();
-  await clearOAuthState();
+  try {
+    // Get Scalekit logout URL using current session's id_token
+    const scalekit = getScalekitClient();
+    const session = await getSession();
 
-  // Redirect to login page to start fresh OAuth flow
-  const loginUrl = new URL('/api/auth/login', request.url);
-  return NextResponse.redirect(loginUrl);
+    const host = request.headers.get('host') || 'localhost:3000';
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const appBaseUrl = getSiteUrl() || `${protocol}://${host}`;
+    const postLogoutRedirectUri = appBaseUrl.endsWith('/') ? appBaseUrl : `${appBaseUrl}/`;
+
+    let logoutUrl = postLogoutRedirectUri;
+
+    if (session && session.tokens && session.tokens.id_token) {
+      logoutUrl = scalekit.getLogoutUrl({
+        idTokenHint: session.tokens.id_token,
+        postLogoutRedirectUri,
+      });
+    }
+
+    // Clear local session
+    await clearSession();
+
+    // Redirect to Scalekit logout, which will then redirect to postLogoutRedirectUri
+    return NextResponse.redirect(logoutUrl);
+  } catch (error) {
+    console.error('Retry auth error:', error);
+    // Even if there's an error, clear the session and redirect to login
+    await clearSession();
+    const loginUrl = new URL('/api/auth/login', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 }

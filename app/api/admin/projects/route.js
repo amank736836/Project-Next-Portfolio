@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
+const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 const ALLOWED_PROJECT_FIELDS = [
   'title', 'description', 'image', 'img', 'category',
   'is_hidden', 'details'
@@ -14,23 +15,20 @@ function sanitizeProjectBody(body) {
 }
 
 export async function GET() {
-  console.log('[API] GET /api/admin/projects hit');
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
   const { data, error } = await supabase.from('projects').select('*').order('id', { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json(data, { headers: NO_CACHE });
 }
 
 export async function POST(request) {
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
@@ -42,14 +40,13 @@ export async function POST(request) {
 
   const { data, error } = await supabase.from('projects').insert([safeBody]).select();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data[0]);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
 export async function PUT(request) {
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
@@ -59,14 +56,13 @@ export async function PUT(request) {
 
   const { data, error } = await supabase.from('projects').update(updates).eq('id', id).select();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data[0]);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
 export async function DELETE(request) {
-  // Check authentication
   if (!await isAuthenticated()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
   }
 
   const supabase = await createAdminClient();
@@ -75,6 +71,6 @@ export async function DELETE(request) {
 
   const { error } = await supabase.from('projects').delete().eq('id', id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

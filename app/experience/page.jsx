@@ -2,6 +2,8 @@ import Education from "@/components/Education";
 import "../about.css";
 import { createAdminClient } from "@/lib/supabase/server";
 
+export const revalidate = 60;
+
 export default async function ExperiencePage() {
   const supabase = await createAdminClient();
   const { data: experienceData } = await supabase

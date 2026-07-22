@@ -7,6 +7,8 @@ import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/server";
 
+export const revalidate = 60;
+
 export default async function About() {
   const supabase = await createAdminClient();
   const { data: infoData } = await supabase.from('personal_info').select('*');
