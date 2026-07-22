@@ -1,34 +1,29 @@
-import { getCurrentUser } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { createAdminClient } from '@/lib/supabase/server';
+import AdminSettingsClient from './AdminSettingsClient';
 
-// Prevent caching of protected pages
+const SOCIAL_KEYS = ['linkedin', 'github', 'twitter', 'email', 'website'];
+
 export const dynamic = 'force-dynamic';
 
-export default async function AdminSettings() {
-  // Only the authorized operator can hold a session, so an authenticated
-  // session is sufficient to view settings.
-  const user = await getCurrentUser();
-  if (!user) {
-    return redirect('/api/auth/login');
-  }
-
-  return (
-    <div>
-      <h1>Admin Settings</h1>
-      <p>Operator-only configuration and system settings.</p>
-
-      <div>
-        <h2>Settings</h2>
-        <p>Manage organization settings, user roles, and permissions.</p>
-      </div>
-    </div>
-  );
-}
-
-// Also create a metadata block for the page.
 export async function generateMetadata() {
   return {
-    title: "Admin Settings",
-    description: "Manage operator account and dashboard settings."
+    title: 'Admin Settings',
+    description: 'Manage operator account and dashboard settings.',
   };
+}
+
+export default async function AdminSettingsPage() {
+  const supabase = await createAdminClient();
+  const { data: infoData } = await supabase.from('personal_info').select('*');
+
+  const socialLinks = {};
+  SOCIAL_KEYS.forEach(key => {
+    const item = infoData?.find(d => d.key === key);
+    socialLinks[key] = item?.description || '';
+  });
+
+  const resumeItem = infoData?.find(d => d.key === 'resume_url');
+  const resumeUrl = resumeItem?.description || '';
+
+  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} />;
 }

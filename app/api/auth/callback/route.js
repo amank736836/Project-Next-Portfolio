@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getScalekitClient } from '@/lib/scalekit';
-import { getOAuthState, clearOAuthState, setSession, setOAuthState } from '@/lib/cookies';
+import { getOAuthState, clearOAuthState, setSession, setOAuthState, clearSession } from '@/lib/cookies';
 import { getAuthCallbackUrl } from '@/lib/config';
 import { cookies } from 'next/headers';
 import { decodeJwt } from 'jose';
@@ -13,7 +13,7 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+    .replace(/'/g, '&#39;');
 }
 
 function renderErrorPage(title, description, code = 'AUTH_ERROR') {
@@ -76,7 +76,7 @@ function renderErrorPage(title, description, code = 'AUTH_ERROR') {
       content: '';
       position: absolute;
       width: 500px;
-      height: 500px;
+      height: 500px
       background: radial-gradient(circle, var(--error-glow) 0%, transparent 70%);
       bottom: -150px;
       right: -150px;
@@ -242,7 +242,7 @@ function renderErrorPage(title, description, code = 'AUTH_ERROR') {
     <h1>${safeTitle}</h1>
     <p>${safeDescription}</p>
 
-    <a href="/admin" class="btn">Retry Authentication</a>
+    <a href="/api/auth/retry" class="btn">Retry Authentication</a>
     <a href="/" class="btn btn-secondary">Return Home</a>
   </div>
 </body>

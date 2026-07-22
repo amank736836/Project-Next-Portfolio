@@ -2,7 +2,7 @@ import { cloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'application/pdf'];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
 export async function POST(request) {
