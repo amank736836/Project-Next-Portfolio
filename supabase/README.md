@@ -18,7 +18,9 @@ This directory contains the database schema and migration scripts for the portfo
 Stores portfolio projects with visibility status and metadata.
 - `id`: Unique identifier.
 - `title`: Project name.
-- `img`: URL to project image.
+- `img`: Primary project image URL.
+- `image`: Alternate/override project image URL (set by the CMS).
+- `description`: Long-form "Strategic Overview" text.
 - `is_hidden`: Toggle for visibility on the frontend.
 - `details`: JSONB array of project details (links, icons, etc.).
 

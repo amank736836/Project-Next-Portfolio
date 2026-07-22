@@ -4,18 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import PortfolioItem from "@/components/PortfolioItem";
 import "../Portfolio.css";
 
-const PROJECT_CATEGORIES = [
-  'all',
-  'frontend',
-  'backend',
-  'chatting',
-  'mern',
-  'next',
-  'sideproject',
-  'extension',
-  'otherproject'
-];
-
 export default function Portfolio() {
   const [projects, setProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');

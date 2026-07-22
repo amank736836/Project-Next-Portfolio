@@ -5,10 +5,10 @@ import Education from "@/components/Education";
 import "../about.css";
 import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export default async function About() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data: infoData } = await supabase.from('personal_info').select('*');
 
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;

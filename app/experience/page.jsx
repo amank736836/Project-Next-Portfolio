@@ -1,9 +1,9 @@
 import Education from "@/components/Education";
 import "../about.css";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export default async function ExperiencePage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data: experienceData } = await supabase
     .from('experience')
     .select('*')

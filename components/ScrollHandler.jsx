@@ -15,6 +15,12 @@ const ScrollHandler = () => {
       const now = Date.now();
       if (now - lastScrollTime.current < 1500) return; // Prevent rapid firing
 
+      // Only navigate between sections when the page actually scrolls.
+      // On short pages (no overflow) every scroll would otherwise trigger an
+      // unexpected navigation away from the current page.
+      const isScrollable = document.documentElement.scrollHeight > window.innerHeight + 10;
+      if (!isScrollable) return;
+
       const currentIndex = links.findIndex((link) => link.path === pathname);
       if (currentIndex === -1) return;
 

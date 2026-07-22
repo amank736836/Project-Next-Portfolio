@@ -75,8 +75,8 @@ export default function SkillsManager() {
   const addSkill = useCallback(async () => {
     if (!newSkill.trim()) return;
     setSaving(true);
-    const skill = { title: newSkill.trim() };
-    const updatedSkills = [...skills, skill].map(({ title }) => ({ title })); // Clean IDs for re-insert
+    const skill = { title: newSkill.trim(), percentage: 0 };
+    const updatedSkills = [...skills, skill].map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 })); // Clean IDs for re-insert
 
     try {
       const res = await fetch('/api/admin/skills', {
@@ -104,7 +104,7 @@ export default function SkillsManager() {
     const confirmed = await confirmEject(skill?.title);
     if (confirmed) {
       setSaving(true);
-      const updatedSkills = skills.filter(s => s.id !== id).map(({ title }) => ({ title }));
+      const updatedSkills = skills.filter(s => s.id !== id).map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 }));
       try {
         const res = await fetch('/api/admin/skills', {
           method: 'PUT',
@@ -131,7 +131,7 @@ export default function SkillsManager() {
     const data = Array.isArray(manualData) ? manualData : skills;
 
     setSaving(true);
-    const dataToSave = data.map(({ title }) => ({ title }));
+    const dataToSave = data.map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 }));
     try {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
@@ -283,7 +283,7 @@ export default function SkillsManager() {
       ) : filteredSkills.length === 0 ? (
         <div className="p-8 text-center">
           <FiSearch className="mx-auto mb-4 text-slate-500" size={32} />
-          <p className="text-sm text-slate-400">No skills match "{searchQuery}"</p>
+          <p className="text-sm text-slate-400">No skills match &quot;{searchQuery}&quot;</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">

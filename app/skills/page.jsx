@@ -1,9 +1,9 @@
 import Skills from "@/components/Skills";
 import "../about.css";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export default async function SkillsPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data: skillsData } = await supabase
     .from('skills')
     .select('*')

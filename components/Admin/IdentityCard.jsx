@@ -51,7 +51,7 @@ export const IdentityEmptySearch = React.memo(({ query, onClear }) => (
     <div className="w-16 h-16 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-6">
       <FiSearch className="text-slate-600" size={32} />
     </div>
-    <p className="text-slate-400 text-lg font-medium">No results for "{query}"</p>
+    <p className="text-slate-400 text-lg font-medium">No results for &quot;{query}&quot;</p>
     <button onClick={onClear} className="mt-4 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300">Clear Search</button>
   </div>
 ));

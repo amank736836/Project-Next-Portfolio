@@ -25,7 +25,7 @@ export default function InfoManager() {
     fetchInfo();
   }, []);
 
-  const fetchInfo = useCallback(async () => {
+  async function fetchInfo() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/info');
@@ -44,7 +44,7 @@ export default function InfoManager() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
   const updateInfo = useCallback(async (id, newValue, newLabel) => {
     setSaving(true);

@@ -73,6 +73,11 @@ function ToastItem({ id, message, type, duration, onRemove, index }) {
     info: 'border-indigo-500/30 shadow-indigo-500/10',
   };
 
+  const handleClose = useCallback(() => {
+    setExiting(true);
+    setTimeout(() => onRemove(id), 300);
+  }, [id, onRemove]);
+
   useEffect(() => {
     const startTime = Date.now();
     const interval = setInterval(() => {
@@ -87,12 +92,7 @@ function ToastItem({ id, message, type, duration, onRemove, index }) {
     }, 16);
 
     return () => clearInterval(interval);
-  }, [duration]);
-
-  const handleClose = () => {
-    setExiting(true);
-    setTimeout(() => onRemove(id), 300);
-  };
+  }, [duration, handleClose]);
 
   return (
     <div 

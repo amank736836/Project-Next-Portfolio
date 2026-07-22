@@ -1,22 +1,21 @@
-import { hasPermission } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 // Prevent caching of protected pages
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSettings() {
-  // Check if user has admin permissions
-  const hasAdminAccess = await hasPermission('org:admin');
-
-  // If not authorized, redirect to permission denied page
-  if (!hasAdminAccess) {
-    return redirect('/permission-denied');
+  // Only the authorized operator can hold a session, so an authenticated
+  // session is sufficient to view settings.
+  const user = await getCurrentUser();
+  if (!user) {
+    return redirect('/api/auth/login');
   }
 
   return (
     <div>
       <h1>Admin Settings</h1>
-      <p>This page is only accessible to users with organization admin permissions.</p>
+      <p>Operator-only configuration and system settings.</p>
 
       <div>
         <h2>Settings</h2>
@@ -26,10 +25,10 @@ export default async function AdminSettings() {
   );
 }
 
-// Also create a permission denied page
+// Also create a metadata block for the page.
 export async function generateMetadata() {
   return {
-    title: "Permission Denied",
-    description: "You don't have permission to access this page."
+    title: "Admin Settings",
+    description: "Manage operator account and dashboard settings."
   };
 }

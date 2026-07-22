@@ -60,7 +60,7 @@ const PortfolioItem = ({ img, title, details, category }) => {
               <span className="item__icon">{iconMap[detail.icon] || <FiFileText />}</span>
               <div>
                 <span className="item__title">{detail.title}</span>
-                {detail.desc.startsWith('http') ? (
+                {typeof detail.desc === 'string' && detail.desc.startsWith('http') ? (
                   <a href={detail.desc} target="_blank" rel="noopener noreferrer" className="item__details">
                     {detail.desc}
                   </a>

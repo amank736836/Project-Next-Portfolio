@@ -175,7 +175,7 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
           <FiTrash2 className="admin-delete-icon" />
         </Button>
         <a
-          href={project.details?.[3]?.desc?.props?.href || '#'}
+          href={(project.details || []).find(d => /preview|link/i.test(d.title || ''))?.desc || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:bg-indigo-500 hover:text-white transition-all w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-indigo-500/10 text-indigo-400 border-none flex items-center justify-center shadow-sm hover:shadow-indigo-500/10"

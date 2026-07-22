@@ -71,7 +71,7 @@ export default function Dashboard() {
     };
   }, []);
 
-  const fetchExternalStatuses = async () => {
+  async function fetchExternalStatuses() {
     try {
       const ghRes = await fetch('https://www.githubstatus.com/api/v2/status.json');
       const ghData = await ghRes.json();
@@ -103,9 +103,9 @@ export default function Dashboard() {
     } catch (e) {
       setExternalStatus(prev => ({ ...prev, vercel: { status: 'Edge Offline', indicator: 'minor', latency: '--', uptime: '99.7%' } }));
     }
-  };
+  }
 
-  const fetchStats = async () => {
+  async function fetchStats() {
     setLoading(true);
     try {
       const responses = await Promise.all([
@@ -136,9 +136,9 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const fetchThemeSettings = async () => {
+  async function fetchThemeSettings() {
     const savedColor = localStorage.getItem("color");
     const savedMode = localStorage.getItem("theme");
     
@@ -169,7 +169,7 @@ export default function Dashboard() {
       const fallbackMode = savedMode || 'dark-theme';
       setThemeSettings({ color: fallbackColor, mode: fallbackMode });
     }
-  };
+  }
 
   const saveThemeSettings = async (color, mode) => {
     setSavingTheme(true);

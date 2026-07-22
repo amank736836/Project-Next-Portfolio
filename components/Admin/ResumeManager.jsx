@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FiPlus, FiTrash2, FiSend, FiRefreshCw, FiCheckCircle, FiBookOpen, FiZap, FiEye, FiEyeOff, FiEdit3, FiX } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
@@ -27,11 +27,7 @@ export default function ResumeManager({ type }) {
   const latestEntry = items[0]?.year || 'No entries yet';
   const completionLabel = type === 'education' ? 'Academic Track' : 'Experience Track';
 
-  useEffect(() => {
-    fetchItems();
-  }, [type]);
-
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(apiPath, { cache: 'no-store' });
@@ -42,7 +38,11 @@ export default function ResumeManager({ type }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiPath, type]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
 
   const handleUpdate = (id, field, value) => {
     setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
@@ -362,7 +362,7 @@ export default function ResumeManager({ type }) {
                     ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
                     : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
                 }`}>
-                  {item.category}
+                  {item.category || (type === 'education' ? 'Academic' : 'Professional')}
                 </span>
                 <span className="text-[9px] font-medium text-[var(--admin-text)]/50 uppercase tracking-widest">
                   Updated: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Active'}

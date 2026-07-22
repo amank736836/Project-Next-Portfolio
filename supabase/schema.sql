@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS projects (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     img TEXT,
+    image TEXT,
+    description TEXT,
     is_hidden BOOLEAN DEFAULT FALSE,
     details JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import {
@@ -18,7 +18,6 @@ import { Card } from '@/components/ui/Card';
 import StatusFilter from './StatusFilter';
 import CategoryFilter from './CategoryFilter';
 import { ProjectCard, ProjectListItem } from './ProjectItems';
-import { useCallback } from 'react';
 
 export default function ProjectManager() {
   const [projects, setProjects] = useState([]);
@@ -46,10 +45,6 @@ export default function ProjectManager() {
   const errorToast = useErrorToast();
   const confirmDelete = useDeleteConfirm();
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
   const fetchProjects = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/projects');
@@ -74,6 +69,10 @@ export default function ProjectManager() {
       setLoading(false);
     }
   }, [errorToast]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const openNewProjectForm = () => {
     setEditingProject({
@@ -172,7 +171,7 @@ const handleBulkDelete = async () => {
     }
 
     return result;
-  }, [projects, searchQuery, filterStatus]);
+  }, [projects, searchQuery, filterStatus, filterCategory]);
 
   const toggleSelection = useCallback((id) => {
     setSelectedProjects((current) => {
@@ -335,7 +334,7 @@ const handleBulkDelete = async () => {
                 </span>
                 {searchQuery && (
                   <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-slate-500/20 text-slate-400 gap-1">
-                    Search: "{searchQuery}"
+                    Search: &quot;{searchQuery}&quot;
                     <Button
                       variant="outline"
                       size="icon"
