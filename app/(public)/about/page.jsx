@@ -16,6 +16,7 @@ export default async function About() {
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
   let personalInfo = infoData?.filter(i => 
     i.key !== 'about_description' && 
+    i.key !== 'site_mode' &&
     !i.key.startsWith('default_theme_')
   );
 

@@ -30,6 +30,7 @@ const nextConfig = {
 		],
 		formats: ['image/avif', 'image/webp'],
 		minimumCacheTTL: 60 * 60 * 24,
+		qualities: [75, 80, 85],
 	},
 
 	async headers() {

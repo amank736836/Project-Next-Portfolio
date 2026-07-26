@@ -75,11 +75,11 @@ const PortfolioItem = ({ img, title, details, category }) => {
           src={img} 
           alt={title} 
           className="modal__img" 
-          width={800} 
-          height={350} 
+          fill
           loading="lazy"
           sizes="(max-width: 768px) 92vw, 800px"
           quality={85}
+          style={{ objectFit: 'cover', borderRadius: '16px', boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)' }}
         />
       </div>
     </div>
@@ -93,17 +93,20 @@ const PortfolioItem = ({ img, title, details, category }) => {
       tabIndex={0}
       aria-label={`Open project details for ${title}`}
       onKeyDown={handleCardKeyDown}
+      suppressHydrationWarning
     >
-      <Image 
-        src={img} 
-        alt={title} 
-        className="portfolio__img" 
-        width={500} 
-        height={200} 
-        loading="lazy"
-        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 500px"
-        quality={80}
-      />
+      <div style={{ position: 'relative', width: '100%', height: '200px' }}>
+        <Image 
+          src={img} 
+          alt={title} 
+          className="portfolio__img" 
+          fill
+          loading="lazy"
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 500px"
+          quality={80}
+          style={{ objectFit: 'cover', borderRadius: '20px 20px 0 0' }}
+        />
+      </div>
       <div className="portfolio__hover">
         <h3 className="portfolio__title">{title}</h3>
         {category && <span className="portfolio__category">{category}</span>}

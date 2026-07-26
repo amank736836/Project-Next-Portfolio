@@ -28,5 +28,8 @@ export default async function AdminSettingsPage() {
   const layoutItem = infoData?.find(d => d.key === 'portfolio_layout');
   const portfolioLayout = layoutItem?.description || 'masonry';
 
-  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} initialPortfolioLayout={portfolioLayout} />;
+  const siteModeItem = infoData?.find(d => d.key === 'site_mode');
+  const siteMode = siteModeItem?.description || 'multi';
+
+  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} initialPortfolioLayout={portfolioLayout} initialSiteMode={siteMode} />;
 }

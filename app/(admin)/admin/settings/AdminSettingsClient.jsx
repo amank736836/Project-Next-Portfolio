@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout } from 'react-icons/fi';
+import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -19,6 +19,11 @@ const SOCIAL_PLATFORMS = [
 const PORTFOLIO_LAYOUTS = [
   { key: 'masonry', label: 'Masonry (Pinterest-style)', icon: FiGrid, desc: 'Images keep original aspect ratios, brick wall layout' },
   { key: 'fixed', label: 'Fixed Ratio (Grid)', icon: FiLayout, desc: 'All images same 5:2 ratio, uniform grid' },
+];
+
+const SITE_MODES = [
+  { key: 'multi', label: 'Multi-Page', icon: FiLayout, desc: 'Separate pages for each section (default)' },
+  { key: 'single', label: 'Single Page', icon: FiColumns, desc: 'All sections on one continuous page' },
 ];
 
 function normalizeSocialValue(value, platform) {
@@ -48,7 +53,7 @@ function extractDisplayValue(storedValue, platform) {
   return storedValue;
 }
 
-export default function AdminSettingsClient({ initialSocialLinks = {}, initialResumeUrl = '', initialPortfolioLayout = 'masonry' }) {
+export default function AdminSettingsClient({ initialSocialLinks = {}, initialResumeUrl = '', initialPortfolioLayout = 'masonry', initialSiteMode = 'multi' }) {
   const router = useRouter();
   const addToast = useToast();
   const successToast = useSuccessToast();
@@ -57,10 +62,12 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
   const [socialLinks, setSocialLinks] = useState(initialSocialLinks);
   const [resumeUrl, setResumeUrl] = useState(initialResumeUrl);
   const [portfolioLayout, setPortfolioLayout] = useState(initialPortfolioLayout);
+  const [siteMode, setSiteMode] = useState(initialSiteMode);
   const [editingKey, setEditingKey] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [savingSocial, setSavingSocial] = useState(false);
   const [savingLayout, setSavingLayout] = useState(false);
+  const [savingSiteMode, setSavingSiteMode] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
 
   useEffect(() => {
@@ -190,6 +197,27 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
       errorToast('Network error');
     } finally {
       setSavingLayout(false);
+    }
+  };
+
+  const saveSiteMode = async (mode) => {
+    setSavingSiteMode(true);
+    try {
+      const res = await fetch('/api/admin/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'site_mode', title: 'Site Mode', description: mode }),
+      });
+      if (res.ok) {
+        setSiteMode(mode);
+        successToast(`Site mode set to ${mode === 'single' ? 'Single Page' : 'Multi-Page'}`);
+      } else {
+        errorToast('Failed to save site mode');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    } finally {
+      setSavingSiteMode(false);
     }
   };
 
@@ -339,18 +367,56 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
                     <span className="layout-label">{layout.label}</span>
                     <span className="layout-desc">{layout.desc}</span>
                   </div>
-                  {portfolioLayout === layout.key && (
-                    <FiCheck className="layout-check" size={20} />
-                  )}
-                  {savingLayout && portfolioLayout === layout.key && (
-                    <span className="layout-saving">Saving...</span>
-                  )}
-                </button>
-              ))}
+{portfolioLayout === layout.key && (
+                      <FiCheck className="layout-check" size={20} />
+                    )}
+                    {savingLayout && portfolioLayout === layout.key && (
+                      <span className="layout-saving">Saving...</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </section>
+
+          <section className="admin-settings__section">
+            <div className="section-header">
+              <FiColumns className="section-icon" />
+              <div>
+                <h2>Site Mode</h2>
+                <p className="section-desc">Choose between multi-page navigation or single-page scroll.</p>
+              </div>
             </div>
-          </Card>
-        </section>
+
+            <Card className="layout-card">
+              <div className="layout-options">
+                {SITE_MODES.map(mode => (
+                  <button
+                    key={mode.key}
+                    type="button"
+                    className={`layout-option ${siteMode === mode.key ? 'active' : ''}`}
+                    onClick={() => saveSiteMode(mode.key)}
+                    disabled={savingSiteMode || siteMode === mode.key}
+                  >
+                    <div className="layout-icon">
+                      <mode.icon size={28} />
+                    </div>
+                    <div className="layout-info">
+                      <span className="layout-label">{mode.label}</span>
+                      <span className="layout-desc">{mode.desc}</span>
+                    </div>
+                    {siteMode === mode.key && (
+                      <FiCheck className="layout-check" size={20} />
+                    )}
+                    {savingSiteMode && siteMode === mode.key && (
+                      <span className="layout-saving">Saving...</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </section>
+        </div>
       </div>
-    </div>
   );
 }

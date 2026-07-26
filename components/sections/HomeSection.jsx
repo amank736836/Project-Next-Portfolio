@@ -1,24 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
-import { createAdminClient } from "@/lib/supabase/server";
-import "./Home.css";
+import "../Home.css";
 
-export default async function Home() {
-  const supabase = await createAdminClient();
-  const { data: infoData } = await supabase
-    .from('personal_info')
-    .select('description')
-    .eq('key', 'site_mode')
-    .single();
-
-  const siteMode = infoData?.description || 'multi';
-
-  // In single-page mode, the Home section is rendered by SinglePageLayout
-  if (siteMode === 'single') {
-    return null;
-  }
-
+export default function HomeSection() {
   return (
     <section className="home section grid">
       <div className="home__img-wrapper cursor-pointer">
@@ -41,7 +26,7 @@ export default async function Home() {
           <div className="home__description">
             <p>Passionate Full Stack Developer with Expertise in MERN Stack</p>
           </div>
-          <Link href="/about" className="button">
+          <Link href="#about" className="button">
             More About Me
             <span className="button__icon">
               <FaArrowRight />

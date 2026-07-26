@@ -29,13 +29,16 @@ const buttonVariants = cva(
   }
 );
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, children, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, destructive, children, ...props }, ref) => {
   const Component = asChild ? 'a' : 'button';
+
+  // If destructive is true, override variant to destructive
+  const effectiveVariant = destructive ? 'destructive' : variant;
 
   return (
     <Component
       ref={ref}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}
       {...props}
     >
       {children}

@@ -4,13 +4,16 @@ import { useEffect, useRef, memo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { links } from "@/data";
 
-const ScrollHandler = () => {
+const ScrollHandler = ({ siteMode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const lastScrollTime = useRef(0);
   const touchStartY = useRef(0);
 
   useEffect(() => {
+    // Disable scroll navigation in single-page mode
+    if (siteMode === 'single') return;
+
     const handleNavigation = (direction) => {
       const now = Date.now();
       if (now - lastScrollTime.current < 1500) return; // Prevent rapid firing
@@ -67,7 +70,7 @@ const ScrollHandler = () => {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [pathname, router]);
+  }, [pathname, router, siteMode]);
 
   return null;
 };

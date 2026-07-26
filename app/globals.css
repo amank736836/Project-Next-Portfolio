@@ -73,6 +73,21 @@
   user-select: none;
 }
 
+/* Smooth scroll for single-page mode */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 body,
 input,
 textarea {
