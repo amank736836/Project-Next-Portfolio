@@ -53,7 +53,7 @@ const Navbar = () => {
 
   if (loading) {
     return (
-      <nav className="nav">
+      <nav className="nav" suppressHydrationWarning>
         <div className="nav__menu">
           <ul className="nav__list">
             <li className="nav__item">
@@ -66,7 +66,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="nav">
+    <nav className="nav" suppressHydrationWarning>
       <div className={`${showMenu ? "nav__menu show-menu" : "nav__menu"}`}>
         <ul className="nav__list">
           {links.map(({ name, icon, path }, index) => {

@@ -272,11 +272,11 @@ export const links = [
     icon: <FiFileText className="nav__icon" />,
     path: "/experience",
   },
-  {
+{
     id: 6,
     name: "Projects",
     icon: <FaFolderOpen className="nav__icon" />,
-    path: "/portfolio",
+    path: "/projects",
   },
   {
     id: 7,

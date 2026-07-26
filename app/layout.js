@@ -1,23 +1,18 @@
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
-import Themes from "@/components/Themes/Themes";
-import ScrollHandler from "@/components/ScrollHandler";
-import TransitionLoader from "@/components/TransitionLoader";
 import { Analytics } from "@vercel/analytics/react";
-import RootShell from "@/components/RootShell";
 import { Outfit, Poppins } from 'next/font/google';
 
 import { getSiteUrl } from "@/lib/config";
 
 const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['300','400','500','600','700','800'],
+  weight: ['300','400','600','800'],
   variable: '--body-font'
 });
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['300','400','500','600','700'],
+  weight: ['300','400','600','800'],
   variable: '--second-font'
 });
 
@@ -58,17 +53,10 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${poppins.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${outfit.variable} ${poppins.variable}`}>
       <body>
-        {/* Portfolio-level chrome: hidden on /admin routes */}
-        <RootShell>
-          <Navbar />
-          <Themes />
-          <ScrollHandler />
-          <TransitionLoader />
-        </RootShell>
         {children}
         <Analytics />
       </body>

@@ -3,6 +3,7 @@ import { getDefaultScopes } from '@/lib/scalekit';
 import { setOAuthState } from '@/lib/cookies';
 import { getAuthCallbackUrl } from '@/lib/config';
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 
 export async function GET(request) {
@@ -44,6 +45,7 @@ export async function GET(request) {
   // Get redirect URI - must match exactly what's configured in Scalekit dashboard
   const redirectUri = getAuthCallbackUrl();
   console.log('[Auth Login] Using redirect URI:', redirectUri, 'NODE_ENV:', process.env.NODE_ENV);
+  console.log('[Auth Login] Stored next URL:', safeNextUrl);
 
   // Get default scopes
   const scopes = getDefaultScopes();
@@ -52,8 +54,9 @@ export async function GET(request) {
   const authUrl = scalekit.getAuthorizationUrl(redirectUri, {
     state,
     scopes,
+    prompt: 'login',
   });
 
-  // Redirect to Scalekit authorization endpoint
-  return Response.redirect(authUrl);
+  // Redirect to Scalekit authorization endpoint using NextResponse to include cookies
+  return NextResponse.redirect(authUrl);
 }

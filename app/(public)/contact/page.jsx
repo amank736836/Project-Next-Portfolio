@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 import { FaThreads, FaXTwitter } from "react-icons/fa6";
-import "../Contact.css";
+import "@/app/(public)/Contact.css";
 import { FiSend } from "react-icons/fi";
 
 export default function Contact() {

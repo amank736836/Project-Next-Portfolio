@@ -1,6 +1,6 @@
 import PortfolioItem from "@/components/PortfolioItem";
 import { createAdminClient } from "@/lib/supabase/server";
-import "../Portfolio.css";
+import "@/app/(public)/Portfolio.css";
 
 export const revalidate = 60;
 

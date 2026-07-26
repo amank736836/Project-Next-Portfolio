@@ -7,6 +7,10 @@ const PROTECTED_WRITE_API_PATHS = ['/api/admin', '/api/auth/logout', '/api/auth/
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 60;
+
+// ⚠️ In-memory rate limiter - DOES NOT WORK IN SERVERLESS (Vercel)
+// Each function invocation gets a fresh Map. Use Upstash Redis or similar for production.
+// Example: import { Ratelimit } from '@upstash/ratelimit'; import { Redis } from '@upstash/redis';
 const rateLimitStore = new Map();
 
 function getClientIp(request) {
@@ -56,6 +60,14 @@ function hasValidSameOrigin(request) {
 }
 
 function enforceRateLimit(request) {
+  // Skip in production if Upstash is configured (placeholder)
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    // TODO: Implement Upstash rate limiting here
+    // const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.slidingWindow(60, '60 s') });
+    // return await ratelimit.limit(key);
+    return null;
+  }
+
   const pathname = request.nextUrl.pathname;
   const ip = getClientIp(request);
   const key = `${ip}:${pathname}:${request.method}`;

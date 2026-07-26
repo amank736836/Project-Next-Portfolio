@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus } from 'react-icons/fi';
+import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -14,6 +14,11 @@ const SOCIAL_PLATFORMS = [
   { key: 'twitter', label: 'Twitter / X', icon: FiTwitter, placeholder: 'username or full URL', urlPrefix: 'https://x.com/' },
   { key: 'email', label: 'Email', icon: FiMail, placeholder: 'email@example.com', urlPrefix: 'mailto:' },
   { key: 'website', label: 'Website', icon: FiGlobe, placeholder: 'https://example.com', urlPrefix: '' },
+];
+
+const PORTFOLIO_LAYOUTS = [
+  { key: 'masonry', label: 'Masonry (Pinterest-style)', icon: FiGrid, desc: 'Images keep original aspect ratios, brick wall layout' },
+  { key: 'fixed', label: 'Fixed Ratio (Grid)', icon: FiLayout, desc: 'All images same 5:2 ratio, uniform grid' },
 ];
 
 function normalizeSocialValue(value, platform) {
@@ -43,7 +48,7 @@ function extractDisplayValue(storedValue, platform) {
   return storedValue;
 }
 
-export default function AdminSettingsClient({ initialSocialLinks = {}, initialResumeUrl = '' }) {
+export default function AdminSettingsClient({ initialSocialLinks = {}, initialResumeUrl = '', initialPortfolioLayout = 'masonry' }) {
   const router = useRouter();
   const addToast = useToast();
   const successToast = useSuccessToast();
@@ -51,9 +56,11 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
 
   const [socialLinks, setSocialLinks] = useState(initialSocialLinks);
   const [resumeUrl, setResumeUrl] = useState(initialResumeUrl);
+  const [portfolioLayout, setPortfolioLayout] = useState(initialPortfolioLayout);
   const [editingKey, setEditingKey] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [savingSocial, setSavingSocial] = useState(false);
+  const [savingLayout, setSavingLayout] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
 
   useEffect(() => {
@@ -162,6 +169,27 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
       }
     } catch (e) {
       errorToast('Network error');
+    }
+  };
+
+  const savePortfolioLayout = async (layout) => {
+    setSavingLayout(true);
+    try {
+      const res = await fetch('/api/admin/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'portfolio_layout', title: 'Portfolio Layout', description: layout }),
+      });
+      if (res.ok) {
+        setPortfolioLayout(layout);
+        successToast(`Portfolio layout set to ${layout === 'masonry' ? 'Masonry' : 'Fixed Ratio'}`);
+      } else {
+        errorToast('Failed to save layout');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    } finally {
+      setSavingLayout(false);
     }
   };
 
@@ -282,6 +310,44 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
               </div>
             )}
             {uploadingResume && <div className="upload-progress">Uploading...</div>}
+          </Card>
+        </section>
+
+        <section className="admin-settings__section">
+          <div className="section-header">
+            <FiGrid className="section-icon" />
+            <div>
+              <h2>Portfolio Layout</h2>
+              <p className="section-desc">Choose how projects are displayed on the public portfolio page.</p>
+            </div>
+          </div>
+
+          <Card className="layout-card">
+            <div className="layout-options">
+              {PORTFOLIO_LAYOUTS.map(layout => (
+                <button
+                  key={layout.key}
+                  type="button"
+                  className={`layout-option ${portfolioLayout === layout.key ? 'active' : ''}`}
+                  onClick={() => savePortfolioLayout(layout.key)}
+                  disabled={savingLayout || portfolioLayout === layout.key}
+                >
+                  <div className="layout-icon">
+                    <layout.icon size={28} />
+                  </div>
+                  <div className="layout-info">
+                    <span className="layout-label">{layout.label}</span>
+                    <span className="layout-desc">{layout.desc}</span>
+                  </div>
+                  {portfolioLayout === layout.key && (
+                    <FiCheck className="layout-check" size={20} />
+                  )}
+                  {savingLayout && portfolioLayout === layout.key && (
+                    <span className="layout-saving">Saving...</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </Card>
         </section>
       </div>

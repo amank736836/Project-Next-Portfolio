@@ -1,6 +1,6 @@
 'use client';
 
-import '../admin.css';
+import '@/app/(admin)/admin.css';
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Admin/Sidebar';
 import Themes from '@/components/Themes/Themes';

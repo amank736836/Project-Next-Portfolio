@@ -1,5 +1,5 @@
 import Skills from "@/components/Skills";
-import "../about.css";
+import "@/app/(public)/about.css";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;

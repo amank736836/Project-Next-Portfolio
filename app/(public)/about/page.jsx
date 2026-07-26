@@ -2,7 +2,7 @@ import Info from "@/components/Info";
 import { FaDownload } from "react-icons/fa";
 import Skills from "@/components/Skills";
 import Education from "@/components/Education";
-import "../about.css";
+import "@/app/(public)/about.css";
 import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/server";

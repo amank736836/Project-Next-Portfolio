@@ -8,7 +8,7 @@ const publicRoutes = [
   "/skills",
   "/education",
   "/experience",
-  "/portfolio",
+  "/projects",
   "/contact",
   "/resume",
 ];

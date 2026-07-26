@@ -104,7 +104,9 @@ const Themes = () => {
   }, [color]);
 
   useEffect(() => {
-    document.documentElement.className = theme;
+    // Add/remove theme class without removing font CSS variables
+    document.documentElement.classList.remove('light-theme', 'dark-theme');
+    document.documentElement.classList.add(theme);
   }, [theme]);
 
   return (

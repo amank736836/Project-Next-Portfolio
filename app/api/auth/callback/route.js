@@ -242,7 +242,7 @@ function renderErrorPage(title, description, code = 'AUTH_ERROR') {
     <h1>${safeTitle}</h1>
     <p>${safeDescription}</p>
 
-    <a href="/api/auth/retry" class="btn">Retry Authentication</a>
+    <a href="/api/auth/retry?next=/" class="btn">Retry Authentication</a>
     <a href="/" class="btn btn-secondary">Return Home</a>
   </div>
 </body>
@@ -397,9 +397,14 @@ export async function GET(request) {
     };
 
     // Authorized Email Check
-    const AUTHORIZED_EMAIL = process.env.AUTHORIZED_ADMIN_EMAIL || 'amankarguwal0@gmail.com';
+    const AUTHORIZED_EMAIL = process.env.AUTHORIZED_EMAIL || process.env.AUTHORIZED_ADMIN_EMAIL || 'amankarguwal0@gmail.com';
     if (user.email !== AUTHORIZED_EMAIL) {
       console.log(`[Auth Callback] Unauthorized email: ${user.email}. Restricting to ${AUTHORIZED_EMAIL}`);
+      
+      // Clear auth_next cookie so retry doesn't redirect back to /admin
+      const cookieStore = await cookies();
+      cookieStore.delete('auth_next', { path: '/' });
+      
       return renderErrorPage(
         'Access Level Restriction',
         `Your identity node (${user.email || 'unknown'}) is authenticated, but is not present in the master terminal control list. Only authorized operators are permitted access.`,

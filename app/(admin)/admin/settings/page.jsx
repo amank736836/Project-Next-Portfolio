@@ -25,5 +25,8 @@ export default async function AdminSettingsPage() {
   const resumeItem = infoData?.find(d => d.key === 'resume_url');
   const resumeUrl = resumeItem?.description || '';
 
-  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} />;
+  const layoutItem = infoData?.find(d => d.key === 'portfolio_layout');
+  const portfolioLayout = layoutItem?.description || 'masonry';
+
+  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} initialPortfolioLayout={portfolioLayout} />;
 }
