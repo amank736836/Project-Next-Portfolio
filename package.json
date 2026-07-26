@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev:turbo": "next dev --turbopack",
+    "dev": "npm run db:watch && next dev",
+    "dev:turbo": "npm run db:watch && next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:watch": "tsx scripts/src/commands/watch.ts",
+    "db:migrate": "tsx scripts/src/commands/migrate.ts",
+    "db:seed": "tsx scripts/src/commands/seed.ts",
+    "db:status": "tsx scripts/src/commands/status.ts",
+    "db:rollback": "tsx scripts/src/commands/rollback.ts",
+    "db:generate": "tsx scripts/src/commands/generate.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -33,12 +39,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
+    "@types/node": "^20.19.43",
     "autoprefixer": "^10.5.0",
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "postcss": "^8.5.13",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.2.4",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3"
   }
 }

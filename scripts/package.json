@@ -1,0 +1,27 @@
+{
+  "name": "portfolio-sql-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsx src/commands/watch.ts",
+    "migrate": "tsx src/commands/migrate.ts",
+    "migrate:create": "tsx src/commands/migrate-create.ts",
+    "seed": "tsx src/commands/seed.ts",
+    "status": "tsx src/commands/status.ts",
+    "rollback": "tsx src/commands/rollback.ts",
+    "generate": "tsx src/commands/generate.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^16.4.5",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}
