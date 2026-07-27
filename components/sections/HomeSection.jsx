@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
+import Typewriter from "@/components/ui/Typewriter";
 import "../Home.css";
 
 export default function HomeSection() {
@@ -24,7 +25,17 @@ export default function HomeSection() {
             <span>Full Stack Developer</span>
           </h1>
           <div className="home__description">
-            <p>Passionate Full Stack Developer with Expertise in MERN Stack</p>
+            <Typewriter
+              texts={[
+                "Passionate Full Stack Developer with Expertise in MERN Stack",
+                "Building Scalable Web Applications with React & Node.js",
+                "Creating Clean, Maintainable Code & Beautiful UIs"
+              ]}
+              speed={80}
+              deleteSpeed={40}
+              pauseTime={2000}
+              loop={true}
+            />
           </div>
           <Link href="#about" className="button">
             More About Me

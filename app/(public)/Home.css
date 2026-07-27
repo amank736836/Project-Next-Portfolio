@@ -1,24 +1,30 @@
 .home {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 64px;
+  justify-items: center;
+  gap: 48px;
   min-height: 100vh;
   padding: 80px 40px 80px 160px; /* Increased left padding for desktop nav */
   position: relative;
   overflow: hidden;
 }
 
+.home__img-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .home__img {
   width: 100%;
-  max-width: 600px;
-  height: 600px;
+  max-width: 500px;
+  height: 500px;
   object-fit: cover;
   border-radius: 40px;
   box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
   z-index: 2;
   transition: transform 0.5s ease;
-  margin-left: 30px; /* Added margin for extra clearance */
 }
 
 .home__img:hover {
@@ -48,7 +54,7 @@
 }
 
 .home__description {
-  font-size: var(--large-font-size);
+  font-size: var(--h2-font-size);
   color: var(--text-color);
   line-height: 1.8;
   margin-bottom: 40px;
@@ -68,28 +74,52 @@
   pointer-events: none;
 }
 
-/* Button override for a more modern look */
+/* Button override to match global .button styles (used by Download CV/View CV) */
 .home .button {
-  padding: 18px 48px;
-  font-size: var(--normal-font-size);
-  letter-spacing: 0.5px;
-  background: var(--first-color);
-  color: #fff;
-  border: none;
-  box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
-  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  color: var(--title-color);
+  border: 1px solid var(--first-color);
+  padding: 0 70px 0 35px;
+  height: 55px;
+  border-radius: 35px;
+  font-family: var(--second-font);
+  font-size: var(--small-font-size);
+  font-weight: var(--weight-500);
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: none;
 }
 
 .home .button:hover {
-  background: var(--first-color-alt);
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(108, 99, 255, 0.3);
+  color: var(--text-white);
+}
+
+.home .button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--first-color);
+  transform: translateX(100%);
+  z-index: -1;
+  transition: all 0.3s ease-out;
+}
+
+.home .button:hover::before {
+  transform: translateX(0);
 }
 
 .home .button__icon {
-  background: var(--glass-edge);
-  top: 0;
-  bottom: 0;
+  background-color: var(--first-color);
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  color: var(--text-white);
+  font-size: var(--large-font-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,4 +145,25 @@
   .home__description {
     margin-inline: auto;
   }
+}
+
+/* Typewriter Effect */
+.typewriter-text {
+  display: inline-block;
+  min-height: 1.5em;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: var(--first-color);
+  margin-left: 4px;
+  animation: blink 1s infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
