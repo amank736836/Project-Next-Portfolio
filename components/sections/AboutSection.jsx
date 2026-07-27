@@ -2,6 +2,7 @@ import Info from "@/components/Info";
 import { FaDownload } from "react-icons/fa";
 import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
+import "@/app/(public)/about.css";
 
 export default function AboutSection({ aboutDescription, personalInfo }) {
   return (
@@ -28,13 +29,11 @@ export default function AboutSection({ aboutDescription, personalInfo }) {
                   <FaDownload />
                 </span>
               </a>
-              <Link href="/resume">
-                <div className="button">
-                  View Cv
-                  <span className="button__icon">
-                    <FaEye />
-                  </span>
-                </div>
+              <Link href="/resume" className="button">
+                View Cv
+                <span className="button__icon">
+                  <FaEye />
+                </span>
               </Link>
             </div>
           </div>

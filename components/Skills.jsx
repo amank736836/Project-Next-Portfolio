@@ -6,7 +6,7 @@ const Skills = ({ data }) => {
         {
             data.map(({ title }, index) => {
                 return (
-                    <div className="progress__box" key={index}>
+                    <div className="skills__item" key={index}>
                         <h3 className="skills__title">{title}</h3>
                     </div>
                 )

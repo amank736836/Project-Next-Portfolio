@@ -3,11 +3,9 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-items: center;
-  gap: 48px;
+  gap: 24px;
   min-height: 100vh;
   padding: 80px 40px 80px 160px; /* Increased left padding for desktop nav */
-  position: relative;
-  overflow: hidden;
 }
 
 .home__img-wrapper {
