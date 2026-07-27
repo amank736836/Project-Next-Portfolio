@@ -176,3 +176,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media screen and (max-width: 350px) {
+  .resume__container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .about__info {
+    padding: 24px;
+  }
+  
+  .section__subtitle {
+    font-size: var(--h3-font-size);
+  }
+  
+  .about__description {
+    font-size: var(--small-font-size);
+  }
+  
+  .info__list {
+    grid-template-columns: 1fr;
+  }
+}
