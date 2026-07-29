@@ -1,6 +1,63 @@
 -- Portfolio Database Schema
--- Generated: 2026-07-26T16:09:25.598Z
+-- Generated: 2026-07-28T01:55:09.864Z
 -- DO NOT EDIT DIRECTLY - Edit files in sql/tables/, sql/indexes/, sql/functions/
+
+-- ===================================================================
+-- Table: api_logs
+-- ===================================================================
+-- Table: api_logs
+-- Description: Stores API call history for debugging and monitoring
+-- Version: 1.0.0
+-- Dependencies: none
+
+CREATE TABLE IF NOT EXISTS api_logs (
+    id BIGSERIAL PRIMARY KEY,
+    endpoint TEXT NOT NULL,
+    method TEXT NOT NULL,
+    status_code INTEGER,
+    request_body JSONB,
+    request_headers JSONB,
+    response_body JSONB,
+    error_message TEXT,
+    error_stack TEXT,
+    duration_ms INTEGER,
+    user_id UUID,
+    user_agent TEXT,
+    ip_address INET,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE api_logs IS 'API call history for debugging and monitoring';
+COMMENT ON COLUMN api_logs.endpoint IS 'API endpoint path';
+COMMENT ON COLUMN api_logs.method IS 'HTTP method';
+COMMENT ON COLUMN api_logs.status_code IS 'HTTP response status code';
+COMMENT ON COLUMN api_logs.request_body IS 'Request payload (sanitized)';
+COMMENT ON COLUMN api_logs.request_headers IS 'Request headers (sanitized)';
+COMMENT ON COLUMN api_logs.response_body IS 'Response payload (sanitized)';
+COMMENT ON COLUMN api_logs.error_message IS 'Error message if request failed';
+COMMENT ON COLUMN api_logs.error_stack IS 'Error stack trace if applicable';
+COMMENT ON COLUMN api_logs.duration_ms IS 'Request duration in milliseconds';
+COMMENT ON COLUMN api_logs.user_id IS 'Authenticated user ID if available';
+COMMENT ON COLUMN api_logs.user_agent IS 'Client user agent';
+COMMENT ON COLUMN api_logs.ip_address IS 'Client IP address';
+
+-- Enable RLS
+ALTER TABLE api_logs ENABLE ROW LEVEL SECURITY;
+
+-- Public read access (for admin dashboard)
+CREATE POLICY "Public read access" ON api_logs
+    FOR SELECT USING (true);
+
+-- Service role write access (for API logging)
+CREATE POLICY "Service role write access" ON api_logs
+    FOR INSERT WITH CHECK (auth.role() = 'service_role');
+
+-- Indexes for common queries
+CREATE INDEX IF NOT EXISTS idx_api_logs_created_at ON api_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_api_logs_endpoint ON api_logs(endpoint);
+CREATE INDEX IF NOT EXISTS idx_api_logs_status_code ON api_logs(status_code);
+CREATE INDEX IF NOT EXISTS idx_api_logs_error ON api_logs(error_message) WHERE error_message IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_api_logs_duration ON api_logs(duration_ms DESC);
 
 -- ===================================================================
 -- Table: education
@@ -112,6 +169,60 @@ CREATE TABLE IF NOT EXISTS skills (
 COMMENT ON TABLE skills IS 'Technical skills with proficiency percentages';
 COMMENT ON COLUMN skills.title IS 'Skill name (e.g., React, TypeScript)';
 COMMENT ON COLUMN skills.percentage IS 'Proficiency percentage (0-100)';
+
+-- ===================================================================
+-- Table: user_settings
+-- ===================================================================
+-- Table: user_settings
+-- Description: User-configurable site settings and feature toggles
+-- Version: 1.0.0
+-- Dependencies: none
+
+CREATE TABLE IF NOT EXISTS user_settings (
+    key TEXT PRIMARY KEY,
+    title TEXT,
+    description TEXT,
+    type TEXT DEFAULT 'boolean' CHECK (type IN ('boolean', 'string', 'number', 'json')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE user_settings IS 'User-configurable site settings and feature toggles';
+COMMENT ON COLUMN user_settings.key IS 'Unique identifier for the setting';
+COMMENT ON COLUMN user_settings.title IS 'Human-readable label for admin UI';
+COMMENT ON COLUMN user_settings.description IS 'Value of the setting (stored as text)';
+COMMENT ON COLUMN user_settings.type IS 'Data type for validation: boolean, string, number, json';
+
+-- Enable RLS
+ALTER TABLE user_settings ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read
+CREATE POLICY "Allow public read" ON user_settings FOR SELECT USING (true);
+
+-- Allow admin write (separate policies for each operation)
+CREATE POLICY "Allow admin insert" ON user_settings FOR INSERT WITH CHECK (auth.role() = 'service_role');
+CREATE POLICY "Allow admin update" ON user_settings FOR UPDATE USING (auth.role() = 'service_role');
+CREATE POLICY "Allow admin delete" ON user_settings FOR DELETE USING (auth.role() = 'service_role');
+
+-- Trigger to update updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_user_settings_updated_at
+    BEFORE UPDATE ON user_settings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Default settings
+INSERT INTO user_settings (key, title, description, type) VALUES
+    ('enable_scroll_reveal', 'Enable Scroll Reveal Animations', 'true', 'boolean'),
+    ('enable_typewriter', 'Enable Typewriter Effect', 'true', 'boolean')
+ON CONFLICT (key) DO NOTHING;
 
 -- ===================================================================
 -- Indexes

@@ -1,303 +1,363 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { FiPlus, FiTrash2, FiCloudLightning, FiRefreshCw, FiCode, FiEdit3, FiSearch, FiX, FiCheck } from 'react-icons/fi';
-import { useSuccessToast, useErrorToast } from './Toast';
-import { useEjectConfirm } from './ConfirmModal';
-import { EmptySkills } from './EmptyState';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import {
+  FiPlus, FiSearch, FiFilter, FiChevronDown, FiX
+} from 'react-icons/fi';
+import { useToast, useSuccessToast, useErrorToast } from './Toast';
+import { useDeleteConfirm } from './ConfirmModal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import SkillEditModal from './SkillEditModal';
-import { SkillCard } from './SkillCard';
-import { useCallback } from 'react';
+import { useLoading } from './LoadingContext';
+import EditSkillForm from './Skills/EditSkillForm';
+import SkillCard from './Skills/SkillCard';
+import CategoryManager from './Skills/CategoryManager';
+import CategoryFilter from './Skills/CategoryFilter';
+import { EmptySkills, EmptySearchSkill } from './Skills/EmptyStates';
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [newSkill, setNewSkill] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [showCategoryFilters, setShowCategoryFilters] = useState(false);
   const [editingSkill, setEditingSkill] = useState(null);
-
+  const [saving, setSaving] = useState(false);
   const modalRef = useRef(null);
-  const newSkillInputRef = useRef(null);
 
+  const { startLoading, stopLoading } = useLoading();
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
-  const confirmEject = useEjectConfirm();
+  const confirmDelete = useDeleteConfirm();
 
   const fetchSkills = useCallback(async () => {
-    setLoading(true);
+    startLoading();
     try {
       const res = await fetch('/api/admin/skills');
       const data = await res.json();
       setSkills(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch skills:', error);
-      errorToast('Failed to load skill matrix');
+      errorToast('Failed to load skills');
     } finally {
       setLoading(false);
+      stopLoading();
     }
-  }, [errorToast]);
+  }, [errorToast, startLoading, stopLoading]);
 
-  // Fetch skills once on mount
+  const fetchCategories = useCallback(async () => {
+    startLoading();
+    try {
+      const res = await fetch('/api/admin/skill-categories');
+      const data = await res.json();
+      setCategories(Array.isArray(data) ? data.map(c => c.name) : []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    } finally {
+      stopLoading();
+    }
+  }, [startLoading, stopLoading]);
+
   useEffect(() => {
     fetchSkills();
-  }, [fetchSkills]);
+    fetchCategories();
+  }, [fetchSkills, fetchCategories]);
 
-  // Keyboard / click-outside listeners for the edit modal
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setEditingSkill(null);
-    };
-
-    const handleClickOutside = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-        setEditingSkill(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    if (editingSkill) {
-      window.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [editingSkill]);
-
-  const handleUpdate = (id, value) => {
-    setSkills(skills.map(s => s.id === id ? { ...s, title: value } : s));
+  const openNewSkillForm = () => {
+    setEditingSkill({
+      title: '',
+      percentage: 85,
+      category: 'General',
+      icon: '⭐',
+      color: '#6B7280',
+      is_featured: false,
+    });
   };
 
-  const addSkill = useCallback(async () => {
-    if (!newSkill.trim()) return;
+  const handleSaveSkill = async (skillData) => {
+    startLoading();
     setSaving(true);
-    const skill = { title: newSkill.trim(), percentage: 0 };
-    const updatedSkills = [...skills, skill].map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 })); // Clean IDs for re-insert
-
     try {
+      const isNew = !skillData.id;
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedSkills),
+        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({...s, is_featured: s.is_featured}))]),
       });
+      
       if (res.ok) {
-        setNewSkill('');
-        await fetchSkills();
-        successToast(`Skill "${skill.title}" synchronized to database`);
+        fetchSkills();
+        successToast(isNew ? 'Skill added to matrix' : 'Skill updated');
+        setEditingSkill(null);
       } else {
-        errorToast('Failed to add skill');
+        errorToast('Failed to save skill');
       }
     } catch (error) {
-      console.error('Failed to add skill:', error);
-      errorToast('Failed to synchronize matrix');
+      console.error('Failed to save skill:', error);
+      errorToast('Failed to save skill');
     } finally {
       setSaving(false);
+      stopLoading();
     }
-  }, [newSkill, skills, fetchSkills, successToast, errorToast]);
+  };
 
-  const removeSkill = useCallback(async (id) => {
-    const skill = skills.find(s => s.id === id);
-    const confirmed = await confirmEject(skill?.title);
+  const handleDelete = async (skill) => {
+    const confirmed = await confirmDelete(`"${skill.title}"`);
     if (confirmed) {
-      setSaving(true);
-      const updatedSkills = skills.filter(s => s.id !== id).map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 }));
+      startLoading();
       try {
-        const res = await fetch('/api/admin/skills', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedSkills),
-        });
+        const res = await fetch(`/api/admin/skills?id=${skill.id}`, { method: 'DELETE' });
         if (res.ok) {
-          await fetchSkills();
-          successToast(`Skill "${skill?.title}" removed from matrix`);
+          setSkills(current => current.filter(item => item.id !== skill.id));
+          successToast('Skill removed from matrix');
         } else {
-          errorToast('Failed to remove skill');
+          errorToast('Failed to delete skill');
         }
       } catch (error) {
-        errorToast('Failed to synchronize matrix');
+        console.error('Failed to delete skill:', error);
+        errorToast('Failed to delete skill');
       } finally {
-        setSaving(false);
+        stopLoading();
       }
     }
-  }, [skills, confirmEject, fetchSkills, successToast, errorToast]);
+  };
 
-  const saveChanges = useCallback(async (manualData = null) => {
-    // If called from an event handler, manualData will be the event object.
-    // We only want to use it if it's an array of skills.
-    const data = Array.isArray(manualData) ? manualData : skills;
+  const toggleFeatured = async (skill) => {
+    const featuredCount = skills.filter(s => s.is_featured && s.id !== skill.id).length;
+    if (!skill.is_featured && featuredCount >= 5) {
+      errorToast('Maximum 5 featured skills allowed for hero section');
+      return;
+    }
 
-    setSaving(true);
-    const dataToSave = data.map(({ title, percentage }) => ({ title, percentage: percentage ?? 0 }));
+    startLoading();
     try {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSave),
+        body: JSON.stringify(skills.map(s => s.id === skill.id ? {...s, is_featured: !s.is_featured} : s)),
       });
       if (res.ok) {
-        setEditingSkill(null);
-        await fetchSkills();
-        successToast('Matrix synchronized successfully');
-      } else {
-        errorToast('Failed to synchronize matrix');
+        fetchSkills();
+        successToast(skill.is_featured ? 'Removed from hero badges' : 'Added to hero badges');
       }
     } catch (error) {
-      console.error('Failed to save skills:', error);
-      errorToast('Failed to synchronize matrix');
+      errorToast('Failed to update featured status');
     } finally {
-      setSaving(false);
+      stopLoading();
     }
-  }, [skills, fetchSkills, successToast, errorToast]);
+  };
 
-  // Filter skills based on search
-  const filteredSkills = skills.filter(s =>
-    s.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const addCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    const name = newCategoryName.trim();
+    startLoading();
+    try {
+      const res = await fetch('/api/admin/skill-categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) {
+        const cat = await res.json();
+        setCategories(prev => [...prev, cat.name]);
+        setNewCategoryName('');
+        setIsAddingCategory(false);
+        successToast(`Category "${name}" added`);
+      } else {
+        const err = await res.json();
+        errorToast(err.error || 'Failed to add category');
+      }
+    } catch (error) {
+      errorToast('Failed to add category');
+    } finally {
+      stopLoading();
+    }
+  };
 
-  if (loading) return (
-    <div className="space-y-8 animate-pulse">
-      <div className="flex justify-between items-center">
-        <div className="space-y-2">
-          <div className="h-8 w-32 animate-pulse" />
-          <div className="h-4 w-48 animate-pulse" />
-        </div>
-        <div className="h-12 w-40 animate-pulse" />
-      </div>
-      <div className="p-8">
-        <div className="h-16 animate-pulse" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1,2,3,4,5,6,7,8,10].map(i => (
-          <div key={i} className="h-14 animate-pulse" />
-        ))}
-      </div>
-    </div>
-  );
+  const deleteCategory = async (cat) => {
+    const confirmed = await confirmDelete(`Category "${cat}"`);
+    if (confirmed) {
+      startLoading();
+      try {
+        const res = await fetch(`/api/admin/skill-categories?id=${encodeURIComponent(cat)}`, { method: 'DELETE' });
+        if (res.ok) {
+          setCategories(c => c.filter(c => c !== cat));
+          setSkills(s => s.map(skill => skill.category === cat ? {...skill, category: 'General'} : skill));
+          successToast('Category removed');
+        } else {
+          const err = await res.json();
+          errorToast(err.error || 'Failed to delete category');
+        }
+      } catch (error) {
+        errorToast('Failed to delete category');
+      } finally {
+        stopLoading();
+      }
+    }
+  };
+
+  const filteredSkills = useMemo(() => {
+    let result = skills;
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(s => 
+        s.title?.toLowerCase().includes(query) ||
+        s.category?.toLowerCase().includes(query)
+      );
+    }
+    if (filterCategory !== 'all') {
+      result = result.filter(s => s.category === filterCategory);
+    }
+    return result.sort((a, b) => {
+      if (a.is_featured !== b.is_featured) return b.is_featured - a.is_featured;
+      return (a.id || 0) - (b.id || 0);
+    });
+  }, [skills, searchQuery, filterCategory]);
+
+  const featuredCount = skills.filter(s => s.is_featured).length;
 
   return (
-    <div className="animate-fade-in relative">
-      {/* Edit Dialog / Modal */}
-      <SkillEditModal 
-        skill={editingSkill}
-        onClose={() => setEditingSkill(null)}
-        onUpdate={handleUpdate}
-        onSave={saveChanges}
-        setSkill={setEditingSkill}
-        saving={saving}
-        modalRef={modalRef}
-      />
+    <div className="animate-fade-in pb-10">
+      {typeof window !== 'undefined' && editingSkill && createPortal(
+        <EditSkillForm
+          editingSkill={editingSkill}
+          setEditingSkill={setEditingSkill}
+          categories={categories}
+          onSave={handleSaveSkill}
+          onRequestClose={() => setEditingSkill(null)}
+          saving={saving}
+          modalRef={modalRef}
+        />,
+        document.body
+      )}
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4">
+      <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-[var(--admin-title)]">Matrix</h2>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1 mb-4">Technical Proficiency Configuration</p>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[var(--admin-title)]">Skill Matrix</h2>
+          <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+            Manage skills & hero badges — {featuredCount}/5 featured
+          </p>
         </div>
-        <Button
-          onClick={saveChanges}
-          disabled={saving}
-          className="matrix-primary-action flex items-center gap-2"
-        >
-          {saving ? <FiRefreshCw className="animate-spin" /> : <FiCloudLightning className="text-lg" />}
-          {saving ? 'Transmitting...' : 'Commit Matrix'}
-        </Button>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={openNewSkillForm}
+            className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 h-10 sm:h-12 rounded-lg sm:rounded-xl border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all group text-xs sm:text-sm"
+          >
+            <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />
+            <span className="font-black uppercase tracking-[0.15em] sm:tracking-[0.2em]">New Skill</span>
+          </Button>
+        </div>
       </div>
 
-      {/* Search & Add Section */}
-      <div className="mb-8">
-        <div className="matrix-toolbar grid gap-4 md:grid-cols-2">
-          {/* Search */}
-          <div className="input-icon-wrapper">
-            <FiSearch className="icon" />
+      <div className="mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex items-center gap-2 bg-white/5 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-indigo-500 transition-all">
+            <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 flex-shrink-0" />
             <Input
               type="text"
+              placeholder="Search skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="admin-input"
-              placeholder="Search capabilities..."
+              className="flex-1 min-w-0 bg-transparent border-none text-xs sm:text-sm outline-none"
             />
             {searchQuery && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-500 hover:text-white"
-              >
-                <FiX size={14} />
+              <Button variant="outline" size="icon" onClick={() => setSearchQuery('')} className="-ml-2 h-8 w-8">
+                <FiX size={12} />
               </Button>
             )}
           </div>
 
-          {/* Add New */}
-          <div className="flex gap-3 flex-1 sm:flex-none">
-            <div className="input-icon-wrapper sm:w-64">
-              <FiCode className="icon" size={18} />
-              <Input
-                ref={newSkillInputRef}
-                type="text"
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addSkill()}
-                className="admin-input"
-                placeholder="New skill..."
-              />
-            </div>
+          <div className="relative w-fit">
             <Button
-              onClick={addSkill}
-              disabled={!newSkill.trim()}
-              className="flex-1 sm:flex-none px-6 py-2"
+              variant="outline"
+              onClick={() => setShowCategoryFilters(!showCategoryFilters)}
+              className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11 rounded-lg sm:rounded-xl ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
             >
-              <FiPlus />
-              <span className="hidden sm:inline">Inject</span>
+              <FiFilter size={16} />
+              <span className="hidden sm:inline">
+                {filterCategory === 'all' ? 'All Categories' : filterCategory}
+              </span>
+              <FiChevronDown size={12} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
             </Button>
+            <CategoryFilter 
+              categories={categories}
+              currentCategory={filterCategory}
+              onSelect={setFilterCategory}
+              isOpen={showCategoryFilters}
+              onToggle={() => setShowCategoryFilters(!showCategoryFilters)}
+            />
           </div>
 
-          {/* Stats */}
-          <div className="matrix-stat-strip flex items-center justify-between mt-4 pt-4 border-t border-t">
-            <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
-              <span className="font-mono">{filteredSkills.length} capabilities</span>
-              {searchQuery && (
-                <span className="text-slate-600">/ {skills.length} total</span>
-              )}
-            </div>
-            {searchQuery && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setSearchQuery('')}
-                className="-ml-2"
-              >
-                Clear search
-              </Button>
+          <CategoryManager
+            categories={categories}
+            setCategories={setCategories}
+            isAddingCategory={isAddingCategory}
+            setIsAddingCategory={setIsAddingCategory}
+            newCategoryName={newCategoryName}
+            setNewCategoryName={setNewCategoryName}
+            onAddCategory={addCategory}
+            onDeleteCategory={deleteCategory}
+          />
+        </div>
+
+        <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+            {(searchQuery || filterCategory !== 'all') && (
+              <>
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">Active filters:</span>
+                {searchQuery && (
+                  <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-slate-500/20 text-slate-400 gap-1">
+                    Search: "{searchQuery}"
+                    <Button variant="outline" size="icon" onClick={() => setSearchQuery('')} className="-ml-1 h-4 w-4">
+                      <FiX size={8} />
+                    </Button>
+                  </span>
+                )}
+                {filterCategory !== 'all' && (
+                  <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-500/20 text-indigo-400 gap-1">
+                    Category: {filterCategory}
+                    <Button variant="outline" size="icon" onClick={() => setFilterCategory('all')} className="-ml-1 h-4 w-4">
+                      <FiX size={8} />
+                    </Button>
+                  </span>
+                )}
+              </>
             )}
+          </div>
+          <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-500">
+            <span className="font-mono">{filteredSkills.length} skills</span>
+            {filteredSkills.length !== skills.length && (
+              <span className="text-slate-600">/ {skills.length} total</span>
+            )}
+            <span className="text-amber-400">{featuredCount}/5 featured</span>
           </div>
         </div>
       </div>
 
-      {/* Empty State */}
       {skills.length === 0 ? (
-        <EmptySkills onAdd={() => newSkillInputRef.current?.focus()} />
+        <EmptySkills onAdd={openNewSkillForm} />
       ) : filteredSkills.length === 0 ? (
-        <div className="p-8 text-center">
-          <FiSearch className="mx-auto mb-4 text-slate-500" size={32} />
-          <p className="text-sm text-slate-400">No skills match &quot;{searchQuery}&quot;</p>
-        </div>
+        <EmptySearchSkill searchTerm={searchQuery} onClear={() => { setSearchQuery(''); setFilterCategory('all'); }} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
+        <div className="px-4 sm:px-6 lg:px-8 space-y-2 sm:space-y-3">
           {filteredSkills.map((skill, idx) => (
             <SkillCard
               key={skill.id}
               skill={skill}
               index={idx}
-              onEdit={setEditingSkill}
-              onDelete={removeSkill}
+              onToggleFeatured={() => toggleFeatured(skill)}
+              onEdit={() => setEditingSkill(skill)}
+              onDelete={() => handleDelete(skill)}
+              categories={categories}
             />
           ))}
         </div>
       )}
     </div>
   );
-};
+}

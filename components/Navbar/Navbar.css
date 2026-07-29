@@ -36,6 +36,47 @@
   color: var(--first-color);
 }
 
+/* Tooltip for nav items */
+.nav__item {
+  position: relative;
+}
+
+.nav__tooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(10px);
+  background: var(--first-color);
+  color: var(--text-white);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: var(--small-font-size);
+  font-weight: var(--weight-500);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+}
+
+.nav__tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: var(--first-color);
+}
+
+.nav__item:hover .nav__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
 /* Mobile active highlight: left border in theme color, no bottom border */
 .active-nav {
   border-bottom-color: transparent;
@@ -53,6 +94,25 @@
     background-color: transparent;
     border-radius: 50%;
   }
+  
+  /* Tooltip positioning for desktop sidebar */
+  .nav__tooltip {
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+  }
+  
+  .nav__item:hover .nav__tooltip {
+    transform: translateY(-50%) translateX(0);
+  }
+  
+  .nav__tooltip::before {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: var(--first-color);
+  }
 }
 
 .nav__toggle {
@@ -65,6 +125,45 @@
   background-color: var(--container-color);
   padding: 12px 10px;
   z-index: 15;
+}
+
+.skeleton__toggle {
+  position: fixed;
+  top: 25px;
+  right: 0px;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  background: linear-gradient(90deg, var(--container-color) 25%, var(--border-color) 50%, var(--container-color) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton__icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--container-color) 25%, var(--border-color) 50%, var(--container-color) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton__text {
+  flex: 1;
+  height: 20px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--container-color) 25%, var(--border-color) 50%, var(--container-color) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.nav__link.skeleton {
+  pointer-events: none;
 }
 
 .nav__toggle span {

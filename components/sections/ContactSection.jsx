@@ -15,11 +15,11 @@ import { FiSend } from "react-icons/fi";
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="contact section" suppressHydrationWarning>
-      <h2 className="section__title">
+    <section id="contact" className="contact section reveal" suppressHydrationWarning>
+      <h2 className="section__title reveal delay-1">
         Get In <span>Touch</span>
       </h2>
-      <div className="contact__container container grid">
+      <div className="contact__container container grid reveal delay-2">
         <div className="contact__data">
           <h3 className="contact__title">Don&apos;t be Shy !</h3>
           <p className="contact__description">
@@ -32,7 +32,7 @@ export default function ContactSection() {
               <div className="info__item">
                 <FaEnvelope className="info__icon" />
                 <div className="info__content">
-                  <span className="info__title">Mail me</span>
+                  <span className="info__title">Email</span>
                   <h4 className="info__desc">amankarguwal0@gmail.com</h4>
                 </div>
               </div>
@@ -41,73 +41,84 @@ export default function ContactSection() {
               <div className="info__item">
                 <FaPhoneSquareAlt className="info__icon" />
                 <div className="info__content">
-                  <span className="info__title">Call me</span>
+                  <span className="info__title">Phone</span>
                   <h4 className="info__desc">+91 6284 736 836</h4>
                 </div>
               </div>
             </a>
           </div>
 
-          <div className="contact__socials">
-            <a
-              href="https://www.facebook.com/amank736836"
-              className="contact__social-link"
-            >
-              <FaFacebookF />
-            </a>
-            <a
-              href="https://www.instagram.com/amank736836"
-              className="contact__social-link"
-            >
-              <FaInstagram />
-            </a>
-            <a
-              href="https://www.threads.net/amank736836"
-              className="contact__social-link"
-            >
-              <FaThreads />
-            </a>
-            <a
-              href="https://www.snapchat.com/add/amank736836"
-              className="contact__social-link"
-            >
-              <FaSnapchat />
-            </a>
-            <a
-              href="https://codolio.com/profile/amank736836"
-              className="contact__social-link"
-            >
-              <Image
-                src="/assets/codolio.svg"
-                alt="Codolio"
-                className="contact__social-icon"
-                width={20}
-                height={20}
-              />
-            </a>
+          <div className="contact__socials-card">
+            <span className="contact__socials-title">Connect</span>
+            <div className="contact__socials">
+              <a
+                href="https://www.facebook.com/amank736836"
+                className="contact__social-link"
+                aria-label="Facebook"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="https://www.instagram.com/amank736836"
+                className="contact__social-link"
+                aria-label="Instagram"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="https://www.threads.net/amank736836"
+                className="contact__social-link"
+                aria-label="Threads"
+              >
+                <FaThreads />
+              </a>
+              <a
+                href="https://www.snapchat.com/add/amank736836"
+                className="contact__social-link"
+                aria-label="Snapchat"
+              >
+                <FaSnapchat />
+              </a>
+              <a
+                href="https://codolio.com/profile/amank736836"
+                className="contact__social-link"
+                aria-label="Codolio"
+              >
+                <Image
+                  src="/assets/codolio.svg"
+                  alt="Codolio"
+                  className="contact__social-icon"
+                  width={20}
+                  height={20}
+                />
+              </a>
 
-            <a href="https://t.me/amank736836" className="contact__social-link">
-              <FaTelegram />
-            </a>
+              <a href="https://t.me/amank736836" className="contact__social-link" aria-label="Telegram">
+                <FaTelegram />
+              </a>
 
-            <a
-              href="https://www.twitter.com/amank736836"
-              className="contact__social-link"
-            >
-              <FaXTwitter />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/amank736836"
-              className="contact__social-link"
-            >
-              <FaLinkedin />
-            </a>
-            <a
-              href="https://www.github.com/amank736836"
-              className="contact__social-link"
-            >
-              <FaGithub />
-            </a>
+              <a
+                href="https://www.twitter.com/amank736836"
+                className="contact__social-link"
+                aria-label="Twitter"
+              >
+                <FaXTwitter />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/amank736836"
+                className="contact__social-link"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin />
+              </a>
+              <a
+                href="https://www.github.com/amank736836"
+                className="contact__social-link"
+                aria-label="GitHub"
+              >
+                <FaGithub />
+              </a>
+            </div>
           </div>
         </div>
         <form
@@ -137,25 +148,26 @@ export default function ContactSection() {
             </div>
 
             <div className="form__input-div">
-              <input
-                name="subject"
-                type="text"
-                placeholder="Your Subject"
-                className="form__control"
-                required
-              />
+              <select name="subject" className="form__control" required defaultValue="">
+                <option value="" disabled>Select Subject</option>
+                <option value="Project Inquiry">Project Inquiry</option>
+                <option value="Internship Opportunity">Internship Opportunity</option>
+                <option value="Freelance Work">Freelance Work</option>
+                <option value="Collaboration">Collaboration</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
           <div className="form__input-div">
             <textarea
               name="message"
-              placeholder="Your Message"
+              placeholder="Tell me about your project..."
               className="form__control textarea"
               required
             ></textarea>
           </div>
           <div className="button-center">
-            <button className="button" type="Submit">
+            <button className="button button--primary" type="Submit">
               Send Message
               <span className="button__icon contact__button-icon">
                 <FiSend />

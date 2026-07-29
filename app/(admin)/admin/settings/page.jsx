@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server';
 import AdminSettingsClient from './AdminSettingsClient';
 
 const SOCIAL_KEYS = ['linkedin', 'github', 'twitter', 'email', 'website'];
+const UI_FEATURE_KEYS = ['enable_scroll_reveal', 'enable_typewriter', 'enable_open_to_work'];
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,11 @@ export async function generateMetadata() {
 
 export default async function AdminSettingsPage() {
   const supabase = await createAdminClient();
-  const { data: infoData } = await supabase.from('personal_info').select('*');
+  const [{ data: infoData }, { data: settingsData }, { data: heroImages }] = await Promise.all([
+    supabase.from('personal_info').select('*'),
+    supabase.from('user_settings').select('key, description').in('key', UI_FEATURE_KEYS),
+    supabase.from('hero_images').select('*').order('display_order', { ascending: true }),
+  ]);
 
   const socialLinks = {};
   SOCIAL_KEYS.forEach(key => {
@@ -31,5 +36,19 @@ export default async function AdminSettingsPage() {
   const siteModeItem = infoData?.find(d => d.key === 'site_mode');
   const siteMode = siteModeItem?.description || 'multi';
 
-  return <AdminSettingsClient initialSocialLinks={socialLinks} initialResumeUrl={resumeUrl} initialPortfolioLayout={portfolioLayout} initialSiteMode={siteMode} />;
+  const uiFeatures = {};
+  settingsData?.forEach(s => {
+    uiFeatures[s.key] = s.description;
+  });
+
+  return (
+    <AdminSettingsClient
+      initialSocialLinks={socialLinks}
+      initialResumeUrl={resumeUrl}
+      initialPortfolioLayout={portfolioLayout}
+      initialSiteMode={siteMode}
+      initialUIFeatures={uiFeatures}
+      initialHeroImages={heroImages || []}
+    />
+  );
 }

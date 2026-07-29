@@ -6,23 +6,23 @@ import "@/app/(public)/about.css";
 
 export default function AboutSection({ aboutDescription, personalInfo }) {
   return (
-    <section id="about" className="section container">
+    <section id="about" className="section container reveal">
       <section className="about">
-        <h2 className="section__title">
+        <h2 className="section__title reveal delay-1">
           About <span>Me</span>
         </h2>
         <div className="about__container grid">
-          <div className="about__info">
-            <h3 className="section__subtitle">Personal Infos</h3>
+          <div className="about__info reveal-left delay-2">
+            <h3 className="section__subtitle reveal delay-3">Personal Infos</h3>
             {aboutDescription && (
-              <p className="about__description mb-8 text-slate-400 leading-relaxed">
+              <p className="about__description mb-8 text-slate-400 leading-relaxed reveal delay-4">
                 {aboutDescription}
               </p>
             )}
-            <ul className="info__list grid">
+            <ul className="info__list grid reveal delay-5">
               <Info data={personalInfo} />
             </ul>
-            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8">
+            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 reveal delay-6">
               <a href="/assets/Aman_Resume.pdf" download="" className="button">
                 Download Cv
                 <span className="button__icon">

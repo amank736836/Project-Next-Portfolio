@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns } from 'react-icons/fi';
+import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns, FiToggleRight, FiToggleLeft, FiImage, FiStar, FiTrash, FiEdit2 } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +24,12 @@ const PORTFOLIO_LAYOUTS = [
 const SITE_MODES = [
   { key: 'multi', label: 'Multi-Page', icon: FiLayout, desc: 'Separate pages for each section (default)' },
   { key: 'single', label: 'Single Page', icon: FiColumns, desc: 'All sections on one continuous page' },
+];
+
+const UI_FEATURES = [
+  { key: 'enable_scroll_reveal', label: 'Scroll Reveal Animations', desc: 'Fade/slide animations when sections enter viewport', icon: FiToggleRight, iconOff: FiToggleLeft },
+  { key: 'enable_typewriter', label: 'Typewriter Effect', desc: 'Animated typing text in hero section', icon: FiToggleRight, iconOff: FiToggleLeft },
+  { key: 'enable_open_to_work', label: 'Open to Opportunities Badge', desc: 'Show availability badge in hero section', icon: FiToggleRight, iconOff: FiToggleLeft },
 ];
 
 function normalizeSocialValue(value, platform) {
@@ -53,7 +59,14 @@ function extractDisplayValue(storedValue, platform) {
   return storedValue;
 }
 
-export default function AdminSettingsClient({ initialSocialLinks = {}, initialResumeUrl = '', initialPortfolioLayout = 'masonry', initialSiteMode = 'multi' }) {
+export default function AdminSettingsClient({ 
+  initialSocialLinks = {}, 
+  initialResumeUrl = '', 
+  initialPortfolioLayout = 'masonry', 
+  initialSiteMode = 'multi',
+  initialUIFeatures = {},
+  initialHeroImages = []
+}) {
   const router = useRouter();
   const addToast = useToast();
   const successToast = useSuccessToast();
@@ -63,12 +76,18 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
   const [resumeUrl, setResumeUrl] = useState(initialResumeUrl);
   const [portfolioLayout, setPortfolioLayout] = useState(initialPortfolioLayout);
   const [siteMode, setSiteMode] = useState(initialSiteMode);
+  const [uiFeatures, setUiFeatures] = useState(initialUIFeatures);
+  const [heroImages, setHeroImages] = useState(initialHeroImages);
   const [editingKey, setEditingKey] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [savingSocial, setSavingSocial] = useState(false);
   const [savingLayout, setSavingLayout] = useState(false);
   const [savingSiteMode, setSavingSiteMode] = useState(false);
+  const [savingUIFeature, setSavingUIFeature] = useState(null);
   const [uploadingResume, setUploadingResume] = useState(false);
+  const [uploadingHeroImage, setUploadingHeroImage] = useState(false);
+  const [editingHeroImageId, setEditingHeroImageId] = useState(null);
+  const [editHeroAltText, setEditHeroAltText] = useState('');
 
   useEffect(() => {
     setSocialLinks(initialSocialLinks);
@@ -77,6 +96,10 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
   useEffect(() => {
     setResumeUrl(initialResumeUrl);
   }, [initialResumeUrl]);
+
+  useEffect(() => {
+    setUiFeatures(initialUIFeatures);
+  }, [initialUIFeatures]);
 
   const saveSocialLink = async (key, value) => {
     const normalized = normalizeSocialValue(value, SOCIAL_PLATFORMS.find(p => p.key === key));
@@ -221,8 +244,100 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
     }
   };
 
+  const saveUIFeature = async (key, value) => {
+    setSavingUIFeature(key);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, description: value }),
+      });
+      if (res.ok) {
+        setUiFeatures(prev => ({ ...prev, [key]: value }));
+        successToast(`UI feature updated`);
+      } else {
+        errorToast('Failed to save');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    } finally {
+      setSavingUIFeature(null);
+    }
+  };
+
+  const toggleUIFeature = (key) => {
+    const current = uiFeatures[key] === 'true';
+    saveUIFeature(key, (!current).toString());
+  };
+
   const openResume = () => {
     if (resumeUrl) window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleHeroImageDelete = async (id) => {
+    if (!confirm('Delete this hero image?')) return;
+    try {
+      const res = await fetch(`/api/admin/hero-images/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setHeroImages(prev => prev.filter(img => img.id !== id));
+        successToast('Hero image deleted');
+      } else {
+        errorToast('Failed to delete');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    }
+  };
+
+  const handleHeroImageSetHero = async (id) => {
+    try {
+      const res = await fetch(`/api/admin/hero-images/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_hero: true })
+      });
+      if (res.ok) {
+        setHeroImages(prev => prev.map(img => ({ ...img, is_hero: img.id === id })));
+        successToast('Hero image updated');
+      } else {
+        errorToast('Failed to set as hero');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    }
+  };
+
+  const handleHeroImageEditAlt = (id) => {
+    const img = heroImages.find(i => i.id === id);
+    if (img) {
+      setEditingHeroImageId(id);
+      setEditHeroAltText(img.alt_text || '');
+    }
+  };
+
+  const handleHeroImageSaveAlt = async (id) => {
+    try {
+      const res = await fetch(`/api/admin/hero-images/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alt_text: editHeroAltText })
+      });
+      if (res.ok) {
+        setHeroImages(prev => prev.map(img => img.id === id ? { ...img, alt_text: editHeroAltText } : img));
+        setEditingHeroImageId(null);
+        setEditHeroAltText('');
+        successToast('Alt text updated');
+      } else {
+        errorToast('Failed to update');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    }
+  };
+
+  const handleHeroImageCancelEdit = () => {
+    setEditingHeroImageId(null);
+    setEditHeroAltText('');
   };
 
   return (
@@ -367,56 +482,196 @@ export default function AdminSettingsClient({ initialSocialLinks = {}, initialRe
                     <span className="layout-label">{layout.label}</span>
                     <span className="layout-desc">{layout.desc}</span>
                   </div>
-{portfolioLayout === layout.key && (
-                      <FiCheck className="layout-check" size={20} />
-                    )}
-                    {savingLayout && portfolioLayout === layout.key && (
-                      <span className="layout-saving">Saving...</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </Card>
-          </section>
+                  {portfolioLayout === layout.key && (
+                    <FiCheck className="layout-check" size={20} />
+                  )}
+                  {savingLayout && portfolioLayout === layout.key && (
+                    <span className="layout-saving">Saving...</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </Card>
+        </section>
 
-          <section className="admin-settings__section">
-            <div className="section-header">
-              <FiColumns className="section-icon" />
-              <div>
-                <h2>Site Mode</h2>
-                <p className="section-desc">Choose between multi-page navigation or single-page scroll.</p>
-              </div>
+        <section className="admin-settings__section">
+          <div className="section-header">
+            <FiColumns className="section-icon" />
+            <div>
+              <h2>Site Mode</h2>
+              <p className="section-desc">Choose between multi-page navigation or single-page scroll.</p>
+            </div>
+          </div>
+
+          <Card className="layout-card">
+            <div className="layout-options">
+              {SITE_MODES.map(mode => (
+                <button
+                  key={mode.key}
+                  type="button"
+                  className={`layout-option ${siteMode === mode.key ? 'active' : ''}`}
+                  onClick={() => saveSiteMode(mode.key)}
+                  disabled={savingSiteMode || siteMode === mode.key}
+                >
+                  <div className="layout-icon">
+                    <mode.icon size={28} />
+                  </div>
+                  <div className="layout-info">
+                    <span className="layout-label">{mode.label}</span>
+                    <span className="layout-desc">{mode.desc}</span>
+                  </div>
+                  {siteMode === mode.key && (
+                    <FiCheck className="layout-check" size={20} />
+                  )}
+                  {savingSiteMode && siteMode === mode.key && (
+                    <span className="layout-saving">Saving...</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </Card>
+        </section>
+
+        <section className="admin-settings__section">
+          <div className="section-header">
+            <FiToggleRight className="section-icon" />
+            <div>
+              <h2>UI Features</h2>
+              <p className="section-desc">Toggle visual effects and animations on your portfolio.</p>
+            </div>
+          </div>
+
+          <Card className="layout-card">
+            <div className="ui-features-list">
+              {UI_FEATURES.map(feature => {
+                const isEnabled = uiFeatures[feature.key] !== 'false';
+                return (
+                  <div key={feature.key} className="ui-feature-row">
+                    <div className="ui-feature-info">
+                      <feature.icon className="ui-feature-icon" size={24} />
+                      <div>
+                        <span className="ui-feature-label">{feature.label}</span>
+                        <span className="ui-feature-desc">{feature.desc}</span>
+                      </div>
+                    </div>
+                    <div className="ui-feature-toggle">
+                      <label className={`toggle ${isEnabled ? 'active' : ''}`} onClick={() => toggleUIFeature(feature.key)}>
+                        <span className="toggle-track">
+                          <span className="toggle-thumb"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        </section>
+
+        <section className="admin-settings__section">
+          <div className="section-header">
+            <FiImage className="section-icon" />
+            <div>
+              <h2>Hero Images</h2>
+              <p className="section-desc">Manage hero section images. Mark one as hero for the main page, others appear in gallery.</p>
+            </div>
+          </div>
+
+          <Card className="layout-card">
+            <div className="hero-images-upload">
+              <label className="upload-zone" htmlFor="hero-image-upload">
+                <FiUpload className="upload-icon" size={32} />
+                <p>Drag & drop or click to upload hero image</p>
+                <span className="upload-hint">Max 5MB • JPEG, PNG, WebP</span>
+                <input 
+                  id="hero-image-upload"
+                  type="file" 
+                  accept="image/jpeg,image/png,image/webp" 
+                  onChange={handleHeroImageUpload} 
+                  disabled={uploadingHeroImage} 
+                  className="file-input" 
+                />
+              </label>
+              {uploadingHeroImage && <div className="upload-progress">Uploading...</div>}
             </div>
 
-            <Card className="layout-card">
-              <div className="layout-options">
-                {SITE_MODES.map(mode => (
-                  <button
-                    key={mode.key}
-                    type="button"
-                    className={`layout-option ${siteMode === mode.key ? 'active' : ''}`}
-                    onClick={() => saveSiteMode(mode.key)}
-                    disabled={savingSiteMode || siteMode === mode.key}
-                  >
-                    <div className="layout-icon">
-                      <mode.icon size={28} />
+            {heroImages.length > 0 && (
+              <div className="hero-images-grid">
+                {heroImages.map(image => (
+                  <div key={image.id} className={`hero-image-card ${image.is_hero ? 'is-hero' : ''}`}>
+                    <div className="hero-image-preview">
+                      <img src={image.url} alt={image.alt_text} />
+                      {image.is_hero && (
+                        <span className="hero-badge">
+                          <FiStar size={14} /> Hero
+                        </span>
+                      )}
                     </div>
-                    <div className="layout-info">
-                      <span className="layout-label">{mode.label}</span>
-                      <span className="layout-desc">{mode.desc}</span>
+                    <div className="hero-image-actions">
+                      {editingHeroImageId === image.id ? (
+                        <>
+                          <input
+                            type="text"
+                            value={editHeroAltText}
+                            onChange={e => setEditHeroAltText(e.target.value)}
+                            placeholder="Alt text"
+                            className="hero-alt-input"
+                            onKeyDown={e => e.key === 'Enter' && handleHeroImageSaveAlt(image.id)}
+                            autoFocus
+                          />
+                          <Button variant="primary" size="sm" onClick={() => handleHeroImageSaveAlt(image.id)}>
+                            <FiCheck size={14} />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={handleHeroImageCancelEdit}>
+                            <FiX size={14} />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleHeroImageEditAlt(image.id)}
+                            title="Edit alt text"
+                          >
+                            <FiEdit2 size={14} />
+                          </Button>
+                          {!image.is_hero && (
+                            <Button 
+                              variant="secondary" 
+                              size="sm" 
+                              onClick={() => handleHeroImageSetHero(image.id)}
+                              title="Set as hero image"
+                            >
+                              <FiStar size={14} /> Set Hero
+                            </Button>
+                          )}
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            destructive 
+                            onClick={() => handleHeroImageDelete(image.id)}
+                            title="Delete"
+                          >
+                            <FiTrash size={14} />
+                          </Button>
+                        </>
+                      )}
                     </div>
-                    {siteMode === mode.key && (
-                      <FiCheck className="layout-check" size={20} />
-                    )}
-                    {savingSiteMode && siteMode === mode.key && (
-                      <span className="layout-saving">Saving...</span>
-                    )}
-                  </button>
+                    <div className="hero-image-info">
+                      <span className="hero-image-alt">{image.alt_text || 'No alt text'}</span>
+                      {image.is_hero && <span className="hero-image-current">Current Hero</span>}
+                    </div>
+                  </div>
                 ))}
               </div>
-            </Card>
-          </section>
-        </div>
+            )}
+            {heroImages.length === 0 && (
+              <p className="empty-state">No hero images uploaded yet.</p>
+            )}
+          </Card>
+        </section>
       </div>
+    </div>
   );
 }

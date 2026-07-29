@@ -8,15 +8,19 @@ import { Button } from '@/components/ui/Button';
 import { Avatar } from '@/components/ui/Avatar';
 import "./Navbar.css";
 
-const Navbar = ({ siteMode = 'multi' }) => {
+const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(initialUser);
+  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [hoveredLink, setHoveredLink] = useState(null);
   const pathname = usePathname();
   const activeSectionIdRef = useRef('home');
 
   useEffect(() => {
+    setMounted(true);
+    if (!pathname?.startsWith('/admin')) return; // Only validate auth on admin routes
+    
     const checkUser = async () => {
       try {
         const response = await fetch('/api/auth/validate');
@@ -29,13 +33,11 @@ const Navbar = ({ siteMode = 'multi' }) => {
       } catch (error) {
         console.error('Failed to get current user:', error);
         setUser(null);
-      } finally {
-        setLoading(false);
       }
     };
 
     checkUser();
-  }, []);
+  }, [pathname]);
 
   // IntersectionObserver for single-page mode active section tracking
   useEffect(() => {
@@ -134,16 +136,22 @@ const Navbar = ({ siteMode = 'multi' }) => {
     path: siteMode === 'single' ? `#${link.path === '/' ? 'home' : link.path.replace('/', '')}` : link.path
   }));
 
-  if (loading) {
+  if (!mounted) {
     return (
       <nav className="nav" suppressHydrationWarning>
         <div className="nav__menu">
           <ul className="nav__list">
-            <li className="nav__item">
-              <span className="nav__link">Loading...</span>
-            </li>
+            {navLinks.map(({ name }, index) => (
+              <li key={index} className="nav__item">
+                <div className="nav__link skeleton">
+                  <div className="skeleton__icon"></div>
+                  <div className="skeleton__text"></div>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
+        <div className="nav__toggle skeleton__toggle"></div>
       </nav>
     );
   }
@@ -165,6 +173,8 @@ const Navbar = ({ siteMode = 'multi' }) => {
                     onClick={() => {
                       setShowMenu(false);
                     }}
+                    onMouseEnter={() => setHoveredLink(name)}
+                    onMouseLeave={() => setHoveredLink(null)}
                   >
                     {icon}
                     <h3 className="nav__name">{name}</h3>
@@ -176,10 +186,15 @@ const Navbar = ({ siteMode = 'multi' }) => {
                     onClick={() => {
                       setShowMenu(false);
                     }}
+                    onMouseEnter={() => setHoveredLink(name)}
+                    onMouseLeave={() => setHoveredLink(null)}
                   >
                     {icon}
                     <h3 className="nav__name">{name}</h3>
                   </Link>
+                )}
+                {hoveredLink === name && (
+                  <span className="nav__tooltip">{name}</span>
                 )}
               </li>
             );

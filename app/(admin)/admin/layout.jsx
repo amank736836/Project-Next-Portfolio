@@ -7,6 +7,7 @@ import Themes from '@/components/Themes/Themes';
 import { usePathname } from 'next/navigation';
 import { ToastProvider } from '@/components/Admin/Toast';
 import { ConfirmProvider } from '@/components/Admin/ConfirmModal';
+import { LoadingProvider } from '@/components/Admin/LoadingContext';
 import { FiMenu } from 'react-icons/fi';
 
 export default function AdminLayout({ children }) {
@@ -178,7 +179,9 @@ export default function AdminLayout({ children }) {
         <main className="admin-content-inner">
           <ToastProvider>
             <ConfirmProvider>
-              {children}
+              <LoadingProvider>
+                {children}
+              </LoadingProvider>
             </ConfirmProvider>
           </ToastProvider>
           

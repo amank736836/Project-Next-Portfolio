@@ -89,6 +89,31 @@
   word-break: break-all;
 }
 
+/* Social icons - grouped in a card */
+.contact__socials-card {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 1rem;
+}
+
+.contact__socials-card:hover {
+  border-color: var(--first-color);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  background: var(--glass-bg);
+}
+
+.contact__socials-title {
+  font-size: var(--tiny-font-size);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-color);
+  font-weight: var(--weight-600);
+  margin-bottom: 16px;
+}
+
 .contact__socials {
   display: flex;
   gap: 12px;
@@ -96,7 +121,7 @@
 }
 
 .contact__social-link {
-  background: var(--container-color);
+  background: var(--body-color);
   color: var(--title-color);
   width: 44px;
   height: 44px;
@@ -145,12 +170,25 @@
   border-radius: 12px;
   font-size: var(--small-font-size);
   transition: all 0.3s ease;
+  appearance: none;
 }
 
 .form__control:focus {
   border-color: var(--first-color);
   box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
   outline: none;
+}
+
+/* Select styling */
+select.form__control {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 48px;
+}
+
+select.form__control:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236C63FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
 .textarea {
@@ -162,6 +200,51 @@
 
 .button-center {
   justify-content: flex-start;
+}
+
+/* Enhanced social link hover - scale + glow + rotate */
+.contact__social-link {
+  background: var(--body-color);
+  color: var(--title-color);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact__social-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--first-color);
+  transform: scale(0);
+  border-radius: 12px;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: -1;
+}
+
+.contact__social-link:hover {
+  color: #fff;
+  transform: translateY(-6px) rotate(6deg) scale(1.1);
+  border-color: var(--first-color);
+  box-shadow: 
+    0 15px 30px rgba(108, 99, 255, 0.3),
+    0 0 0 4px rgba(108, 99, 255, 0.15);
+}
+
+.contact__social-link:hover::before {
+  transform: scale(1);
+}
+
+.contact__social-link:focus-visible {
+  outline: 2px solid var(--first-color);
+  outline-offset: 2px;
 }
 
 @media screen and (max-width: 1024px) {

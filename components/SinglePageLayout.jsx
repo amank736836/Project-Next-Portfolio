@@ -7,7 +7,7 @@ import ExperienceSection from './sections/ExperienceSection';
 import ProjectsSection from './sections/ProjectsSection';
 import ContactSection from './sections/ContactSection';
 
-export default async function SinglePageLayout() {
+export default async function SinglePageLayout({ featuredSkills = [], enableTypewriter = true, enableOpenToWork = true, heroImage = null }) {
   const supabase = await createAdminClient();
 
   const [infoRes, skillsRes, educationRes, experienceRes, projectsRes] = await Promise.all([
@@ -40,7 +40,7 @@ export default async function SinglePageLayout() {
 
   return (
     <>
-      <section id="home"><HomeSection /></section>
+      <section id="home"><HomeSection enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills} heroImage={heroImage} /></section>
       <section id="about"><AboutSection aboutDescription={aboutDescription} personalInfo={personalInfo} /></section>
       <section id="skills"><SkillsSection skillsData={skillsRes.data} /></section>
       <section id="education"><EducationSection educationData={educationRes.data} /></section>

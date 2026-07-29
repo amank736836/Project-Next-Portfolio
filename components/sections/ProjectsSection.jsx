@@ -6,13 +6,13 @@ export default function ProjectsSection({ projectsData }) {
   const categories = ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort();
 
   return (
-    <section id="projects" className="portfolio section">
-      <h2 className="section__title">
+    <section id="projects" className="portfolio section reveal">
+      <h2 className="section__title reveal delay-1">
         My <span>Projects</span>
       </h2>
 
       {categories.length > 2 && (
-        <div className="portfolio__filters container">
+        <div className="portfolio__filters container reveal delay-2">
           {categories.map((category) => (
             <span
               key={category}
@@ -25,10 +25,21 @@ export default function ProjectsSection({ projectsData }) {
         </div>
       )}
 
-      <div className="portfolio__container container grid">
+      <div className="portfolio__container container grid reveal delay-3">
         {allProjects.length > 0 ? (
-          allProjects.map((item) => (
-            <PortfolioItem key={item.id} {...item} />
+          allProjects.map((item, index) => (
+            <PortfolioItem 
+              key={item.id} 
+              img={item.img} 
+              title={item.title} 
+              details={item.details} 
+              category={item.category}
+              description={item.description}
+              techStack={item.techStack}
+              liveUrl={item.liveUrl}
+              githubUrl={item.githubUrl}
+              index={index}
+            />
           ))
         ) : (
           <div className="col-span-full text-center text-gray-400 py-10">

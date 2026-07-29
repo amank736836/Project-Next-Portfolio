@@ -13,8 +13,15 @@ export default function Typewriter({
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentText, setCurrentText] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const currentFullText = texts[textIndex];
     
     const type = () => {
@@ -52,7 +59,11 @@ export default function Typewriter({
     type();
 
     return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, textIndex, texts, speed, deleteSpeed, pauseTime, loop]);
+  }, [charIndex, isDeleting, textIndex, texts, speed, deleteSpeed, pauseTime, loop, mounted]);
+
+  if (!mounted) {
+    return <span className="typewriter-text">{texts[0]}</span>;
+  }
 
   return (
     <span className="typewriter-text">

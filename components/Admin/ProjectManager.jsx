@@ -3,10 +3,10 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
-import {
-  FiEye, FiEyeOff, FiTrash, FiTrash2, FiPlus, FiExternalLink,
-  FiCode, FiActivity, FiSearch, FiFilter, FiGrid, FiList,
-  FiX, FiChevronDown, FiCheck, FiRefreshCw, FiCloudLightning, FiGithub
+import { 
+  FiTrash, FiPlus,
+  FiSearch, FiFilter, FiGrid, FiList,
+  FiX, FiChevronDown
 } from 'react-icons/fi';
 import { useToast, useSuccessToast, useErrorToast } from './Toast';
 import { useDeleteConfirm } from './ConfirmModal';
@@ -14,7 +14,6 @@ import EditProjectForm from './EditProjectForm';
 import EmptyState, { EmptyProjects, EmptySearch } from './EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Card } from '@/components/ui/Card';
 import StatusFilter from './StatusFilter';
 import CategoryFilter from './CategoryFilter';
 import { ProjectCard, ProjectListItem } from './ProjectItems';

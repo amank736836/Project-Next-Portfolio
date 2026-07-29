@@ -6,9 +6,10 @@ const Education = ({ data, type }) => {
 
   return (
     <>
-      {data.map((val) => {
+      {data.map((val, index) => {
+        const delayClass = `delay-${(index % 6) + 1}`;
         return (
-          <div className="resume__item" key={val.id}>
+          <div className={`resume__item reveal-left ${delayClass}`} key={val.id}>
             <div className="resume__icon">
               {type === 'experience' ? <FaBriefcase /> : <FaGraduationCap />}
             </div>
