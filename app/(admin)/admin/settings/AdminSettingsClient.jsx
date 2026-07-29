@@ -274,6 +274,41 @@ export default function AdminSettingsClient({
     if (resumeUrl) window.open(resumeUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const handleHeroImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      errorToast('Only JPEG, PNG, WebP allowed');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      errorToast('File too large (max 5MB)');
+      return;
+    }
+
+    setUploadingHeroImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('altText', file.name);
+      formData.append('isHero', 'false');
+
+      const res = await fetch('/api/admin/hero-images', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (res.ok && data.data) {
+        setHeroImages(prev => [...prev, data.data]);
+        successToast('Hero image uploaded');
+      } else {
+        errorToast(data.error || 'Upload failed');
+      }
+    } catch (e) {
+      errorToast('Upload failed');
+    } finally {
+      setUploadingHeroImage(false);
+      e.target.value = '';
+    }
+  };
+
   const handleHeroImageDelete = async (id) => {
     if (!confirm('Delete this hero image?')) return;
     try {
