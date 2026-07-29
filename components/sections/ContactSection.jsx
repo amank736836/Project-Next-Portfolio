@@ -13,7 +13,20 @@ import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import "@/app/(public)/Contact.css";
 import { FiSend } from "react-icons/fi";
 
-export default function ContactSection() {
+const SOCIAL_ICONS = {
+  facebook: FaFacebookF,
+  instagram: FaInstagram,
+  threads: FaThreads,
+  snapchat: FaSnapchat,
+  telegram: FaTelegram,
+  twitter: FaXTwitter,
+  linkedin: FaLinkedin,
+  github: FaGithub,
+  email: FaEnvelope,
+  website: FaLinkedin,
+};
+
+export default function ContactSection({ socialLinks = {} }) {
   return (
     <section id="contact" className="contact section reveal" suppressHydrationWarning>
       <h2 className="section__title reveal delay-1">
@@ -28,96 +41,52 @@ export default function ContactSection() {
             visions.
           </p>
           <div className="contact__info">
-            <a href="mailto:amankarguwal0@gmail.com" className="info__link">
-              <div className="info__item">
-                <FaEnvelope className="info__icon" />
-                <div className="info__content">
-                  <span className="info__title">Email</span>
-                  <h4 className="info__desc">amankarguwal0@gmail.com</h4>
+            {socialLinks.email && (
+              <a href={`mailto:${socialLinks.email}`} className="info__link">
+                <div className="info__item">
+                  <FaEnvelope className="info__icon" />
+                  <div className="info__content">
+                    <span className="info__title">Email</span>
+                    <h4 className="info__desc">{socialLinks.email}</h4>
+                  </div>
                 </div>
-              </div>
-            </a>
-            <a href="tel:6284736836" className="info__link">
-              <div className="info__item">
-                <FaPhoneSquareAlt className="info__icon" />
-                <div className="info__content">
-                  <span className="info__title">Phone</span>
-                  <h4 className="info__desc">+91 6284 736 836</h4>
+              </a>
+            )}
+            {socialLinks.phone && (
+              <a href={`tel:${socialLinks.phone}`} className="info__link">
+                <div className="info__item">
+                  <FaPhoneSquareAlt className="info__icon" />
+                  <div className="info__content">
+                    <span className="info__title">Phone</span>
+                    <h4 className="info__desc">{socialLinks.phone}</h4>
+                  </div>
                 </div>
-              </div>
-            </a>
+              </a>
+            )}
           </div>
 
           <div className="contact__socials-card">
             <span className="contact__socials-title">Connect</span>
             <div className="contact__socials">
-              <a
-                href="https://www.facebook.com/amank736836"
-                className="contact__social-link"
-                aria-label="Facebook"
-              >
-                <FaFacebookF />
-              </a>
-              <a
-                href="https://www.instagram.com/amank736836"
-                className="contact__social-link"
-                aria-label="Instagram"
-              >
-                <FaInstagram />
-              </a>
-              <a
-                href="https://www.threads.net/amank736836"
-                className="contact__social-link"
-                aria-label="Threads"
-              >
-                <FaThreads />
-              </a>
-              <a
-                href="https://www.snapchat.com/add/amank736836"
-                className="contact__social-link"
-                aria-label="Snapchat"
-              >
-                <FaSnapchat />
-              </a>
-              <a
-                href="https://codolio.com/profile/amank736836"
-                className="contact__social-link"
-                aria-label="Codolio"
-              >
-                <Image
-                  src="/assets/codolio.svg"
-                  alt="Codolio"
-                  className="contact__social-icon"
-                  width={20}
-                  height={20}
-                />
-              </a>
-
-              <a href="https://t.me/amank736836" className="contact__social-link" aria-label="Telegram">
-                <FaTelegram />
-              </a>
-
-              <a
-                href="https://www.twitter.com/amank736836"
-                className="contact__social-link"
-                aria-label="Twitter"
-              >
-                <FaXTwitter />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/amank736836"
-                className="contact__social-link"
-                aria-label="LinkedIn"
-              >
-                <FaLinkedin />
-              </a>
-              <a
-                href="https://www.github.com/amank736836"
-                className="contact__social-link"
-                aria-label="GitHub"
-              >
-                <FaGithub />
-              </a>
+              {Object.entries(socialLinks).map(([key, url]) => {
+                if (!url || ['email', 'phone', 'address'].includes(key)) return null;
+                const Icon = SOCIAL_ICONS[key.toLowerCase()];
+                if (!Icon && key !== 'codolio') return null;
+                
+                if (key === 'codolio') {
+                  return (
+                    <a key={key} href={url} className="contact__social-link" aria-label="Codolio">
+                      <Image src="/assets/codolio.svg" alt="Codolio" className="contact__social-icon" width={20} height={20} />
+                    </a>
+                  );
+                }
+                
+                return (
+                  <a key={key} href={url} className="contact__social-link" aria-label={key.charAt(0).toUpperCase() + key.slice(1)}>
+                    <Icon />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
