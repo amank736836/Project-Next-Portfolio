@@ -141,6 +141,34 @@
   box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
 }
 
+/* Divider style for Codolio */
+.contact__social-link--divider {
+  background: transparent;
+  border: none;
+  width: auto;
+  padding: 0 12px;
+  border-left: 2px solid var(--border-color);
+  border-right: 2px solid var(--border-color);
+  margin: 0 8px;
+}
+
+.contact__social-link--divider:hover {
+  background: transparent;
+  transform: none;
+  border-left: 2px solid var(--first-color);
+  border-right: 2px solid var(--first-color);
+  box-shadow: none;
+}
+
+.contact__social-link--divider .contact__social-icon {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.contact__social-link--divider:hover .contact__social-icon {
+  filter: grayscale(0%);
+}
+
 .contact__form {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));

@@ -52,6 +52,15 @@ function normalizeSocialUrl(value, key) {
   return trimmed;
 }
 
+const SOCIAL_ORDER = {
+  // First half - Personal/Social
+  personal: ['facebook', 'instagram', 'threads', 'snapchat', 'telegram'],
+  // Divider
+  divider: ['codolio'],
+  // Second half - Professional
+  professional: ['linkedin', 'github', 'twitter'],
+};
+
 export default function ContactSection({ socialLinks = {} }) {
   return (
     <section id="contact" className="contact section reveal" suppressHydrationWarning>
@@ -94,21 +103,38 @@ export default function ContactSection({ socialLinks = {} }) {
           <div className="contact__socials-card">
             <span className="contact__socials-title">Connect</span>
             <div className="contact__socials">
-              {Object.entries(socialLinks).map(([key, url]) => {
-                if (!url || ['email', 'phone', 'address'].includes(key)) return null;
-                const Icon = SOCIAL_ICONS[key.toLowerCase()];
-                if (!Icon && key !== 'codolio') return null;
-                
+              {/* Personal/Social - First half */}
+              {SOCIAL_ORDER.personal.map(key => {
+                const url = socialLinks[key];
+                if (!url) return null;
+                const Icon = SOCIAL_ICONS[key];
+                if (!Icon) return null;
                 const normalizedUrl = normalizeSocialUrl(url, key);
-
-                if (key === 'codolio') {
-                  return (
-                    <a key={key} href={url} className="contact__social-link" aria-label="Codolio">
-                      <Image src="/assets/codolio.svg" alt="Codolio" className="contact__social-icon" width={20} height={20} />
-                    </a>
-                  );
-                }
-                
+                return (
+                  <a key={key} href={normalizedUrl} className="contact__social-link" aria-label={key.charAt(0).toUpperCase() + key.slice(1)}>
+                    <Icon />
+                  </a>
+                );
+              })}
+              
+              {/* Divider - Codolio */}
+              {SOCIAL_ORDER.divider.map(key => {
+                const url = socialLinks[key];
+                if (!url) return null;
+                return (
+                  <a key={key} href={url} className="contact__social-link contact__social-link--divider" aria-label="Codolio">
+                    <Image src="/assets/codolio.svg" alt="Codolio" className="contact__social-icon" width={20} height={20} />
+                  </a>
+                );
+              })}
+              
+              {/* Professional - Second half */}
+              {SOCIAL_ORDER.professional.map(key => {
+                const url = socialLinks[key];
+                if (!url) return null;
+                const Icon = SOCIAL_ICONS[key];
+                if (!Icon) return null;
+                const normalizedUrl = normalizeSocialUrl(url, key);
                 return (
                   <a key={key} href={normalizedUrl} className="contact__social-link" aria-label={key.charAt(0).toUpperCase() + key.slice(1)}>
                     <Icon />
