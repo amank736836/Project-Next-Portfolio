@@ -11,7 +11,8 @@ import {
 import Image from "next/image";
 import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import "@/app/(public)/Contact.css";
-import { FiSend } from "react-icons/fi";
+import "@/app/(public)/Home.css";
+import { FiSend, FiFacebook, FiMessageSquare, FiGhost } from "react-icons/fi";
 
 const SOCIAL_ICONS = {
   facebook: FaFacebookF,
@@ -25,6 +26,31 @@ const SOCIAL_ICONS = {
   email: FaEnvelope,
   website: FaLinkedin,
 };
+
+const SOCIAL_URL_PREFIXES = {
+  linkedin: 'https://linkedin.com/in/',
+  github: 'https://github.com/',
+  twitter: 'https://x.com/',
+  facebook: 'https://facebook.com/',
+  instagram: 'https://instagram.com/',
+  threads: 'https://threads.net/@',
+  snapchat: 'https://snapchat.com/add/',
+  telegram: 'https://t.me/',
+  website: '',
+};
+
+function normalizeSocialUrl(value, key) {
+  if (!value) return '';
+  const trimmed = value.trim();
+  if (key === 'email' && !trimmed.includes('@')) return '';
+  if (key === 'email' && !trimmed.startsWith('mailto:')) return `mailto:${trimmed}`;
+  if (['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'website'].includes(key)) {
+    if (trimmed.startsWith('http')) return trimmed;
+    if (trimmed.includes('.')) return `https://${trimmed}`;
+    return `${SOCIAL_URL_PREFIXES[key] || ''}${trimmed}`;
+  }
+  return trimmed;
+}
 
 export default function ContactSection({ socialLinks = {} }) {
   return (
@@ -73,6 +99,8 @@ export default function ContactSection({ socialLinks = {} }) {
                 const Icon = SOCIAL_ICONS[key.toLowerCase()];
                 if (!Icon && key !== 'codolio') return null;
                 
+                const normalizedUrl = normalizeSocialUrl(url, key);
+
                 if (key === 'codolio') {
                   return (
                     <a key={key} href={url} className="contact__social-link" aria-label="Codolio">
@@ -82,7 +110,7 @@ export default function ContactSection({ socialLinks = {} }) {
                 }
                 
                 return (
-                  <a key={key} href={url} className="contact__social-link" aria-label={key.charAt(0).toUpperCase() + key.slice(1)}>
+                  <a key={key} href={normalizedUrl} className="contact__social-link" aria-label={key.charAt(0).toUpperCase() + key.slice(1)}>
                     <Icon />
                   </a>
                 );

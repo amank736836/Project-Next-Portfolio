@@ -21,12 +21,17 @@ export default async function SinglePageLayout({ featuredSkills = [], enableType
   const infoData = infoRes.data || [];
   const aboutDescription = infoData.find(i => i.key === 'about_description')?.description;
   const personalInfo = infoData.filter(i => i.key !== 'about_description' && i.key !== 'site_mode' && !i.key.startsWith('default_theme_'));
+  
+  // Contact info (shown in Contact section) - exclude from About
+  const contactKeys = ['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'codolio', 'email', 'website', 'phone'];
+  const socialLinksData = personalInfo.filter(i => contactKeys.includes(i.key));
+  const aboutInfo = personalInfo.filter(i => !contactKeys.includes(i.key));
 
-  if (personalInfo.length) {
+  if (aboutInfo.length) {
     const desiredOrder = [
-      'first name', 'last name', 'email', 'phone', 'address', 'nationality', 'languages', 'linkedin'
+      'first name', 'last name', 'address', 'nationality', 'languages', 'age', 'freelance'
     ];
-    personalInfo.sort((a, b) => {
+    aboutInfo.sort((a, b) => {
       const aTitle = (a.title || '').toLowerCase().trim();
       const bTitle = (b.title || '').toLowerCase().trim();
       let aIndex = desiredOrder.findIndex(key => aTitle.includes(key));
@@ -41,7 +46,7 @@ export default async function SinglePageLayout({ featuredSkills = [], enableType
   return (
     <>
       <section id="home"><HomeSection enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills} heroImage={heroImage} /></section>
-      <section id="about"><AboutSection aboutDescription={aboutDescription} personalInfo={personalInfo} /></section>
+      <section id="about"><AboutSection aboutDescription={aboutDescription} personalInfo={aboutInfo} /></section>
       <section id="skills"><SkillsSection skillsData={skillsRes.data} /></section>
       <section id="education"><EducationSection educationData={educationRes.data} /></section>
       <section id="experience"><ExperienceSection experienceData={experienceRes.data} /></section>

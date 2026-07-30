@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns, FiToggleRight, FiToggleLeft, FiImage, FiStar, FiTrash, FiEdit2 } from 'react-icons/fi';
+import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns, FiToggleRight, FiToggleLeft, FiImage, FiStar, FiTrash, FiEdit2, FiFacebook, FiInstagram, FiMessageSquare, FiSend } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +12,11 @@ const SOCIAL_PLATFORMS = [
   { key: 'linkedin', label: 'LinkedIn', icon: FiLinkedin, placeholder: 'username or full URL', urlPrefix: 'https://linkedin.com/in/' },
   { key: 'github', label: 'GitHub', icon: FiGithub, placeholder: 'username or full URL', urlPrefix: 'https://github.com/' },
   { key: 'twitter', label: 'Twitter / X', icon: FiTwitter, placeholder: 'username or full URL', urlPrefix: 'https://x.com/' },
+  { key: 'facebook', label: 'Facebook', icon: FiFacebook, placeholder: 'username or full URL', urlPrefix: 'https://facebook.com/' },
+  { key: 'instagram', label: 'Instagram', icon: FiInstagram, placeholder: 'username or full URL', urlPrefix: 'https://instagram.com/' },
+  { key: 'threads', label: 'Threads', icon: FiMessageSquare, placeholder: 'username or full URL', urlPrefix: 'https://threads.net/@' },
+  { key: 'snapchat', label: 'Snapchat', icon: FiSend, placeholder: 'username or full URL', urlPrefix: 'https://snapchat.com/add/' },
+  { key: 'telegram', label: 'Telegram', icon: FiSend, placeholder: 'username or full URL', urlPrefix: 'https://t.me/' },
   { key: 'email', label: 'Email', icon: FiMail, placeholder: 'email@example.com', urlPrefix: 'mailto:' },
   { key: 'website', label: 'Website', icon: FiGlobe, placeholder: 'https://example.com', urlPrefix: '' },
 ];
@@ -37,7 +42,7 @@ function normalizeSocialValue(value, platform) {
   const trimmed = value.trim();
   if (platform.key === 'email' && !trimmed.includes('@')) return '';
   if (platform.key === 'email' && !trimmed.startsWith('mailto:')) return `mailto:${trimmed}`;
-  if (['linkedin', 'github', 'twitter', 'website'].includes(platform.key)) {
+  if (['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'website'].includes(platform.key)) {
     if (trimmed.startsWith('http')) return trimmed;
     if (trimmed.includes('.')) return `https://${trimmed}`;
     return `${platform.urlPrefix}${trimmed}`;
@@ -48,7 +53,7 @@ function normalizeSocialValue(value, platform) {
 function extractDisplayValue(storedValue, platform) {
   if (!storedValue) return '';
   if (platform.key === 'email') return storedValue.replace('mailto:', '');
-  if (['linkedin', 'github', 'twitter', 'website'].includes(platform.key)) {
+  if (['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'website'].includes(platform.key)) {
     if (storedValue.startsWith(platform.urlPrefix)) {
       return storedValue.replace(platform.urlPrefix, '');
     }

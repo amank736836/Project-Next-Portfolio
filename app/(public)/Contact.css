@@ -198,24 +198,87 @@ select.form__control:focus {
   margin-bottom: 32px;
 }
 
-.button-center {
-  justify-content: flex-start;
+@media screen and (max-width: 1024px) {
+  .contact__container {
+    grid-template-columns: 1fr;
+  }
+  
+  .form__input-group {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Enhanced social link hover - scale + glow + rotate */
-.contact__social-link {
-  background: var(--body-color);
+/* Button styles for Contact form (match Home section) */
+.contact__form .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: var(--title-color);
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  font-size: 1.2rem;
-  border: 1px solid var(--border-color);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid var(--first-color);
+  padding: 0 32px;
+  height: 52px;
+  border-radius: 32px;
+  font-family: var(--second-font);
+  font-size: var(--small-font-size);
+  font-weight: var(--weight-600);
   position: relative;
   overflow: hidden;
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+
+.contact__form .button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--first-color);
+  transform: translateX(100%);
+  z-index: -1;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.contact__form .button:hover {
+  color: var(--text-white);
+  border-color: var(--first-color);
+}
+
+.contact__form .button:hover::before {
+  transform: translateX(0);
+}
+
+.contact__form .button:focus-visible {
+  outline: 2px solid var(--first-color);
+  outline-offset: 3px;
+}
+
+.contact__form .button svg {
+  font-size: var(--normal-font-size);
+  transition: transform 0.3s ease;
+}
+
+.contact__form .button:hover svg {
+  transform: translateX(3px);
+}
+
+/* Primary - Filled */
+.contact__form .button--primary {
+  background: var(--first-color);
+  color: var(--text-white);
+  border-color: var(--first-color);
+}
+
+.contact__form .button--primary::before {
+  background: var(--first-color-alt);
+}
+
+.contact__form .button--primary:hover {
+  background: var(--first-color-alt);
+  color: var(--text-white);
+}
+
+.button-center {
+  justify-content: flex-start;
 }
 
 .contact__social-link::before {

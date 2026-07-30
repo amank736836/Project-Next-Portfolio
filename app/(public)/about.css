@@ -77,6 +77,57 @@
   margin-bottom: 60px;
 }
 
+/* Button styles matching Home section (Download CV/View CV) */
+.about__info .button {
+  display: inline-flex;
+  align-items: center;
+  color: var(--title-color);
+  border: 1px solid var(--first-color);
+  padding: 0 70px 0 35px;
+  height: 55px;
+  border-radius: 35px;
+  font-family: var(--second-font);
+  font-size: var(--small-font-size);
+  font-weight: var(--weight-500);
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: none;
+}
+
+.about__info .button:hover {
+  color: var(--text-white);
+}
+
+.about__info .button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--first-color);
+  transform: translateX(100%);
+  z-index: -1;
+  transition: all 0.3s ease-out;
+}
+
+.about__info .button:hover::before {
+  transform: translateX(0);
+}
+
+.about__info .button__icon {
+  background-color: var(--first-color);
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  color: var(--text-white);
+  font-size: var(--large-font-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Skills Modernization - Compact Pills */
 .skills__container {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

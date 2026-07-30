@@ -18,7 +18,7 @@ export default async function PublicLayout({ children }) {
     getCurrentUser(),
     supabase.from('skills').select('title, icon, color, category').eq('is_featured', true).order('id', { ascending: true }).limit(5),
     supabase.from('hero_images').select('*').eq('is_hero', true).single(),
-    supabase.from('personal_info').select('key, description').in('key', ['linkedin', 'github', 'twitter', 'email', 'website', 'phone', 'address'])
+    supabase.from('personal_info').select('key, description').in('key', ['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'codolio', 'email', 'website', 'phone', 'address'])
   ]);
 
   const siteMode = siteModeData?.description || 'multi';
