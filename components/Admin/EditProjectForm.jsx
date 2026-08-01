@@ -365,7 +365,7 @@ export default function EditProjectForm({
                     <Input
                       value={editingProject.image || editingProject.img || ''}
                       onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value, img: e.target.value })}
-                      placeholder="https://... or /assets/..."
+                      placeholder="https://res.cloudinary.com/... or /assets/..."
                       className="flex-1 premium-input bg-white/5 border-white/10 focus:border-amber-500 h-11 px-4 font-bold text-[var(--admin-title)] text-sm rounded-lg min-w-0"
                     />
                     <button

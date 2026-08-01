@@ -2,12 +2,53 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { FaArrowRight, FaDownload, FaBriefcase, FaCode, FaExternalLinkAlt } from "react-icons/fa";
 import Typewriter from "@/components/ui/Typewriter";
 import "../Home.css";
 
+function ResumeDownloadButton() {
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchResume() {
+      try {
+        const res = await fetch('/api/resume', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setResumeUrl(data.file_url);
+        }
+      } catch (err) {
+        console.error('Failed to fetch resume:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchResume();
+  }, []);
+
+  if (loading) {
+    return (
+      <a href="#" className="button button--primary" style={{ pointerEvents: 'none', opacity: 0.6 }}>
+        <FaDownload />
+        Loading...
+        <span className="button__icon"><FaArrowRight /></span>
+      </a>
+    );
+  }
+
+  return (
+    <a href="/api/resume/download" target="_blank" rel="noopener noreferrer" className="button button--primary" style={{ pointerEvents: resumeUrl ? 'auto' : 'none', opacity: resumeUrl ? 1 : 0.6 }}>
+      <FaDownload />
+      Download Resume
+      <span className="button__icon"><FaArrowRight /></span>
+    </a>
+  );
+}
+
 export default function HomeSection({ enableTypewriter = true, enableOpenToWork = true, featuredSkills = [], heroImage = null }) {
-  const imageSrc = heroImage?.url || "/assets/profile_v4.png";
+  const imageSrc = heroImage?.url || "https://res.cloudinary.com/amank736836/image/upload/v1785565567/portfolio/portfolio/profile_v4.png";
   const imageAlt = heroImage?.alt_text || "Profile";
 
   return (
@@ -50,13 +91,7 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
             )}
           </div>
           <div className="home__cta-group reveal delay-5">
-            <Link href="/assets/Aman_Resume.pdf" download className="button button--primary">
-              <FaDownload />
-              Download Resume
-              <span className="button__icon">
-                <FaArrowRight />
-              </span>
-            </Link>
+            <ResumeDownloadButton />
             <Link href="#projects" className="button button--secondary">
               <FaBriefcase />
               View Projects

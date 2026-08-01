@@ -7,6 +7,7 @@ import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toa
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
+import ResumesTab from '@/components/Admin/ResumesTab';
 
 const SOCIAL_PLATFORMS = [
   { key: 'linkedin', label: 'LinkedIn', icon: FiLinkedin, placeholder: 'username or full URL', urlPrefix: 'https://linkedin.com/in/' },
@@ -380,6 +381,15 @@ export default function AdminSettingsClient({
     setEditHeroAltText('');
   };
 
+  const [activeTab, setActiveTab] = useState('social');
+
+  const TABS = [
+    { id: 'social', label: 'Social Links', icon: FiGlobe },
+    { id: 'resumes', label: 'Resumes', icon: FiFileText },
+    { id: 'layout', label: 'Layout & UI', icon: FiLayout },
+    { id: 'hero', label: 'Hero Images', icon: FiImage },
+  ];
+
   return (
     <div className="admin-settings">
       <div className="admin-settings__header">
@@ -387,8 +397,24 @@ export default function AdminSettingsClient({
         <p className="admin-settings__subtitle">Operator-only configuration and system settings.</p>
       </div>
 
-      <div className="admin-settings__grid">
-        <section className="admin-settings__section">
+      <div className="admin-settings__tabs" role="tablist">
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`admin-settings__tab ${activeTab === tab.id ? 'active' : ''}`}
+          >
+            <tab.icon size={16} />
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+<div className="admin-settings__grid">
+        {activeTab === 'social' && (
+          <section className="admin-settings__section">
           <div className="section-header">
             <FiGlobe className="section-icon" />
             <div>
@@ -457,157 +483,167 @@ export default function AdminSettingsClient({
             })}
           </div>
         </section>
+      )}
 
-        <section className="admin-settings__section">
-          <div className="section-header">
-            <FiFileText className="section-icon" />
-            <div>
-              <h2>Resume / CV</h2>
-              <p className="section-desc">Upload your resume (PDF, max 5MB). Visitors can download it from your portfolio.</p>
-            </div>
-          </div>
+      {activeTab === 'resumes' && (
+        <ResumesTab />
+      )}
 
-          <Card className="resume-card">
-            {resumeUrl ? (
-              <div className="resume-uploaded">
-                <div className="resume-info">
-                  <FiFileText className="resume-icon" size={32} />
-                  <div>
-                    <p className="resume-filename">resume.pdf</p>
-                    <p className="resume-url">Stored on Cloudinary</p>
-                  </div>
-                </div>
-                <div className="resume-actions">
-                  <Button variant="secondary" onClick={openResume}><FiExternalLink size={16} /> View</Button>
-                  <Button variant="ghost" destructive onClick={handleResumeDelete}><FiTrash2 size={16} /> Remove</Button>
-                </div>
+      {activeTab === 'layout' && (
+        <>
+          <section className="admin-settings__section">
+            <div className="section-header">
+              <FiFileText className="section-icon" />
+              <div>
+                <h2>Resume / CV</h2>
+                <p className="section-desc">Upload your resume (PDF, max 5MB). Visitors can download it from your portfolio.</p>
               </div>
-            ) : (
-              <div className="resume-upload">
-                <div className="upload-zone" onClick={e => e.currentTarget.querySelector('input').click()}>
-                  <FiUpload className="upload-icon" size={48} />
-                  <p>Drag & drop or click to upload PDF</p>
-                  <span className="upload-hint">Max 5MB • PDF only</span>
-                  <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploadingResume} className="file-input" />
+            </div>
+
+            <Card className="resume-card">
+              {resumeUrl ? (
+                <div className="resume-uploaded">
+                  <div className="resume-info">
+                    <FiFileText className="resume-icon" size={32} />
+                    <div>
+                      <p className="resume-filename">resume.pdf</p>
+                      <p className="resume-url">Stored on Supabase Storage</p>
+                    </div>
+                  </div>
+                  <div className="resume-actions">
+                    <Button variant="secondary" onClick={openResume}><FiExternalLink size={16} /> View</Button>
+                    <Button variant="ghost" destructive onClick={handleResumeDelete}><FiTrash2 size={16} /> Remove</Button>
+                  </div>
                 </div>
+              ) : (
+                <div className="resume-upload">
+                  <div className="upload-zone" onClick={e => e.currentTarget.querySelector('input').click()}>
+                    <FiUpload className="upload-icon" size={48} />
+                    <p>Drag & drop or click to upload PDF</p>
+                    <span className="upload-hint">Max 5MB • PDF only</span>
+                    <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploadingResume} className="file-input" />
+                  </div>
+                </div>
+              )}
+              {uploadingResume && <div className="upload-progress">Uploading...</div>}
+            </Card>
+          </section>
+
+          <section className="admin-settings__section">
+            <div className="section-header">
+              <FiGrid className="section-icon" />
+              <div>
+                <h2>Portfolio Layout</h2>
+                <p className="section-desc">Choose how projects are displayed on the public portfolio page.</p>
               </div>
-            )}
-            {uploadingResume && <div className="upload-progress">Uploading...</div>}
-          </Card>
-        </section>
-
-        <section className="admin-settings__section">
-          <div className="section-header">
-            <FiGrid className="section-icon" />
-            <div>
-              <h2>Portfolio Layout</h2>
-              <p className="section-desc">Choose how projects are displayed on the public portfolio page.</p>
             </div>
-          </div>
 
-          <Card className="layout-card">
-            <div className="layout-options">
-              {PORTFOLIO_LAYOUTS.map(layout => (
-                <button
-                  key={layout.key}
-                  type="button"
-                  className={`layout-option ${portfolioLayout === layout.key ? 'active' : ''}`}
-                  onClick={() => savePortfolioLayout(layout.key)}
-                  disabled={savingLayout || portfolioLayout === layout.key}
-                >
-                  <div className="layout-icon">
-                    <layout.icon size={28} />
-                  </div>
-                  <div className="layout-info">
-                    <span className="layout-label">{layout.label}</span>
-                    <span className="layout-desc">{layout.desc}</span>
-                  </div>
-                  {portfolioLayout === layout.key && (
-                    <FiCheck className="layout-check" size={20} />
-                  )}
-                  {savingLayout && portfolioLayout === layout.key && (
-                    <span className="layout-saving">Saving...</span>
-                  )}
-                </button>
-              ))}
+            <Card className="layout-card">
+              <div className="layout-options">
+                {PORTFOLIO_LAYOUTS.map(layout => (
+                  <button
+                    key={layout.key}
+                    type="button"
+                    className={`layout-option ${portfolioLayout === layout.key ? 'active' : ''}`}
+                    onClick={() => savePortfolioLayout(layout.key)}
+                    disabled={savingLayout || portfolioLayout === layout.key}
+                  >
+                    <div className="layout-icon">
+                      <layout.icon size={28} />
+                    </div>
+                    <div className="layout-info">
+                      <span className="layout-label">{layout.label}</span>
+                      <span className="layout-desc">{layout.desc}</span>
+                    </div>
+                    {portfolioLayout === layout.key && (
+                      <FiCheck className="layout-check" size={20} />
+                    )}
+                    {savingLayout && portfolioLayout === layout.key && (
+                      <span className="layout-saving">Saving...</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </section>
+
+          <section className="admin-settings__section">
+            <div className="section-header">
+              <FiColumns className="section-icon" />
+              <div>
+                <h2>Site Mode</h2>
+                <p className="section-desc">Choose between multi-page navigation or single-page scroll.</p>
+              </div>
             </div>
-          </Card>
-        </section>
 
-        <section className="admin-settings__section">
-          <div className="section-header">
-            <FiColumns className="section-icon" />
-            <div>
-              <h2>Site Mode</h2>
-              <p className="section-desc">Choose between multi-page navigation or single-page scroll.</p>
+            <Card className="layout-card">
+              <div className="layout-options">
+                {SITE_MODES.map(mode => (
+                  <button
+                    key={mode.key}
+                    type="button"
+                    className={`layout-option ${siteMode === mode.key ? 'active' : ''}`}
+                    onClick={() => saveSiteMode(mode.key)}
+                    disabled={savingSiteMode || siteMode === mode.key}
+                  >
+                    <div className="layout-icon">
+                      <mode.icon size={28} />
+                    </div>
+                    <div className="layout-info">
+                      <span className="layout-label">{mode.label}</span>
+                      <span className="layout-desc">{mode.desc}</span>
+                    </div>
+                    {siteMode === mode.key && (
+                      <FiCheck className="layout-check" size={20} />
+                    )}
+                    {savingSiteMode && siteMode === mode.key && (
+                      <span className="layout-saving">Saving...</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </section>
+
+          <section className="admin-settings__section">
+            <div className="section-header">
+              <FiToggleRight className="section-icon" />
+              <div>
+                <h2>UI Features</h2>
+                <p className="section-desc">Toggle visual effects and animations on your portfolio.</p>
+              </div>
             </div>
-          </div>
 
-          <Card className="layout-card">
-            <div className="layout-options">
-              {SITE_MODES.map(mode => (
-                <button
-                  key={mode.key}
-                  type="button"
-                  className={`layout-option ${siteMode === mode.key ? 'active' : ''}`}
-                  onClick={() => saveSiteMode(mode.key)}
-                  disabled={savingSiteMode || siteMode === mode.key}
-                >
-                  <div className="layout-icon">
-                    <mode.icon size={28} />
-                  </div>
-                  <div className="layout-info">
-                    <span className="layout-label">{mode.label}</span>
-                    <span className="layout-desc">{mode.desc}</span>
-                  </div>
-                  {siteMode === mode.key && (
-                    <FiCheck className="layout-check" size={20} />
-                  )}
-                  {savingSiteMode && siteMode === mode.key && (
-                    <span className="layout-saving">Saving...</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </Card>
-        </section>
-
-        <section className="admin-settings__section">
-          <div className="section-header">
-            <FiToggleRight className="section-icon" />
-            <div>
-              <h2>UI Features</h2>
-              <p className="section-desc">Toggle visual effects and animations on your portfolio.</p>
-            </div>
-          </div>
-
-          <Card className="layout-card">
-            <div className="ui-features-list">
-              {UI_FEATURES.map(feature => {
-                const isEnabled = uiFeatures[feature.key] !== 'false';
-                return (
-                  <div key={feature.key} className="ui-feature-row">
-                    <div className="ui-feature-info">
-                      <feature.icon className="ui-feature-icon" size={24} />
-                      <div>
-                        <span className="ui-feature-label">{feature.label}</span>
-                        <span className="ui-feature-desc">{feature.desc}</span>
+            <Card className="layout-card">
+              <div className="ui-features-list">
+                {UI_FEATURES.map(feature => {
+                  const isEnabled = uiFeatures[feature.key] !== 'false';
+                  return (
+                    <div key={feature.key} className="ui-feature-row">
+                      <div className="ui-feature-info">
+                        <feature.icon className="ui-feature-icon" size={24} />
+                        <div>
+                          <span className="ui-feature-label">{feature.label}</span>
+                          <span className="ui-feature-desc">{feature.desc}</span>
+                        </div>
+                      </div>
+                      <div className="ui-feature-toggle">
+                        <label className={`toggle ${isEnabled ? 'active' : ''}`} onClick={() => toggleUIFeature(feature.key)}>
+                          <span className="toggle-track">
+                            <span className="toggle-thumb"></span>
+                          </span>
+                        </label>
                       </div>
                     </div>
-                    <div className="ui-feature-toggle">
-                      <label className={`toggle ${isEnabled ? 'active' : ''}`} onClick={() => toggleUIFeature(feature.key)}>
-                        <span className="toggle-track">
-                          <span className="toggle-thumb"></span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        </section>
+                  );
+                })}
+              </div>
+            </Card>
+          </section>
+        </>
+      )}
 
+      {activeTab === 'hero' && (
         <section className="admin-settings__section">
           <div className="section-header">
             <FiImage className="section-icon" />
@@ -711,6 +747,8 @@ export default function AdminSettingsClient({
             )}
           </Card>
         </section>
+      )}
+
       </div>
     </div>
   );

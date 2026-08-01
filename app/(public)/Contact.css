@@ -145,11 +145,14 @@
 .contact__social-link--divider {
   background: transparent;
   border: none;
-  width: auto;
-  padding: 0 12px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border-left: 2px solid var(--border-color);
   border-right: 2px solid var(--border-color);
   margin: 0 8px;
+  display: grid;
+  place-items: center;
 }
 
 .contact__social-link--divider:hover {

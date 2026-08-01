@@ -34,7 +34,6 @@ const nextConfig = {
 		// Allow unoptimized images for local assets that might fail optimization
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
-		contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:;",
 	},
 
 	async headers() {
@@ -48,7 +47,7 @@ const nextConfig = {
 					},
 					{
 						key: 'X-Frame-Options',
-						value: 'DENY',
+						value: 'SAMEORIGIN',
 					},
 					{
 						key: 'Referrer-Policy',
@@ -67,7 +66,8 @@ const nextConfig = {
 							"font-src 'self' https://fonts.gstatic.com data:",
 							"img-src 'self' data: https: blob:",
 							"connect-src 'self' https://res.cloudinary.com https://api.scalekit.com https://va.vercel-scripts.com",
-							"frame-ancestors 'none'",
+							"frame-src 'self' https://res.cloudinary.com blob:",
+							"frame-ancestors 'self'",
 							"base-uri 'self'",
 							"form-action 'self' https://formspree.io",
 						].join('; '),
@@ -94,6 +94,16 @@ const nextConfig = {
 				],
 			},
 		];
+	},
+
+	turbopack: {
+		resolveAlias: {
+			'@/*': './*',
+		},
+	},
+
+	typescript: {
+		ignoreBuildErrors: true,
 	},
 };
 

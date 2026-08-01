@@ -1,12 +1,31 @@
+"use client";
+
 import Info from "@/components/Info";
 import { FaDownload } from "react-icons/fa";
 import { FaEye } from "react-icons/fa6";
-import Link from "next/link";
+import { useState, useRef } from "react";
+import { ResumeViewerModal } from "@/components/sections/ResumeViewerModal";
 import "@/app/(public)/about.css";
 
-export default function AboutSection({ aboutDescription, personalInfo }) {
+function ResumeDownloadLink({ resumeUrl }) {
+  const className = resumeUrl ? 'button' : 'button button--disabled';
   return (
-    <section id="about" className="section container reveal">
+    <a href="/api/resume/download" target="_blank" rel="noopener noreferrer" className={className}>
+      Download CV
+      <span className="button__icon"><FaDownload /></span>
+    </a>
+  );
+}
+
+export default function AboutSection({ aboutDescription, personalInfo, resumeUrl }) {
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const viewButtonRef = useRef(null);
+
+  const hasResume = !!resumeUrl;
+  const viewButtonClassName = hasResume ? 'button' : 'button button--disabled';
+
+  return (
+    <section id="about" className="section container reveal" suppressHydrationWarning>
       <section className="about">
         <h2 className="section__title reveal delay-1">
           About <span>Me</span>
@@ -22,23 +41,30 @@ export default function AboutSection({ aboutDescription, personalInfo }) {
             <ul className="info__list grid reveal delay-5">
               <Info data={personalInfo} />
             </ul>
-            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 reveal delay-6">
-              <a href="/assets/Aman_Resume.pdf" download="" className="button">
-                Download Cv
-                <span className="button__icon">
-                  <FaDownload />
-                </span>
-              </a>
-              <Link href="/resume" className="button">
-                View Cv
-                <span className="button__icon">
-                  <FaEye />
-                </span>
-              </Link>
+            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 reveal delay-6" suppressHydrationWarning>
+              <ResumeDownloadLink resumeUrl={resumeUrl} />
+              <button
+                ref={viewButtonRef}
+                onClick={() => setIsViewModalOpen(true)}
+                className={viewButtonClassName}
+                disabled={!hasResume}
+                suppressHydrationWarning
+              >
+                View CV
+                <span className="button__icon"><FaEye /></span>
+              </button>
             </div>
           </div>
         </div>
       </section>
+
+      <ResumeViewerModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        resumeUrl={resumeUrl}
+        title="View Resume"
+        triggerRef={viewButtonRef}
+      />
     </section>
   );
 }
