@@ -31,6 +31,10 @@ const nextConfig = {
 		formats: ['image/avif', 'image/webp'],
 		minimumCacheTTL: 60 * 60 * 24,
 		qualities: [75, 80, 85],
+		// Allow unoptimized images for local assets that might fail optimization
+		dangerouslyAllowSVG: true,
+		contentDispositionType: 'attachment',
+		contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:;",
 	},
 
 	async headers() {
@@ -58,7 +62,7 @@ const nextConfig = {
 						key: 'Content-Security-Policy',
 						value: [
 							"default-src 'self'",
-							"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://va.vercel-scripts.com",
+							"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://va.vercel-scripts.com https://vercel.live",
 							"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 							"font-src 'self' https://fonts.gstatic.com data:",
 							"img-src 'self' data: https: blob:",
