@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  FiPlus, FiSearch, FiFilter, FiChevronDown, FiX, FiEye, FiEyeOff
+  FiPlus, FiSearch, FiFilter, FiChevronDown, FiX, FiEye, FiEyeOff, FiGrid, FiList
 } from 'react-icons/fi';
 import { useToast, useSuccessToast, useErrorToast } from './Toast';
 import { useDeleteConfirm } from './ConfirmModal';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/Input';
 import { useLoading } from './LoadingContext';
 import EditSkillForm from './Skills/EditSkillForm';
 import SkillCard from './Skills/SkillCard';
+import SkillGridCard from './Skills/SkillGridCard';
 import CategoryManager from './Skills/CategoryManager';
 import CategoryFilter from './Skills/CategoryFilter';
 import { EmptySkills, EmptySearchSkill } from './Skills/EmptyStates';
@@ -27,6 +28,7 @@ export default function SkillsManager() {
   const [showCategoryFilters, setShowCategoryFilters] = useState(false);
   const [editingSkill, setEditingSkill] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [viewMode, setViewMode] = useState('list'); // 'list' | 'grid'
   const modalRef = useRef(null);
 
   const { startLoading, stopLoading } = useLoading();
@@ -327,6 +329,31 @@ export default function SkillsManager() {
           />
         </div>
 
+        {/* View Mode Toggle */}
+        <div className="flex items-center gap-2 ml-auto">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden sm:inline">View:</span>
+          <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'outline'}
+              size="icon"
+              onClick={() => setViewMode('list')}
+              className="h-8 w-8"
+              title="List view"
+            >
+              <FiList size={16} />
+            </Button>
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'outline'}
+              size="icon"
+              onClick={() => setViewMode('grid')}
+              className="h-8 w-8"
+              title="Grid view"
+            >
+              <FiGrid size={16} />
+            </Button>
+          </div>
+        </div>
+
         <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
             {(searchQuery || filterCategory !== 'all') && (
@@ -367,20 +394,40 @@ export default function SkillsManager() {
       ) : filteredSkills.length === 0 ? (
         <EmptySearchSkill searchTerm={searchQuery} onClear={() => { setSearchQuery(''); setFilterCategory('all'); }} />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8 space-y-2 sm:space-y-3">
-          {filteredSkills.map((skill, idx) => (
-            <SkillCard
-              key={skill.id}
-              skill={skill}
-              index={idx}
-              onToggleFeatured={() => toggleFeatured(skill)}
-              onToggleVisibility={() => toggleVisibility(skill)}
-              isHidden={skill.is_hidden}
-              onEdit={() => setEditingSkill(skill)}
-              onDelete={() => handleDelete(skill)}
-              categories={categories}
-            />
-          ))}
+        <div className="px-4 sm:px-6 lg:px-8">
+          {viewMode === 'list' ? (
+            <div className="space-y-2 sm:space-y-3">
+              {filteredSkills.map((skill, idx) => (
+                <SkillCard
+                  key={skill.id}
+                  skill={skill}
+                  index={idx}
+                  onToggleFeatured={() => toggleFeatured(skill)}
+                  onToggleVisibility={() => toggleVisibility(skill)}
+                  isHidden={skill.is_hidden}
+                  onEdit={() => setEditingSkill(skill)}
+                  onDelete={() => handleDelete(skill)}
+                  categories={categories}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              {filteredSkills.map((skill, idx) => (
+                <SkillGridCard
+                  key={skill.id}
+                  skill={skill}
+                  index={idx}
+                  onToggleFeatured={() => toggleFeatured(skill)}
+                  onToggleVisibility={() => toggleVisibility(skill)}
+                  isHidden={skill.is_hidden}
+                  onEdit={() => setEditingSkill(skill)}
+                  onDelete={() => handleDelete(skill)}
+                  categories={categories}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
