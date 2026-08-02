@@ -30,6 +30,7 @@ export async function POST(request) {
     key: body.key || `custom_${Date.now()}`,
     title: body.title || 'Custom Field',
     description: body.description || '',
+    is_hidden: body.is_hidden || false,
   };
 
   const { data, error } = await supabase.from('personal_info').upsert([item]).select();
@@ -47,6 +48,29 @@ export async function PUT(request) {
   const payload = Array.isArray(info) ? info : [info];
 
   const { error } = await supabase.from('personal_info').upsert(payload);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json({ success: true }, { headers: NO_CACHE });
+}
+
+export async function PATCH(request) {
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
+  }
+
+  const supabase = await createAdminClient();
+  const { searchParams } = new URL(request.url);
+  const key = searchParams.get('key');
+  const body = await request.json();
+
+  if (!key) {
+    return NextResponse.json({ error: 'Missing key' }, { status: 400, headers: NO_CACHE });
+  }
+
+  const { error } = await supabase
+    .from('personal_info')
+    .update({ is_hidden: body.is_hidden })
+    .eq('key', key);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });

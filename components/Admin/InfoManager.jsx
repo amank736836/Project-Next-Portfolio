@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX, FiEdit3 } from 'react-icons/fi';
+import { useState, useEffect, useCallback } from 'react';
+import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX, FiEdit3, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptyInfo } from './EmptyState';
 import { calculateAge } from '@/lib/utils';
 import IdentityModal from './IdentityModal';
 import { IdentityCard, IdentityEmptySearch } from './IdentityCard';
-import { useCallback } from 'react';
 
 export default function InfoManager() {
   const [info, setInfo] = useState([]);
@@ -36,7 +35,8 @@ export default function InfoManager() {
           ...item,
           id: item.key,
           label: item.title || item.key,
-          value: item.description || ''
+          value: item.description || '',
+          is_hidden: item.is_hidden || false
         })) : [];
       setInfo(mappedData);
     } catch (error) {
@@ -57,6 +57,7 @@ export default function InfoManager() {
           key: id,
           title: newLabel?.trim() || 'Custom Field',
           description: newValue,
+          is_hidden: false,
         };
         const res = await fetch('/api/admin/info', {
           method: 'POST',
@@ -70,6 +71,7 @@ export default function InfoManager() {
             id: created.key,
             label: created.title || created.key,
             value: created.description || '',
+            is_hidden: created.is_hidden || false
           };
           setInfo(current => [...current, mapped]);
           setEditingItem(null);
@@ -80,12 +82,13 @@ export default function InfoManager() {
       } else {
         // Existing item — PUT (full overwrite)
         const updatedInfo = info.map(item =>
-          item.id === id ? { ...item, value: newValue, description: newValue } : item
+          item.id === id ? { ...item, value: newValue, description: newValue, is_hidden: item.is_hidden } : item
         );
         const apiPayload = updatedInfo.map(item => ({
           key: item.id,
           title: item.title,
-          description: item.description
+          description: item.description,
+          is_hidden: item.is_hidden
         }));
         const res = await fetch('/api/admin/info', {
           method: 'PUT',
@@ -116,6 +119,7 @@ export default function InfoManager() {
       value: '',
       title: '',
       description: '',
+      is_hidden: false,
     });
   }, []);
 
@@ -141,6 +145,26 @@ export default function InfoManager() {
     }
   }, [info, confirmEject, successToast, errorToast]);
 
+  const toggleVisibility = useCallback(async (id, currentStatus) => {
+    try {
+      const res = await fetch(`/api/admin/info?key=${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_hidden: !currentStatus }),
+      });
+      if (res.ok) {
+        setInfo(current => current.map(item => 
+          item.id === id ? { ...item, is_hidden: !currentStatus } : item
+        ));
+        successToast(currentStatus ? 'Node is now visible' : 'Node is now hidden');
+      } else {
+        errorToast('Failed to update visibility');
+      }
+    } catch (error) {
+      console.error('Failed to toggle visibility:', error);
+      errorToast('Failed to update visibility');
+    }
+  }, [successToast, errorToast]);
 
   // Filter info based on search
   const filteredInfo = info.filter(i => 
@@ -227,6 +251,8 @@ export default function InfoManager() {
               index={idx}
               onEdit={setEditingItem}
               onDelete={deleteInfo}
+              onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
+              isHidden={item.is_hidden}
             />
           ))}
 
@@ -236,9 +262,9 @@ export default function InfoManager() {
           className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
         >
            <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
-              <FiPlus size={28} />
-           </div>
-           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
+             <FiPlus size={28} />
+          </div>
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
         </button>
         </div>
       )}

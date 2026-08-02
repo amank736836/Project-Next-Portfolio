@@ -33,3 +33,26 @@ export async function PUT(request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
+
+export async function PATCH(request) {
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
+  }
+
+  const supabase = await createAdminClient();
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  const body = await request.json();
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing id' }, { status: 400, headers: NO_CACHE });
+  }
+
+  const { error } = await supabase
+    .from('skills')
+    .update({ is_hidden: body.is_hidden })
+    .eq('id', id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  return NextResponse.json({ success: true }, { headers: NO_CACHE });
+}

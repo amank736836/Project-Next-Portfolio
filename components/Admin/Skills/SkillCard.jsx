@@ -1,14 +1,14 @@
 'use client';
 
-import { FiStar, FiEdit, FiTrash as FiTrashIcon } from 'react-icons/fi';
+import { FiStar, FiEdit, FiTrash as FiTrashIcon, FiEye, FiEyeOff } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
 
-export default function SkillCard({ skill, index, onToggleFeatured, onEdit, onDelete, categories }) {
+export default function SkillCard({ skill, index, onToggleFeatured, onToggleVisibility, isHidden, onEdit, onDelete, categories }) {
   const delayClass = `delay-${(index % 6) + 1}`;
   const isFeatured = skill.is_featured;
   
   return (
-    <div className={`reveal-scale ${delayClass} bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all hover:border-[var(--admin-accent)]/30 hover:bg-white/7.5 ${isFeatured ? 'ring-1 ring-amber-400/30' : ''}`}>
+    <div className={`reveal-scale ${delayClass} bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all hover:border-[var(--admin-accent)]/30 hover:bg-white/7.5 ${isFeatured ? 'ring-1 ring-amber-400/30' : ''} ${isHidden ? 'opacity-50' : ''}`}>
       <div className="flex items-start gap-4 sm:gap-5">
         <div className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[var(--admin-accent)]/20 to-transparent flex items-center justify-center text-2xl sm:text-3xl">
           {skill.icon || '⭐'}
@@ -21,6 +21,12 @@ export default function SkillCard({ skill, index, onToggleFeatured, onEdit, onDe
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-400/20 text-amber-400 border border-amber-400/30">
                 <FiStar size={10} className="text-amber-400" />
                 Featured
+              </span>
+            )}
+            {isHidden && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30">
+                <FiEyeOff size={10} className="text-slate-400" />
+                Hidden
               </span>
             )}
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-500/20 text-slate-400 border border-white/5">
@@ -39,6 +45,18 @@ export default function SkillCard({ skill, index, onToggleFeatured, onEdit, onDe
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <Button
+            variant={isHidden ? 'outline' : 'outline'}
+            size="icon"
+            onClick={onToggleVisibility}
+            className={isHidden 
+              ? 'text-slate-500 border-slate-500/30 bg-slate-500/10 hover:bg-slate-500 hover:text-white' 
+              : 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10 hover:bg-emerald-500 hover:text-white'
+            }
+            title={isHidden ? 'Make visible' : 'Hide from public'}
+          >
+            {isHidden ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+          </Button>
           <Button
             variant={isFeatured ? 'secondary' : 'outline'}
             size="icon"

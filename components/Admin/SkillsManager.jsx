@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  FiPlus, FiSearch, FiFilter, FiChevronDown, FiX
+  FiPlus, FiSearch, FiFilter, FiChevronDown, FiX, FiEye, FiEyeOff
 } from 'react-icons/fi';
 import { useToast, useSuccessToast, useErrorToast } from './Toast';
 import { useDeleteConfirm } from './ConfirmModal';
@@ -75,6 +75,7 @@ export default function SkillsManager() {
       icon: '⭐',
       color: '#6B7280',
       is_featured: false,
+      is_hidden: false,
     });
   };
 
@@ -86,7 +87,7 @@ export default function SkillsManager() {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({...s, is_featured: s.is_featured}))]),
+        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({...s, is_featured: s.is_featured, is_hidden: s.is_hidden}))]),
       });
       
       if (res.ok) {
@@ -146,6 +147,27 @@ export default function SkillsManager() {
       }
     } catch (error) {
       errorToast('Failed to update featured status');
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const toggleVisibility = async (skill) => {
+    startLoading();
+    try {
+      const res = await fetch(`/api/admin/skills?id=${skill.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_hidden: !skill.is_hidden }),
+      });
+      if (res.ok) {
+        fetchSkills();
+        successToast(skill.is_hidden ? 'Skill is now visible' : 'Skill is now hidden');
+      } else {
+        errorToast('Failed to update visibility');
+      }
+    } catch (error) {
+      errorToast('Failed to update visibility');
     } finally {
       stopLoading();
     }
@@ -219,6 +241,7 @@ export default function SkillsManager() {
   }, [skills, searchQuery, filterCategory]);
 
   const featuredCount = skills.filter(s => s.is_featured).length;
+  const hiddenCount = skills.filter(s => s.is_hidden).length;
 
   return (
     <div className="animate-fade-in pb-10">
@@ -239,7 +262,7 @@ export default function SkillsManager() {
         <div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[var(--admin-title)]">Skill Matrix</h2>
           <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-            Manage skills & hero badges — {featuredCount}/5 featured
+            Manage skills & hero badges — {featuredCount}/5 featured, {hiddenCount} hidden
           </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -335,6 +358,7 @@ export default function SkillsManager() {
               <span className="text-slate-600">/ {skills.length} total</span>
             )}
             <span className="text-amber-400">{featuredCount}/5 featured</span>
+            <span className="text-slate-500">{hiddenCount} hidden</span>
           </div>
         </div>
       </div>
@@ -351,6 +375,8 @@ export default function SkillsManager() {
               skill={skill}
               index={idx}
               onToggleFeatured={() => toggleFeatured(skill)}
+              onToggleVisibility={() => toggleVisibility(skill)}
+              isHidden={skill.is_hidden}
               onEdit={() => setEditingSkill(skill)}
               onDelete={() => handleDelete(skill)}
               categories={categories}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns, FiToggleRight, FiToggleLeft, FiImage, FiStar, FiTrash, FiEdit2, FiFacebook, FiInstagram, FiMessageSquare, FiSend } from 'react-icons/fi';
+import { FiLinkedin, FiGithub, FiTwitter, FiMail, FiGlobe, FiFileText, FiUpload, FiCheck, FiX, FiEdit3, FiTrash2, FiExternalLink, FiPlus, FiGrid, FiLayout, FiColumns, FiToggleRight, FiToggleLeft, FiImage, FiStar, FiTrash, FiEdit2, FiFacebook, FiInstagram, FiMessageSquare, FiSend, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useToast, useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -161,6 +161,24 @@ export default function AdminSettingsClient({
   const handleKeyDown = (e, key) => {
     if (e.key === 'Enter') handleSaveClick(key);
     if (e.key === 'Escape') { setEditingKey(null); setEditValue(''); }
+  };
+
+  const toggleSocialVisibility = async (key, currentStatus) => {
+    try {
+      const res = await fetch(`/api/admin/info?key=${encodeURIComponent(key)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_hidden: !currentStatus }),
+      });
+      if (res.ok) {
+        setSocialLinks(prev => ({ ...prev, [key]: { ...prev[key], is_hidden: !currentStatus } }));
+        successToast(currentStatus ? 'Link is now visible' : 'Link is now hidden');
+      } else {
+        errorToast('Failed to update visibility');
+      }
+    } catch (e) {
+      errorToast('Network error');
+    }
   };
 
   const handleResumeUpload = async (e) => {
@@ -428,9 +446,11 @@ export default function AdminSettingsClient({
               const value = socialLinks[platform.key] || '';
               const isEditing = editingKey === platform.key;
               const hasValue = Boolean(value);
+              // Get is_hidden status from socialLinks object
+              const isHidden = socialLinks[platform.key]?.is_hidden || false;
 
               return (
-                <div key={platform.key} className={`social-link-row ${isEditing ? 'editing' : ''} ${hasValue ? 'has-value' : ''}`}>
+                <div key={platform.key} className={`social-link-row ${isEditing ? 'editing' : ''} ${hasValue ? 'has-value' : ''} ${isHidden ? 'hidden' : ''}`}>
                   <div className="platform-info">
                     <platform.icon className="platform-icon" size={20} />
                     <div>
@@ -440,6 +460,12 @@ export default function AdminSettingsClient({
                           {extractDisplayValue(value, platform)}
                           <FiExternalLink size={12} />
                         </a>
+                      )}
+                      {isHidden && (
+                        <span className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                          <FiEyeOff size={10} />
+                          Hidden from public
+                        </span>
                       )}
                     </div>
                   </div>
@@ -465,6 +491,18 @@ export default function AdminSettingsClient({
                       </>
                     ) : hasValue ? (
                       <>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => toggleSocialVisibility(platform.key, isHidden)}
+                          className={isHidden 
+                            ? 'text-slate-500 border-slate-500/30 bg-slate-500/10 hover:bg-slate-500 hover:text-white' 
+                            : 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10 hover:bg-emerald-500 hover:text-white'
+                          }
+                          title={isHidden ? 'Make visible' : 'Hide from public'}
+                        >
+                          {isHidden ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                        </Button>
                         <Button variant="ghost" size="sm" onClick={() => handleEditClick(platform.key)}>
                           <FiEdit3 size={16} />
                         </Button>
