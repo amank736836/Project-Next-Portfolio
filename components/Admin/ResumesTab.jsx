@@ -125,7 +125,7 @@ function ResumeCard({ resume, onSetActive, onToggleFavorite, onDelete }) {
   );
 }
 
-export default function ResumesTab() {
+export default function ResumesTab({ onCountChange }) {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -143,14 +143,16 @@ export default function ResumesTab() {
     try {
       const res = await fetch('/api/admin/resumes', { cache: 'no-store' });
       const data = await res.json();
-      setResumes(Array.isArray(data) ? data : []);
+      const resumesArray = Array.isArray(data) ? data : [];
+      setResumes(resumesArray);
+      onCountChange?.(resumesArray.length);
     } catch (error) {
       console.error('Failed to fetch resumes:', error);
       errorToast('Failed to load resumes');
     } finally {
       setLoading(false);
     }
-  }, [errorToast]);
+  }, [errorToast, onCountChange]);
 
   useEffect(() => {
     fetchResumes();

@@ -335,7 +335,7 @@ export default function SkillsManager() {
                 <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">Active filters:</span>
                 {searchQuery && (
                   <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-slate-500/20 text-slate-400 gap-1">
-                    Search: "{searchQuery}"
+                    Search: &ldquo;{searchQuery}&rdquo;
                     <Button variant="outline" size="icon" onClick={() => setSearchQuery('')} className="-ml-1 h-4 w-4">
                       <FiX size={8} />
                     </Button>

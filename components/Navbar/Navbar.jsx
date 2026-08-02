@@ -13,7 +13,6 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
   const [user, setUser] = useState(initialUser);
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [hoveredLink, setHoveredLink] = useState(null);
   const pathname = usePathname();
   const activeSectionIdRef = useRef('home');
 
@@ -173,8 +172,6 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
                     onClick={() => {
                       setShowMenu(false);
                     }}
-                    onMouseEnter={() => setHoveredLink(name)}
-                    onMouseLeave={() => setHoveredLink(null)}
                   >
                     {icon}
                     <h3 className="nav__name">{name}</h3>
@@ -186,15 +183,10 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
                     onClick={() => {
                       setShowMenu(false);
                     }}
-                    onMouseEnter={() => setHoveredLink(name)}
-                    onMouseLeave={() => setHoveredLink(null)}
                   >
                     {icon}
                     <h3 className="nav__name">{name}</h3>
                   </Link>
-                )}
-                {hoveredLink === name && (
-                  <span className="nav__tooltip">{name}</span>
                 )}
               </li>
             );

@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import AdminSettingsClient from './AdminSettingsClient';
 
-const SOCIAL_KEYS = ['linkedin', 'github', 'twitter', 'email', 'website'];
+const SOCIAL_KEYS = ['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'email', 'website', 'codolio'];
 const UI_FEATURE_KEYS = ['enable_scroll_reveal', 'enable_typewriter', 'enable_open_to_work'];
 
 export const dynamic = 'force-dynamic';
@@ -15,10 +15,11 @@ export async function generateMetadata() {
 
 export default async function AdminSettingsPage() {
   const supabase = await createAdminClient();
-  const [{ data: infoData }, { data: settingsData }, { data: heroImages }] = await Promise.all([
+  const [{ data: infoData }, { data: settingsData }, { data: heroImages }, { count: resumesCount }] = await Promise.all([
     supabase.from('personal_info').select('*'),
     supabase.from('user_settings').select('key, description').in('key', UI_FEATURE_KEYS),
     supabase.from('hero_images').select('*').order('display_order', { ascending: true }),
+    supabase.from('resumes').select('*', { count: 'exact', head: true }),
   ]);
 
   const socialLinks = {};
@@ -45,6 +46,7 @@ export default async function AdminSettingsPage() {
     <AdminSettingsClient
       initialSocialLinks={socialLinks}
       initialResumeUrl={resumeUrl}
+      initialResumesCount={resumesCount || 0}
       initialPortfolioLayout={portfolioLayout}
       initialSiteMode={siteMode}
       initialUIFeatures={uiFeatures}

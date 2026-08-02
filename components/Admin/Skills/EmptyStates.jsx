@@ -25,7 +25,7 @@ export function EmptySearchSkill({ searchTerm, onClear }) {
       <FiSearch size={48} className="text-slate-500 mb-4" />
       <h3 className="text-xl font-bold text-[var(--admin-title)] mb-2">No Skills Found</h3>
       <p className="text-slate-500 mb-4">
-        No skills match <span className="font-mono text-[var(--admin-accent)]">"{searchTerm}"</span>
+        No skills match <span className="font-mono text-[var(--admin-accent)]">&ldquo;{searchTerm}&rdquo;</span>
       </p>
       <Button variant="outline" onClick={onClear}>
         <FiX className="mr-2" size={16} />
