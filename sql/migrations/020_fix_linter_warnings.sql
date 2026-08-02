@@ -17,6 +17,8 @@ REVOKE EXECUTE ON FUNCTION public.exec_sql(text) FROM anon, authenticated;
 
 -- education: restrict to authenticated users for write, public read for visible
 DROP POLICY IF EXISTS "Allow all for education" ON education;
+DROP POLICY IF EXISTS "Public can view visible education" ON education;
+DROP POLICY IF EXISTS "Admins can manage education" ON education;
 CREATE POLICY "Public can view visible education" ON education
     FOR SELECT USING (is_hidden = FALSE);
 CREATE POLICY "Admins can manage education" ON education
@@ -31,6 +33,8 @@ CREATE POLICY "Admins can manage education" ON education
 
 -- experience: restrict to authenticated users for write, public read for visible
 DROP POLICY IF EXISTS "Allow all for experience" ON experience;
+DROP POLICY IF EXISTS "Public can view visible experience" ON experience;
+DROP POLICY IF EXISTS "Admins can manage experience" ON experience;
 CREATE POLICY "Public can view visible experience" ON experience
     FOR SELECT USING (is_hidden = FALSE);
 CREATE POLICY "Admins can manage experience" ON experience
@@ -45,6 +49,8 @@ CREATE POLICY "Admins can manage experience" ON experience
 
 -- skills: restrict to authenticated users for write, public read for visible
 DROP POLICY IF EXISTS "Allow all for authenticated users" ON skills;
+DROP POLICY IF EXISTS "Public can view visible skills" ON skills;
+DROP POLICY IF EXISTS "Admins can manage skills" ON skills;
 CREATE POLICY "Public can view visible skills" ON skills
     FOR SELECT USING (is_hidden = FALSE);
 CREATE POLICY "Admins can manage skills" ON skills

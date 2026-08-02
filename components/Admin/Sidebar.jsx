@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FiGrid, FiUser, FiCode, FiLogOut, FiPieChart, FiExternalLink, FiBook, FiBriefcase, FiTerminal, FiX, FiSettings } from 'react-icons/fi';
+import { FiGrid, FiUser, FiCode, FiLogOut, FiPieChart, FiExternalLink, FiBook, FiBriefcase, FiTerminal, FiX, FiSettings, FiShield } from 'react-icons/fi';
 
 export default function Sidebar({ activeTab, isOpen, onClose }) {
   const tabs = [
@@ -10,6 +10,7 @@ export default function Sidebar({ activeTab, isOpen, onClose }) {
     { id: 'academy', label: 'Academy', icon: <FiBook />, path: '/admin/academy' },
     { id: 'logbook', label: 'Logbook', icon: <FiBriefcase />, path: '/admin/logbook' },
     { id: 'settings', label: 'Settings', icon: <FiSettings />, path: '/admin/settings' },
+    { id: 'csp-reports', label: 'CSP Reports', icon: <FiShield />, path: '/admin/csp-reports' },
   ];
 
   const handleLogout = async () => {

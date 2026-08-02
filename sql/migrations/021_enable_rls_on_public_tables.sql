@@ -3,6 +3,7 @@
 -- _migrations table
 ALTER TABLE _migrations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Admins can view migrations" ON _migrations;
 CREATE POLICY "Admins can view migrations" ON _migrations
     FOR SELECT
     USING (
@@ -17,11 +18,13 @@ CREATE POLICY "Admins can view migrations" ON _migrations
 ALTER TABLE resumes ENABLE ROW LEVEL SECURITY;
 
 -- Public can view active resume
+DROP POLICY IF EXISTS "Public can view active resume" ON resumes;
 CREATE POLICY "Public can view active resume" ON resumes
     FOR SELECT
     USING (is_active = TRUE);
 
 -- Admins can manage all resumes
+DROP POLICY IF EXISTS "Admins can manage resumes" ON resumes;
 CREATE POLICY "Admins can manage resumes" ON resumes
     FOR ALL
     USING (
