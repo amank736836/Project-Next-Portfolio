@@ -168,6 +168,16 @@
   transition: filter 0.3s ease;
 }
 
+.contact__social-icon-wrapper {
+  width: 1.2rem;
+  height: 1.2rem;
+  position: relative;
+}
+
+.contact__social-icon-wrapper .contact__social-icon {
+  object-fit: contain;
+}
+
 .contact__social-link--divider:hover .contact__social-icon {
   filter: grayscale(0%);
 }

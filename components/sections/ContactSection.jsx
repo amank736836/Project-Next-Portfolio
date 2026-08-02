@@ -123,8 +123,8 @@ export default function ContactSection({ socialLinks = {} }) {
                 if (!url) return null;
                 return (
                   <a key={key} href={url} className="contact__social-link contact__social-link--divider" aria-label="Codolio">
-                    <div className="contact__social-icon-wrapper" style={{ width: '1.2rem', height: '1.2rem', position: 'relative' }}>
-                      <Image src="https://res.cloudinary.com/amank736836/image/upload/v1785565558/portfolio/portfolio/codolio.svg" alt="Codolio" fill className="contact__social-icon" style={{ objectFit: 'contain' }} />
+                    <div className="contact__social-icon-wrapper">
+                      <Image src="https://res.cloudinary.com/amank736836/image/upload/v1785565558/portfolio/portfolio/codolio.svg" alt="Codolio" fill className="contact__social-icon" />
                     </div>
                   </a>
                 );
