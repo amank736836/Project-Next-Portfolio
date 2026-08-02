@@ -24,7 +24,7 @@ export default function CategoryManager({
       <Button
         variant="outline"
         onClick={() => setIsAddingCategory(!isAddingCategory)}
-        className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11 rounded-lg sm:rounded-xl ${isAddingCategory ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
+        className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11 rounded-lg sm:rounded-xl border-dashed ${isAddingCategory ? 'text-[var(--admin-accent)] border-[var(--admin-accent)]' : ''}`}
       >
         <FiPlus size={14} />
         <span className="hidden sm:inline">Category</span>

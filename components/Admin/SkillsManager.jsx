@@ -267,9 +267,8 @@ export default function SkillsManager() {
         </div>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <Button
-            variant="outline"
             onClick={openNewSkillForm}
-            className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 h-10 sm:h-12 rounded-lg sm:rounded-xl border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all group text-xs sm:text-sm"
+            className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 h-10 sm:h-12 rounded-lg sm:rounded-xl bg-[var(--admin-accent)] hover:brightness-110 text-white transition-all group text-xs sm:text-sm shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.4)] border-none"
           >
             <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />
             <span className="font-black uppercase tracking-[0.15em] sm:tracking-[0.2em]">New Skill</span>
@@ -279,7 +278,7 @@ export default function SkillsManager() {
 
       <div className="mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
         <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex items-center gap-2 bg-white/5 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-indigo-500 transition-all">
+          <div className="flex items-center gap-2 bg-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-[var(--admin-accent)] focus-within:shadow-[0_0_15px_rgba(var(--admin-accent-rgb),0.2)] transition-all">
             <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 flex-shrink-0" />
             <Input
               type="text"

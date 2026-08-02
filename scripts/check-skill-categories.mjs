@@ -14,8 +14,8 @@ const supabase = createClient(
 );
 
 async function run() {
-  const { data, error } = await supabase.from('education').select('id, title, description, achievements, gpa, subjects').order('id');
+  const { data: categories, error } = await supabase.from('skill_categories').select('*').order('display_order');
   if (error) console.error(error);
-  else console.table(data);
+  else console.table(categories);
 }
 run();

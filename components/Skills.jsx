@@ -4,7 +4,6 @@ import { useState } from "react";
 import "@/app/(public)/about.css";
 
 const skillConfig = {
-  // Frontend
   React: { category: "Frontend", icon: "⚛", color: "#61DAFB", description: "Built 12+ production apps" },
   "React.js": { category: "Frontend", icon: "⚛", color: "#61DAFB", description: "Built 12+ production apps" },
   JavaScript: { category: "Frontend", icon: "📜", color: "#F7DF1E", description: "ES6+, TypeScript, modern patterns" },
@@ -21,18 +20,18 @@ const skillConfig = {
   Redux: { category: "Frontend", icon: "🔄", color: "#764ABC", description: "State management, RTK, Toolkit" },
   "React Query": { category: "Frontend", icon: "📡", color: "#FF4154", description: "Server state, caching, mutations" },
   
-  // Backend
-  NodeJS: { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
-  NodeJs: { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
-  ExpressJS: { category: "Backend", icon: "🚂", color: "#000000", description: "Middleware, routing, validation" },
-  ExpressJs: { category: "Backend", icon: "🚂", color: "#000000", description: "Middleware, routing, validation" },
+  "Node.js": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
+  "NodeJS": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
+  "NodeJs": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
+  "Express.js": { category: "Backend", icon: "🚂", color: "#000000", description: "Middleware, routing, validation" },
+  "ExpressJS": { category: "Backend", icon: "🚂", color: "#000000", description: "Middleware, routing, validation" },
+  "ExpressJs": { category: "Backend", icon: "🚂", color: "#000000", description: "Middleware, routing, validation" },
   Java: { category: "Backend", icon: "☕", color: "#ED8B00", description: "Spring Boot, Maven, JPA, Multithreading" },
   Spring: { category: "Backend", icon: "🌱", color: "#6DB33F", description: "Boot, Security, Data JPA, Cloud" },
   "Spring Boot": { category: "Backend", icon: "🌱", color: "#6DB33F", description: "Boot, Security, Data JPA, Cloud" },
   Python: { category: "Backend", icon: "🐍", color: "#3776AB", description: "FastAPI, Django, Flask, Async" },
   Go: { category: "Backend", icon: "🐹", color: "#00ADD8", description: "Concurrency, Microservices, gRPC" },
   
-  // Database
   MongoDB: { category: "Database", icon: "🍃", color: "#47A248", description: "Aggregation, Indexing, Sharding" },
   MongoDb: { category: "Database", icon: "🍃", color: "#47A248", description: "Aggregation, Indexing, Sharding" },
   PostgreSQL: { category: "Database", icon: "🐘", color: "#336791", description: "Advanced queries, JSONB, Partitioning" },
@@ -40,7 +39,6 @@ const skillConfig = {
   Redis: { category: "Database", icon: "⚡", color: "#DC382D", description: "Caching, Pub/Sub, Streams" },
   Prisma: { category: "Database", icon: "🔮", color: "#2D3748", description: "Type-safe ORM, Migrations" },
   
-  // Cloud & DevOps
   AWS: { category: "Cloud", icon: "☁", color: "#FF9900", description: "EC2, S3, Lambda, RDS, CloudFront" },
   Docker: { category: "Cloud", icon: "🐳", color: "#2496ED", description: "Multi-stage builds, Compose, Swarm" },
   Kubernetes: { category: "Cloud", icon: "☸", color: "#326CE5", description: "Deployments, Services, Helm" },
@@ -49,7 +47,6 @@ const skillConfig = {
   "CI/CD": { category: "Cloud", icon: "⚙", color: "#2088FF", description: "GitHub Actions, Jenkins, Pipelines" },
   Vercel: { category: "Cloud", icon: "▲", color: "#000000", description: "Edge functions, Analytics, Deploy" },
   
-  // Languages & Tools
   C: { category: "Languages", icon: "🔧", color: "#A8B9CC", description: "Systems, Pointers, Memory management" },
   "C++": { category: "Languages", icon: "⚡", color: "#00599C", description: "OOP, STL, Templates, Performance" },
   CPP: { category: "Languages", icon: "⚡", color: "#00599C", description: "OOP, STL, Templates, Performance" },
@@ -70,12 +67,16 @@ function getSkillConfig(title) {
 export default function Skills({ data }) {
   if (!data || data.length === 0) return null;
 
-  // Group skills by category
+  // Group skills by category - use DB fields, fallback to config
   const categorized = data.reduce((acc, skill) => {
     const config = getSkillConfig(skill.title);
-    const category = config.category;
+    // Use DB fields if present, otherwise fall back to config
+    const category = skill.category || config.category;
+    const icon = skill.icon || config.icon;
+    const color = skill.color || config.color;
+    const description = skill.description || config.description;
     if (!acc[category]) acc[category] = [];
-    acc[category].push({ ...skill, ...config });
+    acc[category].push({ ...skill, category, icon, color, description });
     return acc;
   }, {});
 

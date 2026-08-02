@@ -821,11 +821,11 @@
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, var(--admin-accent), rgba(var(--admin-accent-rgb), 0.88));
+  background: rgba(var(--admin-accent-rgb), 0.15);
   color: #fff !important;
   box-shadow: 
-    0 12px 30px -8px rgba(var(--admin-accent-rgb), 0.45),
-    0 0 20px rgba(var(--admin-accent-rgb), 0.28);
+    0 4px 20px -8px rgba(var(--admin-accent-rgb), 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.05);
   position: relative;
 }
 

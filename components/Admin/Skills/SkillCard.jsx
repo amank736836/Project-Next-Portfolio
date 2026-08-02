@@ -29,7 +29,7 @@ export default function SkillCard({ skill, index, onToggleFeatured, onToggleVisi
                 Hidden
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-500/20 text-slate-400 border border-white/5">
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               {skill.category}
             </span>
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[var(--admin-accent)]/20 text-[var(--admin-accent)] border border-[var(--admin-accent)]/30">
@@ -37,14 +37,14 @@ export default function SkillCard({ skill, index, onToggleFeatured, onToggleVisi
             </span>
           </div>
           
-          <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs text-slate-500">
+          <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs text-slate-400">
             <span className="font-mono">ID: {skill.id}</span>
             <span>Icon: {skill.icon}</span>
             <span>Color: <span className="w-3 h-3 inline-block rounded border ml-1" style={{backgroundColor: skill.color}}></span></span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button
             variant={isHidden ? 'outline' : 'outline'}
             size="icon"

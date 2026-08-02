@@ -14,7 +14,8 @@ const supabase = createClient(
 );
 
 async function run() {
-  const { data, error } = await supabase.from('education').select('id, title, description, achievements, gpa, subjects').order('id');
+  // Search for any skills containing express or node
+  const { data, error } = await supabase.from('skills').select('*').or('title.ilike.%express%,title.ilike.%node%');
   if (error) console.error(error);
   else console.table(data);
 }
