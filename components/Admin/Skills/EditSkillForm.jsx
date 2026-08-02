@@ -97,7 +97,7 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
               value={form.title}
               onChange={(e) => setForm({...form, title: e.target.value})}
               placeholder="e.g., React, TypeScript, Node.js"
-              className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:outline-none"
+              className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none transition-colors"
               required
               autoFocus
             />
@@ -112,18 +112,21 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                 max="100"
                 value={form.percentage}
                 onChange={(e) => setForm({...form, percentage: parseInt(e.target.value) || 0})}
-                className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:outline-none"
+                className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none transition-colors"
               />
             </div>
             <div>
               <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Category</label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm({...form, category: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:outline-none appearance-none"
-              >
-                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
+              <div className="relative">
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm({...form, category: e.target.value})}
+                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none appearance-none transition-colors cursor-pointer"
+                >
+                  {categories.map(cat => <option key={cat} value={cat} className="bg-[var(--container-color)]">{cat}</option>)}
+                </select>
+                <FiChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              </div>
             </div>
           </div>
 
@@ -134,7 +137,7 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                 <button
                   type="button"
                   onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowColorPicker(false); }}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 py-2 text-2xl text-center flex items-center justify-center gap-2 focus:border-[var(--admin-accent)] focus:outline-none transition-colors"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-2xl text-center flex items-center justify-center gap-2 transition-colors hover:bg-white/15 focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none"
                 >
                   {form.icon}
                   <FiChevronDown size={16} className="text-slate-500" />
@@ -163,10 +166,12 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                 <button
                   type="button"
                   onClick={() => { setShowColorPicker(!showColorPicker); setShowEmojiPicker(false); }}
-                  className="w-full h-10 rounded-lg sm:rounded-xl border border-white/10 cursor-pointer flex items-center justify-center gap-2 transition-colors focus:border-[var(--admin-accent)] focus:outline-none"
-                  style={{backgroundColor: form.color}}
+                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 h-10 flex items-center justify-between transition-colors hover:bg-white/15 focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none"
                 >
-                  <span className="text-xs font-mono text-slate-400">{form.color.toUpperCase()}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded shadow-sm border border-black/20" style={{backgroundColor: form.color}}></div>
+                    <span className="text-xs font-mono text-slate-300">{form.color.toUpperCase()}</span>
+                  </div>
                   <FiChevronDown size={16} className="text-slate-500" />
                 </button>
                 {showColorPicker && (
@@ -188,7 +193,7 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                       value={form.color}
                       onChange={(e) => setForm({...form, color: e.target.value})}
                       placeholder="#RRGGBB"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:outline-none text-center font-mono"
+                      className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none text-center font-mono transition-colors"
                     />
                   </div>
                 )}
@@ -209,19 +214,14 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
             </label>
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button variant="outline" type="button" onClick={handleClose} className="flex-1" disabled={saving}>
+          <div className="flex gap-3 pt-4 border-t border-white/10 mt-2">
+            <Button variant="outline" type="button" onClick={handleClose} className="flex-1 hover:bg-white/5" disabled={saving}>
               Cancel
             </Button>
             <Button 
               type="submit" 
-              className="flex-1" 
+              className={`flex-1 transition-all ${isValid && !saving ? 'bg-[var(--admin-accent)] hover:brightness-110 text-black border-transparent' : 'opacity-50 cursor-not-allowed'}`}
               disabled={saving || !isValid}
-              style={{
-                backgroundColor: isValid && !saving ? '#84CC16' : undefined,
-                borderColor: isValid && !saving ? '#84CC16' : undefined,
-                color: isValid && !saving ? '#000' : undefined,
-              }}
             >
               {saving ? 'Saving...' : (editingSkill?.id ? 'Update Skill' : 'Add Skill')}
             </Button>

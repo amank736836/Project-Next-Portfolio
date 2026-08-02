@@ -101,6 +101,7 @@ export default function AdminSettingsClient({
   const [editingHeroImageId, setEditingHeroImageId] = useState(null);
   const [editHeroAltText, setEditHeroAltText] = useState('');
   const [resumesCount, setResumesCount] = useState(initialResumesCount);
+  const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
     setSocialLinks(initialSocialLinks);
@@ -447,7 +448,7 @@ export default function AdminSettingsClient({
     } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
-  }, []);
+  }, [setDragActive]);
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
@@ -457,7 +458,7 @@ export default function AdminSettingsClient({
       const event = { target: { files: e.dataTransfer.files } };
       handleHeroImageUpload(event);
     }
-  }, [handleHeroImageUpload]);
+  }, [handleHeroImageUpload, setDragActive]);
 
   const [activeTab, setActiveTab] = useState('social');
 

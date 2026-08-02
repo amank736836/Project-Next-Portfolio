@@ -31,7 +31,7 @@ export default function CategoryManager({
       </Button>
 
       {isAddingCategory && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-[var(--container-color)] border border-white/10 rounded-xl p-3 shadow-2xl z-50 animate-fade-in">
+        <div className="absolute top-full left-0 mt-2 w-56 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in">
           <div className="flex gap-2 mb-2">
             <Input
               type="text"
@@ -39,7 +39,7 @@ export default function CategoryManager({
               onChange={(e) => setNewCategoryName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onAddCategory()}
               placeholder="New category name"
-              className="flex-1 bg-white/5 border-white/10 focus:border-[var(--admin-accent)] text-sm"
+              className="flex-1 bg-white/10 border border-white/20 focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] text-sm transition-colors"
               autoFocus
             />
             <Button size="icon" onClick={onAddCategory} className="h-8 w-8">
@@ -53,7 +53,7 @@ export default function CategoryManager({
       )}
 
       {customCategories.length > 0 && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-[var(--container-color)] border border-white/10 rounded-xl p-2 shadow-2xl z-50 animate-fade-in">
+        <div className="absolute top-full left-0 mt-2 w-56 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in">
           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1 mb-1">Custom Categories</p>
           {customCategories.map(cat => (
             <button

@@ -19,16 +19,16 @@ import { EmptySkills, EmptySearchSkill } from './Skills/EmptyStates';
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [showCategoryFilters, setShowCategoryFilters] = useState(false);
+  const [categories, setCategories] = useState(['Frontend', 'Backend', 'Database', 'DevOps', 'Tools']);
+  const [viewMode, setViewMode] = useState('grid'); // 'list' | 'grid'
   const [editingSkill, setEditingSkill] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [viewMode, setViewMode] = useState('list'); // 'list' | 'grid'
   const modalRef = useRef(null);
 
   const { startLoading, stopLoading } = useLoading();
@@ -89,9 +89,9 @@ export default function SkillsManager() {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({...s, is_featured: s.is_featured, is_hidden: s.is_hidden}))]),
+        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({ ...s, is_featured: s.is_featured, is_hidden: s.is_hidden }))]),
       });
-      
+
       if (res.ok) {
         fetchSkills();
         successToast(isNew ? 'Skill added to matrix' : 'Skill updated');
@@ -141,7 +141,7 @@ export default function SkillsManager() {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(skills.map(s => s.id === skill.id ? {...s, is_featured: !s.is_featured} : s)),
+        body: JSON.stringify(skills.map(s => s.id === skill.id ? { ...s, is_featured: !s.is_featured } : s)),
       });
       if (res.ok) {
         fetchSkills();
@@ -210,7 +210,7 @@ export default function SkillsManager() {
         const res = await fetch(`/api/admin/skill-categories?id=${encodeURIComponent(cat)}`, { method: 'DELETE' });
         if (res.ok) {
           setCategories(c => c.filter(c => c !== cat));
-          setSkills(s => s.map(skill => skill.category === cat ? {...skill, category: 'General'} : skill));
+          setSkills(s => s.map(skill => skill.category === cat ? { ...skill, category: 'General' } : skill));
           successToast('Category removed');
         } else {
           const err = await res.json();
@@ -228,7 +228,7 @@ export default function SkillsManager() {
     let result = skills;
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(s => 
+      result = result.filter(s =>
         s.title?.toLowerCase().includes(query) ||
         s.category?.toLowerCase().includes(query)
       );
@@ -279,36 +279,42 @@ export default function SkillsManager() {
       </div>
 
       <div className="mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex items-center gap-2 bg-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-[var(--admin-accent)] focus-within:shadow-[0_0_15px_rgba(var(--admin-accent-rgb),0.2)] transition-all">
-            <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 flex-shrink-0" />
-            <Input
-              type="text"
-              placeholder="Search skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-none text-xs sm:text-sm outline-none"
-            />
-            {searchQuery && (
-              <Button variant="outline" size="icon" onClick={() => setSearchQuery('')} className="-ml-2 h-8 w-8">
-                <FiX size={12} />
-              </Button>
-            )}
-          </div>
 
-          <div className="relative w-fit">
+        {/* Row 1: Search bar — full width */}
+        <div className="flex items-center gap-2 bg-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-[var(--admin-accent)] focus-within:shadow-[0_0_15px_rgba(var(--admin-accent-rgb),0.2)] transition-all h-10 sm:h-11 mb-3">
+          <FiSearch className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          <Input
+            type="text"
+            placeholder="Search skills..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 min-w-0 bg-transparent border-none text-xs sm:text-sm outline-none h-full"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} className="text-slate-500 hover:text-white transition-colors p-1">
+              <FiX size={14} />
+            </button>
+          )}
+        </div>
+
+        {/* Row 2: Filters + view toggle */}
+        <div className="flex items-center gap-2 flex-wrap">
+
+          {/* Category filter */}
+          <div className="relative">
             <Button
               variant="outline"
-              onClick={() => setShowCategoryFilters(!showCategoryFilters)}
-              className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11 rounded-lg sm:rounded-xl ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
+              onClick={() => {
+                setShowCategoryFilters(!showCategoryFilters);
+                if (!showCategoryFilters) setIsAddingCategory(false);
+              }}
+              className={`flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg ${showCategoryFilters ? 'text-[var(--first-color)] border-[var(--first-color)]' : ''}`}
             >
-              <FiFilter size={16} />
-              <span className="hidden sm:inline">
-                {filterCategory === 'all' ? 'All Categories' : filterCategory}
-              </span>
-              <FiChevronDown size={12} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
+              <FiFilter size={13} />
+              <span>{filterCategory === 'all' ? 'All Categories' : filterCategory}</span>
+              <FiChevronDown size={11} className={`transition-transform ${showCategoryFilters ? 'rotate-180' : ''}`} />
             </Button>
-            <CategoryFilter 
+            <CategoryFilter
               categories={categories}
               currentCategory={filterCategory}
               onSelect={setFilterCategory}
@@ -317,76 +323,76 @@ export default function SkillsManager() {
             />
           </div>
 
+          {/* Category manager */}
           <CategoryManager
             categories={categories}
             setCategories={setCategories}
             isAddingCategory={isAddingCategory}
-            setIsAddingCategory={setIsAddingCategory}
+            setIsAddingCategory={(val) => {
+              setIsAddingCategory(val);
+              if (val) setShowCategoryFilters(false);
+            }}
             newCategoryName={newCategoryName}
             setNewCategoryName={setNewCategoryName}
             onAddCategory={addCategory}
             onDeleteCategory={deleteCategory}
           />
+
+          {/* Stats */}
+          <div className="flex items-center gap-3 text-[10px] font-bold text-slate-600 ml-2">
+            <span className="font-mono">{filteredSkills.length}{filteredSkills.length !== skills.length ? ` / ${skills.length}` : ''} skills</span>
+            <span className={featuredCount >= 5 ? 'text-amber-400' : ''}>{featuredCount}/5 featured</span>
+            {hiddenCount > 0 && <span>{hiddenCount} hidden</span>}
+          </div>
+
+          {/* View toggle — right edge */}
+          <div className="flex items-center gap-1.5 ml-auto">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">View</span>
+            <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
+              <Button
+                variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('list')}
+                className="h-7 w-7"
+                title="List view"
+              >
+                <FiList size={14} />
+              </Button>
+              <Button
+                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('grid')}
+                className="h-7 w-7"
+                title="Grid view"
+              >
+                <FiGrid size={14} />
+              </Button>
+            </div>
+          </div>
         </div>
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden sm:inline">View:</span>
-          <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
-            <Button
-              variant={viewMode === 'list' ? 'secondary' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('list')}
-              className="h-8 w-8"
-              title="List view"
-            >
-              <FiList size={16} />
-            </Button>
-            <Button
-              variant={viewMode === 'grid' ? 'secondary' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('grid')}
-              className="h-8 w-8"
-              title="Grid view"
-            >
-              <FiGrid size={16} />
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
-            {(searchQuery || filterCategory !== 'all') && (
-              <>
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">Active filters:</span>
-                {searchQuery && (
-                  <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-slate-500/20 text-slate-400 gap-1">
-                    Search: &ldquo;{searchQuery}&rdquo;
-                    <Button variant="outline" size="icon" onClick={() => setSearchQuery('')} className="-ml-1 h-4 w-4">
-                      <FiX size={8} />
-                    </Button>
-                  </span>
-                )}
-                {filterCategory !== 'all' && (
-                  <span className="inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-500/20 text-indigo-400 gap-1">
-                    Category: {filterCategory}
-                    <Button variant="outline" size="icon" onClick={() => setFilterCategory('all')} className="-ml-1 h-4 w-4">
-                      <FiX size={8} />
-                    </Button>
-                  </span>
-                )}
-              </>
+        {/* Active filter chips */}
+        {(searchQuery || filterCategory !== 'all') && (
+          <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">Filters:</span>
+            {searchQuery && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/20">
+                &ldquo;{searchQuery}&rdquo;
+                <button onClick={() => setSearchQuery('')} className="hover:text-white transition-colors">
+                  <FiX size={9} />
+                </button>
+              </span>
+            )}
+            {filterCategory !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/20">
+                {filterCategory}
+                <button onClick={() => setFilterCategory('all')} className="hover:text-white transition-colors">
+                  <FiX size={9} />
+                </button>
+              </span>
             )}
           </div>
-          <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-500">
-            <span className="font-mono">{filteredSkills.length} skills</span>
-            {filteredSkills.length !== skills.length && (
-              <span className="text-slate-600">/ {skills.length} total</span>
-            )}
-            <span className="text-amber-400">{featuredCount}/5 featured</span>
-            <span className="text-slate-500">{hiddenCount} hidden</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {skills.length === 0 ? (
@@ -407,7 +413,7 @@ export default function SkillsManager() {
                   isHidden={skill.is_hidden}
                   onEdit={() => setEditingSkill(skill)}
                   onDelete={() => handleDelete(skill)}
-                  categories={categories}
+                  featuredCount={featuredCount}
                 />
               ))}
             </div>
@@ -423,7 +429,7 @@ export default function SkillsManager() {
                   isHidden={skill.is_hidden}
                   onEdit={() => setEditingSkill(skill)}
                   onDelete={() => handleDelete(skill)}
-                  categories={categories}
+                  featuredCount={featuredCount}
                 />
               ))}
             </div>

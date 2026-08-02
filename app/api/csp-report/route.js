@@ -42,7 +42,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Failed to store report' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true }, { status: 204 });
+    return new Response(null, { status: 204 });
   } catch (err) {
     console.error('[CSP Report] Error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
