@@ -244,7 +244,27 @@
   font-size: var(--small-font-size);
   color: var(--text-color);
   line-height: 1.7;
-  max-width: 75ch;
+  max-width: 90ch;
+}
+
+.resume__detail {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.resume__detail-label {
+  font-weight: var(--weight-600);
+  color: var(--title-color);
+  flex-shrink: 0;
+}
+
+.resume__detail-value {
+  color: var(--text-color);
+  opacity: 0.9;
 }
 
 @media screen and (max-width: 450px) {
@@ -336,7 +356,7 @@
 
 .skills__category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 
@@ -498,7 +518,7 @@
 /* Responsive */
 @media screen and (max-width: 768px) {
   .skills__category-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 12px;
   }
   

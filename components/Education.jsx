@@ -16,6 +16,24 @@ const Education = ({ data, type }) => {
             <span className="resume__date">{val.year}</span>
             <h3 className="resume__subtitle">{parse(val.title)}</h3>
             <p className="resume__description">{val.description}</p>
+            {val.gpa && (
+              <div className="resume__detail">
+                <span className="resume__detail-label">GPA:</span>
+                <span className="resume__detail-value">{val.gpa}</span>
+              </div>
+            )}
+            {val.subjects && (
+              <div className="resume__detail">
+                <span className="resume__detail-label">Key Subjects:</span>
+                <span className="resume__detail-value">{val.subjects}</span>
+              </div>
+            )}
+            {val.achievements && (
+              <div className="resume__detail">
+                <span className="resume__detail-label">Achievements:</span>
+                <span className="resume__detail-value">{val.achievements}</span>
+              </div>
+            )}
           </div>
         );
       })}

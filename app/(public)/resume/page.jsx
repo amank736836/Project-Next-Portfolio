@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import "@/app/(public)/resume/page.css";
 
 export default function Resume() {
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
@@ -25,20 +26,24 @@ export default function Resume() {
 
   if (loading) {
     return (
-      <div style={{ width: "100vw", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "var(--body-color)" }}>
+      <div className="resume-page__loading">
         Loading resume...
       </div>
     );
   }
 
   return (
-    <div style={{ width: "100vw", height: "100vh", backgroundColor: "var(--body-color)" }}>
-      <div className="resumeFile" style={{ width: "100vw", height: "100vh", position: "absolute", top: "0", left: "0", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <div className="resume-page">
+      <div className="resume-page__container">
         {resumeUrl && (
-          <iframe src={resumeUrl} style={{ width: "100vw", height: "100vh" }}></iframe>
+          <iframe 
+            className="resume-page__iframe"
+            src={resumeUrl} 
+            title="Resume"
+          ></iframe>
         )}
         {!resumeUrl && (
-          <div style={{ color: "var(--text-color)", textAlign: "center" }}>
+          <div className="resume-page__unavailable">
             Resume not available
           </div>
         )}

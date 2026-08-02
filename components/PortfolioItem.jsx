@@ -166,7 +166,7 @@ const PortfolioItem = ({
       onKeyDown={handleCardKeyDown}
       suppressHydrationWarning
     >
-      <div className="portfolio__media">
+<div className="portfolio__media">
         <Image 
           src={img} 
           alt={title} 
@@ -175,7 +175,6 @@ const PortfolioItem = ({
           loading="lazy"
           sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 500px"
           quality={80}
-          style={{ objectFit: 'cover', borderRadius: '20px 20px 0 0' }}
         />
       </div>
       <div className="portfolio__hover">

@@ -31,10 +31,10 @@ export const portfolio = [
           </a>
         ),
       },
-      {
+{
         icon: <FaCode />,
         title: "Language : ",
-        desc: "ReactJs - Appwrite",
+        desc: "React",
       },
       {
         icon: <FiExternalLink />,
@@ -102,7 +102,7 @@ export const portfolio = [
         title: "Github : ",
         desc: (
           <a
-            href="https://github.com/amank736836/currency-Convertor"
+            href="https://github.com/amank736836/currency-Converter"
             target="_blank"
           >
             Currency Converter
@@ -186,7 +186,7 @@ export const portfolio = [
       {
         icon: <FaCode />,
         title: "Language : ",
-        desc: "Html - Css - Javascript",
+        desc: "HTML - CSS - JavaScript",
       },
       {
         icon: <FiExternalLink />,
@@ -225,7 +225,7 @@ export const portfolio = [
       {
         icon: <FaCode />,
         title: "Language : ",
-        desc: "MongoDb - ExpressJs - NodeJs",
+        desc: "MongoDB - Express.js - Node.js",
       },
       {
         icon: <FiExternalLink />,
@@ -320,7 +320,7 @@ export const personalInfo = [
   {
     id: 6,
     title: "Address : ",
-    description: "Jaipur,Rajasthan,India",
+    description: "Jaipur, Rajasthan, India",
   },
 
   {
@@ -351,17 +351,17 @@ export const personalInfo = [
 export const skills = [
   {
     id: 1,
-    title: "Html",
+    title: "HTML",
   },
 
   {
     id: 2,
-    title: "Javascript",
+    title: "JavaScript",
   },
 
   {
     id: 3,
-    title: "Css",
+    title: "CSS",
   },
   {
     id: 10,
@@ -379,12 +379,12 @@ export const skills = [
 
   {
     id: 6,
-    title: "MongoDb",
+    title: "MongoDB",
   },
 
   {
     id: 7,
-    title: "ExpressJs",
+    title: "Express.js",
   },
 
   {
@@ -394,7 +394,7 @@ export const skills = [
 
   {
     id: 9,
-    title: "NodeJs",
+    title: "Node.js",
   },
 ];
 
@@ -405,7 +405,10 @@ export const resume = [
     icon: <FaGraduationCap />,
     year: "Sep 2021 – May 2025",
     title: "Bachelor Of Engineering - <span> Chitkara University </span>",
-    desc: "Computer Science Engineering – GPA: 9.12 – Solan, Himachal Pradesh",
+    desc: "Computer Science Engineering – Solan, Himachal Pradesh",
+    gpa: "9.12 / 10.0",
+    subjects: "Data Structures, Algorithms, Operating Systems, Database Systems, Computer Networks, Machine Learning",
+    achievements: "Dean's List (4 semesters), Best Final Year Project Award, Hackathon Winner (3x)"
   },
 
   {
@@ -414,7 +417,10 @@ export const resume = [
     icon: <FaGraduationCap />,
     year: "May 2020 – June 2021",
     title: "Higher Secondary - <span> DAV Centenary Public School </span>",
-    desc: "Percentage: 82.5% – Jaipur, Rajasthan",
+    desc: "Science Stream – Jaipur, Rajasthan",
+    gpa: "82.5%",
+    subjects: "Physics, Chemistry, Mathematics, Computer Science, English",
+    achievements: "School Topper in Computer Science, Science Exhibition Winner"
   },
 
   {
@@ -423,7 +429,10 @@ export const resume = [
     icon: <FaGraduationCap />,
     year: "May 2018 – April 2019",
     title: "Secondary - <span> DAV Public School </span>",
-    desc: "Percentage: 74.8% – Mohali, Punjab",
+    desc: "Mohali, Punjab",
+    gpa: "74.8%",
+    subjects: "Mathematics, Science, Social Science, English, Hindi",
+    achievements: "Merit Certificate in Mathematics, Sports Captain"
   },
 ];
 

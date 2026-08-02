@@ -400,13 +400,7 @@ img {
     row-gap: 10px;
   }
   .color__block {
-    position: fixed;
-    height: 200%;
-    width: 100%;
-    background-color: var(--first-color);
-    top: -95% !important;
-    left: 53% !important;
-    transform: rotate(90deg) !important;
+    display: none !important;
   }
   .home__img {
     width: 270px;

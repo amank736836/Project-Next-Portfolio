@@ -239,73 +239,59 @@ select.form__control:focus {
   }
 }
 
-/* Button styles for Contact form (match Home section) */
+/* Button styles for Contact form (match Home/About section) */
 .contact__form .button {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
   color: var(--title-color);
   border: 1px solid var(--first-color);
-  padding: 0 32px;
-  height: 52px;
-  border-radius: 32px;
+  padding: 0 70px 0 35px;
+  height: 55px;
+  border-radius: 35px;
   font-family: var(--second-font);
   font-size: var(--small-font-size);
-  font-weight: var(--weight-600);
+  font-weight: var(--weight-500);
   position: relative;
   overflow: hidden;
   background: transparent;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: none;
+  transition: all 0.3s ease-out;
   z-index: 1;
+  white-space: nowrap;
+}
+
+.contact__form .button:hover {
+  color: var(--text-white);
 }
 
 .contact__form .button::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--first-color);
+  background-color: var(--first-color);
   transform: translateX(100%);
   z-index: -1;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.contact__form .button:hover {
-  color: var(--text-white);
-  border-color: var(--first-color);
+  transition: all 0.3s ease-out;
 }
 
 .contact__form .button:hover::before {
   transform: translateX(0);
 }
 
-.contact__form .button:focus-visible {
-  outline: 2px solid var(--first-color);
-  outline-offset: 3px;
-}
-
-.contact__form .button svg {
-  font-size: var(--normal-font-size);
-  transition: transform 0.3s ease;
-}
-
-.contact__form .button:hover svg {
-  transform: translateX(3px);
-}
-
-/* Primary - Filled */
-.contact__form .button--primary {
-  background: var(--first-color);
+.contact__form .button__icon {
+  background-color: var(--first-color);
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
   color: var(--text-white);
-  border-color: var(--first-color);
-}
-
-.contact__form .button--primary::before {
-  background: var(--first-color-alt);
-}
-
-.contact__form .button--primary:hover {
-  background: var(--first-color-alt);
-  color: var(--text-white);
+  font-size: var(--large-font-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button-center {

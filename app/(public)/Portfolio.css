@@ -53,8 +53,8 @@
 
 .portfolio__media {
   position: relative;
-  height: 200px;
   width: 100%;
+  aspect-ratio: 16 / 9;
 }
 
 .portfolio__item:hover {
@@ -338,7 +338,7 @@
 .modal__img-wrapper {
   position: relative;
   width: 100%;
-  height: 350px;
+  aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
 }

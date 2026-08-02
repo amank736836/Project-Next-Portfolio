@@ -30,7 +30,7 @@ function ResumeDownloadButton() {
 
   if (loading) {
     return (
-      <a href="#" className="button button--primary" style={{ pointerEvents: 'none', opacity: 0.6 }}>
+      <a href="#" className="button button--loading">
         <FaDownload />
         Loading...
         <span className="button__icon"><FaArrowRight /></span>
@@ -39,7 +39,7 @@ function ResumeDownloadButton() {
   }
 
   return (
-    <a href="/api/resume/download" target="_blank" rel="noopener noreferrer" className="button button--primary" style={{ pointerEvents: resumeUrl ? 'auto' : 'none', opacity: resumeUrl ? 1 : 0.6 }}>
+    <a href="/api/resume/download" target="_blank" rel="noopener noreferrer" className={`button ${resumeUrl ? '' : 'button--disabled'}`}>
       <FaDownload />
       Download Resume
       <span className="button__icon"><FaArrowRight /></span>
@@ -70,7 +70,7 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
             <div>I&apos;m Aman Kumar. </div>
             <span>Full Stack Developer</span>
           </h1>
-          <p className="home__subtitle reveal delay-3" style={{animationDelay: '100ms'}}>
+          <p className="home__subtitle reveal delay-3 home__subtitle--delayed">
             Specializing in React, Node.js, Java & scalable web applications
           </p>
           <div className="home__description reveal delay-4">
@@ -92,11 +92,11 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
           </div>
           <div className="home__cta-group reveal delay-5">
             <ResumeDownloadButton />
-            <Link href="#projects" className="button button--secondary">
+            <Link href="#projects" className="button">
               <FaBriefcase />
               View Projects
             </Link>
-            <Link href="#contact" className="button button--tertiary">
+            <Link href="#contact" className="button">
               <FaCode />
               Hire Me
             </Link>
@@ -111,34 +111,34 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
             <div className="badge__tech-stack" aria-label="Tech Stack">
               {featuredSkills.length > 0 ? (
                 featuredSkills.map((skill, i) => (
-                  <span key={skill.title} className="badge badge--tech" style={{animationDelay: `${i * 50}ms`}}>
+                  <span key={skill.title} className="badge badge--tech badge--tech--animated" style={{animationDelay: `${i * 50}ms`}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: skill.color}}>{skill.icon}</span>
                     {skill.title}
                   </span>
                 ))
               ) : (
                 <>
-                  <span className="badge badge--tech" style={{animationDelay: '0ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '0ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#61DAFB'}}>⚛</span>
                     React
                   </span>
-                  <span className="badge badge--tech" style={{animationDelay: '50ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '50ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#339933'}}>🟢</span>
                     Node.js
                   </span>
-                  <span className="badge badge--tech" style={{animationDelay: '100ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '100ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#ED8B00'}}>☕</span>
                     Java
                   </span>
-                  <span className="badge badge--tech" style={{animationDelay: '150ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '150ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#47A248'}}>🍃</span>
                     MongoDB
                   </span>
-                  <span className="badge badge--tech" style={{animationDelay: '200ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '200ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#06B6D4'}}>💨</span>
                     Tailwind
                   </span>
-                  <span className="badge badge--tech" style={{animationDelay: '250ms'}}>
+                  <span className="badge badge--tech badge--tech--animated" style={{animationDelay: '250ms'}}>
                     <span className="badge__icon" aria-hidden="true" style={{color: '#3178C6'}}>🔷</span>
                     TypeScript
                   </span>

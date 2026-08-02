@@ -12,17 +12,29 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
 }
 
 .home__img {
   width: 100%;
-  max-width: 500px;
-  height: 500px;
+  max-width: 480px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 40px;
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+  border-radius: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   z-index: 2;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
+  background: transparent !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
 }
 
 .home__img:hover {
@@ -61,15 +73,7 @@
 }
 
 .color__block {
-  position: fixed;
-  height: 120vh;
-  width: 80vw;
-  background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, transparent 70%);
-  top: -20%;
-  left: -10%;
-  filter: blur(100px);
-  z-index: 1;
-  pointer-events: none;
+  display: none !important;
 }
 
 /* Button override to match global .button styles (used by Download CV/View CV) */
@@ -123,6 +127,17 @@
   justify-content: center;
 }
 
+/* Resume download button states */
+.home .button--disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.home .button--loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 @media screen and (max-width: 1024px) {
   .home {
     grid-template-columns: 1fr;
@@ -173,6 +188,10 @@
   font-weight: var(--weight-500);
   margin-bottom: 24px;
   line-height: 1.4;
+}
+
+.home__subtitle--delayed {
+  animation-delay: 100ms;
 }
 
 /* CTA Group */
@@ -339,6 +358,12 @@
   backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   color: var(--text-color);
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.badge--tech--animated {
   opacity: 0;
   transform: translateY(10px) scale(0.95);
   animation: fadeInUp 0.4s ease forwards;

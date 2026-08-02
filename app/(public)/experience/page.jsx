@@ -18,7 +18,7 @@ export default async function ExperiencePage() {
         <h2 className="section__title">
           My <span>Experience</span>
         </h2>
-        <div className="resume__container grid max-w-3xl mx-auto">
+        <div className="resume__container grid mx-auto">
           <div className="resume__data">
             <Education data={experienceData} type="experience" />
           </div>

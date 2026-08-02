@@ -8,7 +8,7 @@ export default function EducationSection({ educationData }) {
         <h2 className="section__title reveal delay-1">
           My <span>Education</span>
         </h2>
-        <div className="resume__container grid max-w-3xl mx-auto reveal delay-2">
+        <div className="resume__container grid mx-auto reveal delay-2">
           <div className="resume__data">
             <Education data={educationData} type="education" />
           </div>

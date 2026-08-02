@@ -192,7 +192,7 @@ export default function ContactSection({ socialLinks = {} }) {
             ></textarea>
           </div>
           <div className="button-center">
-            <button className="button button--primary" type="Submit">
+            <button className="button" type="Submit">
               Send Message
               <span className="button__icon contact__button-icon">
                 <FiSend />
