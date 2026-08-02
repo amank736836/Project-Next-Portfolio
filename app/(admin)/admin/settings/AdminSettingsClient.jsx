@@ -70,6 +70,7 @@ function extractDisplayValue(storedValue, platform) {
 
 export default function AdminSettingsClient({
   initialSocialLinks = {},
+  initialSocialLinksData = [],
   initialResumeUrl = '',
   initialResumesCount = 0,
   initialPortfolioLayout = 'masonry',
@@ -83,6 +84,7 @@ export default function AdminSettingsClient({
   const errorToast = useErrorToast();
 
   const [socialLinks, setSocialLinks] = useState(initialSocialLinks);
+  const [socialLinksData, setSocialLinksData] = useState(initialSocialLinksData);
   const [resumeUrl, setResumeUrl] = useState(initialResumeUrl);
   const [portfolioLayout, setPortfolioLayout] = useState(initialPortfolioLayout);
   const [siteMode, setSiteMode] = useState(initialSiteMode);
@@ -105,6 +107,10 @@ export default function AdminSettingsClient({
   }, [initialSocialLinks]);
 
   useEffect(() => {
+    setSocialLinksData(initialSocialLinksData);
+  }, [initialSocialLinksData]);
+
+  useEffect(() => {
     setResumeUrl(initialResumeUrl);
   }, [initialResumeUrl]);
 
@@ -121,13 +127,29 @@ export default function AdminSettingsClient({
     const normalized = normalizeSocialValue(value, platform);
     setSavingSocial(true);
     try {
-      const res = await fetch('/api/admin/info', {
-        method: 'POST',
+      const existing = socialLinksData.find(s => s.platform === key);
+      const payload = {
+        platform: key,
+        url: normalized,
+        label: platform.label,
+        icon: platform.key,
+        is_hidden: existing?.is_hidden || false,
+      };
+      const url = existing ? `/api/admin/social-links/${existing.id}` : '/api/admin/social-links';
+      const method = existing ? 'PATCH' : 'POST';
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, title: platform.label, description: normalized }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
+        const data = await res.json();
         setSocialLinks(prev => ({ ...prev, [key]: normalized }));
+        if (!existing) {
+          setSocialLinksData(prev => [...prev, data.data]);
+        } else {
+          setSocialLinksData(prev => prev.map(s => s.platform === key ? data.data : s));
+        }
         successToast(`${platform.label} saved`);
       } else {
         errorToast('Failed to save');
@@ -139,15 +161,18 @@ export default function AdminSettingsClient({
       setEditingKey(null);
       setEditValue('');
     }
-  }, [successToast, errorToast]);
+  }, [socialLinksData, successToast, errorToast]);
 
   const deleteSocialLink = useCallback(async (key) => {
     const platform = SOCIAL_PLATFORMS.find(p => p.key === key);
+    const existing = socialLinksData.find(s => s.platform === key);
+    if (!existing) return;
     setSavingSocial(true);
     try {
-      const res = await fetch(`/api/admin/info?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/social-links/${existing.id}`, { method: 'DELETE' });
       if (res.ok) {
         setSocialLinks(prev => { const next = { ...prev }; delete next[key]; return next; });
+        setSocialLinksData(prev => prev.filter(s => s.platform !== key));
         successToast(`${platform.label} removed`);
       } else {
         errorToast('Failed to delete');
@@ -157,17 +182,20 @@ export default function AdminSettingsClient({
     } finally {
       setSavingSocial(false);
     }
-  }, [successToast, errorToast]);
+  }, [socialLinksData, successToast, errorToast]);
 
   const toggleSocialVisibility = useCallback(async (key, currentStatus) => {
+    const existing = socialLinksData.find(s => s.platform === key);
+    if (!existing) return;
     try {
-      const res = await fetch(`/api/admin/info?key=${encodeURIComponent(key)}`, {
+      const res = await fetch(`/api/admin/social-links/${existing.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_hidden: !currentStatus }),
       });
       if (res.ok) {
-        setSocialLinks(prev => ({ ...prev, [key]: { ...prev[key], is_hidden: !currentStatus } }));
+        const data = await res.json();
+        setSocialLinksData(prev => prev.map(s => s.platform === key ? data.data : s));
         successToast(currentStatus ? 'Link is now visible' : 'Link is now hidden');
       } else {
         errorToast('Failed to update visibility');
@@ -175,7 +203,7 @@ export default function AdminSettingsClient({
     } catch (e) {
       errorToast('Network error');
     }
-  }, [successToast, errorToast]);
+  }, [socialLinksData, successToast, errorToast]);
 
   const handleEditClick = useCallback((key) => {
     const platform = SOCIAL_PLATFORMS.find(p => p.key === key);
@@ -479,7 +507,8 @@ export default function AdminSettingsClient({
                 const value = socialLinks[platform.key] || '';
                 const isEditing = editingKey === platform.key;
                 const hasValue = Boolean(value);
-                const isHidden = socialLinks[platform.key]?.is_hidden || false;
+                const platformData = socialLinksData.find(s => s.platform === platform.key);
+                const isHidden = platformData?.is_hidden || false;
                 const platformInfo = SOCIAL_PLATFORMS.find(p => p.key === platform.key);
 
                 return (

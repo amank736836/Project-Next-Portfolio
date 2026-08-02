@@ -1,7 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import AdminSettingsClient from './AdminSettingsClient';
 
-const SOCIAL_KEYS = ['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'email', 'website', 'codolio'];
 const UI_FEATURE_KEYS = ['enable_scroll_reveal', 'enable_typewriter', 'enable_open_to_work'];
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +14,8 @@ export async function generateMetadata() {
 
 export default async function AdminSettingsPage() {
   const supabase = await createAdminClient();
-  const [{ data: infoData }, { data: settingsData }, { data: heroImages }, { count: resumesCount }] = await Promise.all([
+  const [{ data: socialLinksData }, { data: infoData }, { data: settingsData }, { data: heroImages }, { count: resumesCount }] = await Promise.all([
+    supabase.from('social_links').select('*').order('display_order', { ascending: true }),
     supabase.from('personal_info').select('*'),
     supabase.from('user_settings').select('key, description').in('key', UI_FEATURE_KEYS),
     supabase.from('hero_images').select('*').order('display_order', { ascending: true }),
@@ -23,9 +23,8 @@ export default async function AdminSettingsPage() {
   ]);
 
   const socialLinks = {};
-  SOCIAL_KEYS.forEach(key => {
-    const item = infoData?.find(d => d.key === key);
-    socialLinks[key] = item?.description || '';
+  socialLinksData?.forEach(item => {
+    socialLinks[item.platform] = item.url || '';
   });
 
   const resumeItem = infoData?.find(d => d.key === 'resume_url');
@@ -45,6 +44,7 @@ export default async function AdminSettingsPage() {
   return (
     <AdminSettingsClient
       initialSocialLinks={socialLinks}
+      initialSocialLinksData={socialLinksData || []}
       initialResumeUrl={resumeUrl}
       initialResumesCount={resumesCount || 0}
       initialPortfolioLayout={portfolioLayout}

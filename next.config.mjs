@@ -70,6 +70,7 @@ const nextConfig = {
 							"frame-ancestors 'self'",
 							"base-uri 'self'",
 							"form-action 'self' https://formspree.io",
+							"report-uri /api/csp-report",
 						].join('; '),
 					},
 				],
