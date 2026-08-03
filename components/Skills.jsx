@@ -68,7 +68,7 @@ export default function Skills({ data }) {
   if (!data || data.length === 0) return null;
 
   // Group skills by category - use DB fields, fallback to config
-  const categorized = data.reduce((acc, skill) => {
+  const categorized = useMemo(() => data.reduce((acc, skill) => {
     const config = getSkillConfig(skill.title);
     // Use DB fields if present, otherwise fall back to config
     const category = skill.category || config.category;
@@ -78,7 +78,7 @@ export default function Skills({ data }) {
     if (!acc[category]) acc[category] = [];
     acc[category].push({ ...skill, category, icon, color, description });
     return acc;
-  }, {});
+  }, {}), [data]);
 
   const [hoveredSkill, setHoveredSkill] = useState(null);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { 
@@ -74,27 +74,24 @@ const PortfolioItem = ({
 }) => {
   const [modal, setModal] = useState(false);
 
-  useEffect(() => {
-    if (modal) {
-      document.body.style.overflow = 'hidden';
-      document.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = 'unset';
-      document.removeEventListener('keydown', handleKeyDown);
-    }
-    return () => { 
-      document.body.style.overflow = 'unset';
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [modal]);
+  const parsedDetails = useMemo(() => 
+    typeof details === 'string' ? JSON.parse(details) : details, 
+    [details]
+  );
+  const parsedTechStack = useMemo(() => 
+    typeof techStack === 'string' ? JSON.parse(techStack) : techStack || [], 
+    [techStack]
+  );
 
-  const handleKeyDown = useCallback((e) => {
+  const delayClass = `delay-${((index || 0) % 6) + 1}`;
+
+  const toggleModal = () => setModal(!modal);
+
+  const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       setModal(false);
     }
-  }, []);
-
-  const toggleModal = () => setModal(!modal);
+  };
 
   const handleCardKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -102,11 +99,6 @@ const PortfolioItem = ({
       toggleModal();
     }
   };
-
-  const parsedDetails = typeof details === 'string' ? JSON.parse(details) : details;
-  const parsedTechStack = typeof techStack === 'string' ? JSON.parse(techStack) : techStack || [];
-
-  const delayClass = `delay-${((index || 0) % 6) + 1}`;
 
   const ModalContent = (
     <div className="portfolio__modal" onClick={toggleModal} role="dialog" aria-modal="true" aria-labelledby="modal-title">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   FiClock, FiActivity, FiGithub, FiGlobe, FiDatabase, FiZap, FiShield,
   FiLayers, FiTrendingUp, FiMessageSquare
@@ -77,7 +77,7 @@ export default function Dashboard() {
     };
   }, []);
 
-  async function fetchExternalStatuses() {
+  const fetchExternalStatuses = useCallback(async () => {
     try {
       const ghRes = await fetch('https://www.githubstatus.com/api/v2/status.json');
       const ghData = await ghRes.json();
@@ -109,9 +109,9 @@ export default function Dashboard() {
     } catch (e) {
       setExternalStatus(prev => ({ ...prev, vercel: { status: 'Edge Offline', indicator: 'minor', latency: '--', uptime: '99.7%' } }));
     }
-  }
+  }, []);
 
-  async function fetchStats() {
+  const fetchStats = useCallback(async () => {
     startLoading();
     setLoading(true);
     try {
@@ -144,9 +144,9 @@ export default function Dashboard() {
       setLoading(false);
       stopLoading();
     }
-  }
+  }, [startLoading, stopLoading]);
 
-  async function fetchThemeSettings() {
+  const fetchThemeSettings = useCallback(async () => {
     const savedColor = localStorage.getItem("color");
     const savedMode = localStorage.getItem("theme");
     
@@ -177,9 +177,9 @@ export default function Dashboard() {
       const fallbackMode = savedMode || 'dark-theme';
       setThemeSettings({ color: fallbackColor, mode: fallbackMode });
     }
-  }
+  }, []);
 
-  const saveThemeSettings = async (color, mode) => {
+  const saveThemeSettings = useCallback(async (color, mode) => {
     setSavingTheme(true);
     setSuccess('');
     
@@ -209,9 +209,9 @@ export default function Dashboard() {
     } finally {
       setSavingTheme(false);
     }
-  };
+  }, []);
 
-  const handlePing = (key) => {
+  const handlePing = useCallback((key) => {
     if (pinging[key]) return;
     setPinging(prev => ({ ...prev, [key]: true }));
     setTimeout(() => {
@@ -222,7 +222,7 @@ export default function Dashboard() {
       }));
       setPinging(prev => ({ ...prev, [key]: false }));
     }, 850);
-  };
+  }, []);
 
   const isLight = themeSettings.mode === 'light-theme';
 

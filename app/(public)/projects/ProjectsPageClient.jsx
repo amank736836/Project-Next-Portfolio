@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import PortfolioItem from "@/components/PortfolioItem";
 import "@/app/(public)/Portfolio.css";
@@ -63,7 +63,10 @@ export default function ProjectsPageClient() {
   }
 
   const allProjects = Array.isArray(projects) ? projects : [];
-  const categories = ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort();
+  const categories = useMemo(() => 
+    ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort(), 
+    [allProjects]
+  );
 
   return (
     <section className="portfolio section">
