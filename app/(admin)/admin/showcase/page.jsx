@@ -1,5 +1,5 @@
-import ProjectManager from '@/components/Admin/ProjectManager';
+import ShowcasePageClient from "./ShowcasePageClient";
 
 export default function ShowcasePage() {
-  return <ProjectManager />;
+  return <ShowcasePageClient />;
 }

@@ -1,5 +1,5 @@
-import SkillsManager from '@/components/Admin/SkillsManager';
+import MatrixPageClient from "./MatrixPageClient";
 
 export default function MatrixPage() {
-  return <SkillsManager />;
+  return <MatrixPageClient />;
 }

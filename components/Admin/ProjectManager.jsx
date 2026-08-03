@@ -18,11 +18,11 @@ import StatusFilter from './StatusFilter';
 import CategoryFilter from './CategoryFilter';
 import { ProjectCard, ProjectListItem } from './ProjectItems';
 
-export default function ProjectManager() {
-  const [projects, setProjects] = useState([]);
+export default function ProjectManager({ initialProjects }) {
+  const [projects, setProjects] = useState(initialProjects || []);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialProjects);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -70,8 +70,8 @@ export default function ProjectManager() {
   }, [errorToast]);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    if (!initialProjects) fetchProjects();
+  }, [fetchProjects, initialProjects]);
 
   const openNewProjectForm = () => {
     setEditingProject({

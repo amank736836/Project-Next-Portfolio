@@ -17,15 +17,15 @@ import CategoryManager from './Skills/CategoryManager';
 import CategoryFilter from './Skills/CategoryFilter';
 import { EmptySkills, EmptySearchSkill } from './Skills/EmptyStates';
 
-export default function SkillsManager() {
-  const [skills, setSkills] = useState([]);
+export default function SkillsManager({ initialSkills, initialCategories }) {
+  const [skills, setSkills] = useState(initialSkills || []);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialSkills);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [showCategoryFilters, setShowCategoryFilters] = useState(false);
-  const [categories, setCategories] = useState(['Frontend', 'Backend', 'Database', 'DevOps', 'Tools']);
+  const [categories, setCategories] = useState(initialCategories?.map(c => c.name) || ['Frontend', 'Backend', 'Database', 'DevOps', 'Tools']);
   const [viewMode, setViewMode] = useState('grid'); // 'list' | 'grid'
   const [editingSkill, setEditingSkill] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -65,9 +65,9 @@ export default function SkillsManager() {
   }, [startLoading, stopLoading]);
 
   useEffect(() => {
-    fetchSkills();
-    fetchCategories();
-  }, [fetchSkills, fetchCategories]);
+    if (!initialSkills) fetchSkills();
+    if (!initialCategories) fetchCategories();
+  }, [fetchSkills, fetchCategories, initialSkills, initialCategories]);
 
   const openNewSkillForm = () => {
     setEditingSkill({
