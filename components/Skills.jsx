@@ -19,7 +19,7 @@ const skillConfig = {
   "Next.js": { category: "Frontend", icon: "▲", color: "#000000", description: "App Router, SSR, Server Actions" },
   Redux: { category: "Frontend", icon: "🔄", color: "#764ABC", description: "State management, RTK, Toolkit" },
   "React Query": { category: "Frontend", icon: "📡", color: "#FF4154", description: "Server state, caching, mutations" },
-  
+
   "Node.js": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
   "NodeJS": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
   "NodeJs": { category: "Backend", icon: "🟢", color: "#339933", description: "Express, Fastify, REST APIs, GraphQL" },
@@ -31,14 +31,14 @@ const skillConfig = {
   "Spring Boot": { category: "Backend", icon: "🌱", color: "#6DB33F", description: "Boot, Security, Data JPA, Cloud" },
   Python: { category: "Backend", icon: "🐍", color: "#3776AB", description: "FastAPI, Django, Flask, Async" },
   Go: { category: "Backend", icon: "🐹", color: "#00ADD8", description: "Concurrency, Microservices, gRPC" },
-  
+
   MongoDB: { category: "Database", icon: "🍃", color: "#47A248", description: "Aggregation, Indexing, Sharding" },
   MongoDb: { category: "Database", icon: "🍃", color: "#47A248", description: "Aggregation, Indexing, Sharding" },
   PostgreSQL: { category: "Database", icon: "🐘", color: "#336791", description: "Advanced queries, JSONB, Partitioning" },
   MySQL: { category: "Database", icon: "🐬", color: "#4479A1", description: "Optimization, Replication, ACID" },
   Redis: { category: "Database", icon: "⚡", color: "#DC382D", description: "Caching, Pub/Sub, Streams" },
   Prisma: { category: "Database", icon: "🔮", color: "#2D3748", description: "Type-safe ORM, Migrations" },
-  
+
   AWS: { category: "Cloud", icon: "☁", color: "#FF9900", description: "EC2, S3, Lambda, RDS, CloudFront" },
   Docker: { category: "Cloud", icon: "🐳", color: "#2496ED", description: "Multi-stage builds, Compose, Swarm" },
   Kubernetes: { category: "Cloud", icon: "☸", color: "#326CE5", description: "Deployments, Services, Helm" },
@@ -46,7 +46,7 @@ const skillConfig = {
   CI: { category: "Cloud", icon: "⚙", color: "#2088FF", description: "GitHub Actions, Jenkins, Pipelines" },
   "CI/CD": { category: "Cloud", icon: "⚙", color: "#2088FF", description: "GitHub Actions, Jenkins, Pipelines" },
   Vercel: { category: "Cloud", icon: "▲", color: "#000000", description: "Edge functions, Analytics, Deploy" },
-  
+
   C: { category: "Languages", icon: "🔧", color: "#A8B9CC", description: "Systems, Pointers, Memory management" },
   "C++": { category: "Languages", icon: "⚡", color: "#00599C", description: "OOP, STL, Templates, Performance" },
   CPP: { category: "Languages", icon: "⚡", color: "#00599C", description: "OOP, STL, Templates, Performance" },
@@ -56,31 +56,34 @@ const skillConfig = {
 const categoryOrder = ["Frontend", "Backend", "Database", "Cloud", "Languages"];
 
 function getSkillConfig(title) {
-  return skillConfig[title] || { 
-    category: "Other", 
-    icon: "⭐", 
-    color: "#6B7280", 
-    description: "Proficient" 
+  return skillConfig[title] || {
+    category: "Other",
+    icon: "⭐",
+    color: "#6B7280",
+    description: "Proficient"
   };
 }
 
 export default function Skills({ data }) {
-  if (!data || data.length === 0) return null;
-
   // Group skills by category - use DB fields, fallback to config
-  const categorized = useMemo(() => data.reduce((acc, skill) => {
-    const config = getSkillConfig(skill.title);
-    // Use DB fields if present, otherwise fall back to config
-    const category = skill.category || config.category;
-    const icon = skill.icon || config.icon;
-    const color = skill.color || config.color;
-    const description = skill.description || config.description;
-    if (!acc[category]) acc[category] = [];
-    acc[category].push({ ...skill, category, icon, color, description });
-    return acc;
-  }, {}), [data]);
+  const categorized = useMemo(() => {
+    if (!data || data.length === 0) return {};
+    return data.reduce((acc, skill) => {
+      const config = getSkillConfig(skill.title);
+      // Use DB fields if present, otherwise fall back to config
+      const category = skill.category || config.category;
+      const icon = skill.icon || config.icon;
+      const color = skill.color || config.color;
+      const description = skill.description || config.description;
+      if (!acc[category]) acc[category] = [];
+      acc[category].push({ ...skill, category, icon, color, description });
+      return acc;
+    }, {});
+  }, [data]);
 
   const [hoveredSkill, setHoveredSkill] = useState(null);
+
+  if (!data || data.length === 0) return null;
 
   return (
     <div className="skills-wrapper">
@@ -113,8 +116,8 @@ export default function Skills({ data }) {
                         <div className="skills__proficiency">
                           <span className="skills__proficiency-label">Proficiency</span>
                           <div className="skills__proficiency-bar">
-                            <div 
-                              className="skills__proficiency-fill" 
+                            <div
+                              className="skills__proficiency-fill"
                               style={{ width: `${skill.percentage || 85}%`, backgroundColor: skill.color }}
                             ></div>
                           </div>
@@ -157,8 +160,8 @@ export default function Skills({ data }) {
                         <div className="skills__proficiency">
                           <span className="skills__proficiency-label">Proficiency</span>
                           <div className="skills__proficiency-bar">
-                            <div 
-                              className="skills__proficiency-fill" 
+                            <div
+                              className="skills__proficiency-fill"
                               style={{ width: `${skill.percentage || 85}%`, backgroundColor: skill.color }}
                             ></div>
                           </div>

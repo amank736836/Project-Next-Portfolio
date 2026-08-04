@@ -29,6 +29,12 @@ export default function ProjectsPageClient() {
     fetchProjects();
   }, []);
 
+  const allProjects = useMemo(() => Array.isArray(projects) ? projects : [], [projects]);
+  const categories = useMemo(() => 
+    ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort(), 
+    [allProjects]
+  );
+
   if (loading) {
     return (
       <section className="portfolio section">
@@ -61,12 +67,6 @@ export default function ProjectsPageClient() {
       </section>
     );
   }
-
-  const allProjects = Array.isArray(projects) ? projects : [];
-  const categories = useMemo(() => 
-    ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort(), 
-    [allProjects]
-  );
 
   return (
     <section className="portfolio section">
