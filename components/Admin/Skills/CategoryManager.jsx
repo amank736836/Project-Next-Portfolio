@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FiPlus, FiCheck, FiTrash as FiTrashIcon } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -17,22 +17,36 @@ export default function CategoryManager({
   onAddCategory, 
   onDeleteCategory 
 }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!isAddingCategory) return;
+
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsAddingCategory(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleClickOutside);
+    return () => document.removeEventListener('pointerdown', handleClickOutside);
+  }, [isAddingCategory, setIsAddingCategory]);
+
   const customCategories = categories.filter(c => !DEFAULT_CATEGORIES.includes(c));
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       <Button
-        variant="outline"
         onClick={() => setIsAddingCategory(!isAddingCategory)}
-        className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 h-10 sm:h-11 rounded-lg sm:rounded-xl border-dashed ${isAddingCategory ? 'text-[var(--admin-accent)] border-[var(--admin-accent)]' : ''}`}
+        className="flex items-center gap-2 sm:gap-3 px-5 sm:px-7 h-11 sm:h-12 rounded-lg sm:rounded-xl !bg-[var(--admin-accent)] hover:brightness-110 !text-white transition-all group text-xs sm:text-sm shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.4)] border-none"
       >
-        <FiPlus size={14} />
-        <span className="hidden sm:inline">Category</span>
+        <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />
+        <span className="font-black uppercase tracking-[0.15em] sm:tracking-[0.2em]">Category</span>
       </Button>
 
       {isAddingCategory && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in">
-          <div className="flex gap-2 mb-2">
+        <div className="category-dropdown absolute top-full left-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in flex flex-col gap-3">
+          <div className="flex gap-2">
             <Input
               type="text"
               value={newCategoryName}
@@ -46,25 +60,26 @@ export default function CategoryManager({
               <FiCheck size={14} />
             </Button>
           </div>
+          
+          {customCategories.length > 0 && (
+            <div className="pt-2 border-t border-white/10">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-1 mb-1">Custom Categories</p>
+              {customCategories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => onDeleteCategory(cat)}
+                  className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-sm text-slate-300 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                >
+                  <span>{cat}</span>
+                  <FiTrashIcon size={12} className="opacity-50 hover:opacity-100" />
+                </button>
+              ))}
+            </div>
+          )}
+
           <Button variant="outline" size="sm" className="w-full" onClick={() => { setNewCategoryName(''); setIsAddingCategory(false); }}>
             Cancel
           </Button>
-        </div>
-      )}
-
-      {customCategories.length > 0 && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1 mb-1">Custom Categories</p>
-          {customCategories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => onDeleteCategory(cat)}
-              className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-sm text-slate-300 hover:bg-destructive/10 hover:text-destructive transition-colors"
-            >
-              <span>{cat}</span>
-              <FiTrashIcon size={12} className="opacity-50 hover:opacity-100" />
-            </button>
-          ))}
         </div>
       )}
     </div>

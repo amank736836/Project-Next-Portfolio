@@ -1,13 +1,72 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX, FiEdit3, FiEye, FiEyeOff } from 'react-icons/fi';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { FiZap, FiRefreshCw, FiCheckCircle, FiInfo, FiTrash2, FiShield, FiCloudLightning, FiPlus, FiSearch, FiX, FiEdit3, FiEye, FiEyeOff, FiUser, FiMail, FiPhone, FiMapPin, FiGlobe, FiCode, FiServer, FiDatabase, FiCpu, FiSettings, FiCreditCard, FiGrid, FiList } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from './Toast';
 import { useEjectConfirm } from './ConfirmModal';
 import { EmptyInfo } from './EmptyState';
 import { calculateAge } from '@/lib/utils';
 import IdentityModal from './IdentityModal';
-import { IdentityCard, IdentityEmptySearch } from './IdentityCard';
+import { IdentityCard, IdentityEmptySearch, IdentitySection, IdentityFieldRow } from './IdentityCard';
+
+const FIELD_GROUPS = [
+  {
+    id: 'personal',
+    label: 'Personal Information',
+    icon: FiUser,
+    color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    fields: [
+      { id: 'firstName', label: 'First Name', icon: FiUser },
+      { id: 'lastName', label: 'Last Name', icon: FiUser },
+      { id: 'fullName', label: 'Full Name', icon: FiUser },
+      { id: 'age', label: 'Age', icon: FiCpu },
+      { id: 'about_description', label: 'About Description', icon: FiInfo },
+      { id: 'bio', label: 'Bio', icon: FiInfo },
+    ]
+  },
+  {
+    id: 'contact',
+    label: 'Contact Details',
+    icon: FiMail,
+    color: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    fields: [
+      { id: 'email', label: 'Email', icon: FiMail },
+      { id: 'phone', label: 'Phone', icon: FiPhone },
+      { id: 'location', label: 'Location', icon: FiMapPin },
+      { id: 'website', label: 'Website', icon: FiGlobe },
+      { id: 'github', label: 'GitHub', icon: FiCode },
+      { id: 'linkedin', label: 'LinkedIn', icon: FiServer },
+      { id: 'twitter', label: 'Twitter/X', icon: FiCpu },
+    ]
+  },
+  {
+    id: 'site',
+    label: 'Site Configuration',
+    icon: FiSettings,
+    color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
+    fields: [
+      { id: 'site_title', label: 'Site Title', icon: FiGlobe },
+      { id: 'site_description', label: 'Site Description', icon: FiInfo },
+      { id: 'hero_title', label: 'Hero Title', icon: FiZap },
+      { id: 'hero_subtitle', label: 'Hero Subtitle', icon: FiZap },
+      { id: 'default_theme_color', label: 'Default Theme Color', icon: FiShield },
+      { id: 'default_theme_mode', label: 'Default Theme Mode', icon: FiShield },
+    ]
+  }
+];
+
+function getFieldGroup(fieldId) {
+  for (const group of FIELD_GROUPS) {
+    const found = group.fields.find(f => f.id === fieldId);
+    if (found) return { group, fieldConfig: found };
+  }
+  return { group: FIELD_GROUPS[0], fieldConfig: { id: fieldId, label: fieldId, icon: FiSettings } };
+}
+
+function sanitize(html) {
+  const DOMPurify = require('isomorphic-dompurify');
+  return DOMPurify.sanitize(html ?? '', { ALLOWED_TAGS: ['span', 'b', 'i', 'em', 'strong', 'br'], ALLOWED_ATTR: ['class'] });
+}
 
 export default function InfoManager() {
   const [info, setInfo] = useState([]);
@@ -15,6 +74,7 @@ export default function InfoManager() {
   const [saving, setSaving] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
   
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
@@ -52,7 +112,6 @@ export default function InfoManager() {
       const existingItem = info.find(i => i.id === id);
 
       if (!existingItem) {
-        // New item — POST
         const draft = {
           key: id,
           title: newLabel?.trim() || 'Custom Field',
@@ -80,7 +139,6 @@ export default function InfoManager() {
           errorToast('Failed to create identity node');
         }
       } else {
-        // Existing item — PUT (full overwrite)
         const updatedInfo = info.map(item =>
           item.id === id ? { ...item, value: newValue, description: newValue, is_hidden: item.is_hidden } : item
         );
@@ -166,11 +224,27 @@ export default function InfoManager() {
     }
   }, [successToast, errorToast]);
 
-  // Filter info based on search
-  const filteredInfo = info.filter(i => 
-    i.label?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.value?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredInfo = useMemo(() => 
+    info.filter(i => 
+      i.label?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      i.value?.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [info, searchQuery]);
+
+  const groupedInfo = useMemo(() => {
+    const groups = {};
+    
+    for (const item of filteredInfo) {
+      const { group } = getFieldGroup(item.id);
+      if (!groups[group.id]) {
+        groups[group.id] = { ...group, items: [] };
+      }
+      groups[group.id].items.push(item);
+    }
+
+    return FIELD_GROUPS.map(g => groups[g.id]).filter(Boolean);
+  }, [filteredInfo]);
+
+  const hasAnyResults = groupedInfo.some(g => g.items.length > 0);
 
   if (loading) return (
     <div className="space-y-8 animate-pulse">
@@ -181,19 +255,23 @@ export default function InfoManager() {
         </div>
         <div className="h-10 w-10 loading-shimmer rounded-full" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1,2,3,4,5,6].map(i => (
-          <div key={i} className="admin-card !p-0 overflow-hidden">
-            <div className="h-32 loading-shimmer" />
+      {FIELD_GROUPS.map(group => (
+        <div key={group.id} className="space-y-4 animate-fade-in">
+          <div className="h-10 loading-shimmer rounded-xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1,2].map(i => (
+              <div key={i} className="admin-card !p-0 overflow-hidden">
+                <div className="h-28 loading-shimmer" />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 
   return (
     <div className="animate-fade-in relative">
-      {/* Edit Modal */}
       <IdentityModal 
         item={editingItem}
         onClose={() => setEditingItem(null)}
@@ -202,7 +280,6 @@ export default function InfoManager() {
         saving={saving}
       />
 
-      {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
         <div>
           <h2 className="text-3xl font-black text-[var(--admin-title)] tracking-tighter">Identity</h2>
@@ -227,6 +304,22 @@ export default function InfoManager() {
               </button>
             )}
           </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${viewMode === 'grid' ? 'bg-white/10 text-[var(--first-color)]' : 'bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10'}`}
+              title="Grid view"
+            >
+              <FiGrid size={18} />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${viewMode === 'list' ? 'bg-white/10 text-[var(--first-color)]' : 'bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10'}`}
+              title="List view"
+            >
+              <FiList size={18} />
+            </button>
+          </div>
           <button
             onClick={addInfo}
             className="w-12 h-12 rounded-2xl border border-white/[0.05] flex items-center justify-center bg-white/[0.02] text-indigo-400 shadow-inner hover:bg-white/[0.05] transition-colors"
@@ -237,35 +330,163 @@ export default function InfoManager() {
         </div>
       </div>
 
-      {/* Grid */}
       {info.length === 0 ? (
         <EmptyInfo onAdd={addInfo} />
-      ) : filteredInfo.length === 0 ? (
+      ) : !hasAnyResults ? (
         <IdentityEmptySearch query={searchQuery} onClear={() => setSearchQuery('')} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
-          {filteredInfo.map((item, idx) => (
-            <IdentityCard
-              key={item.id}
-              item={item}
-              index={idx}
-              onEdit={setEditingItem}
-              onDelete={deleteInfo}
-              onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
-              isHidden={item.is_hidden}
-            />
-          ))}
+        <div className="mt-6">
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredInfo.map((item, idx) => (
+                <IdentityCard
+                  key={item.id}
+                  item={item}
+                  index={idx}
+                  onEdit={setEditingItem}
+                  onDelete={deleteInfo}
+                  onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
+                  isHidden={item.is_hidden}
+                />
+              ))}
 
-        {/* Quick Add Node */}
-        <button
-          onClick={addInfo}
-          className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
-        >
-           <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
-             <FiPlus size={28} />
-          </div>
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
-        </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+                <button
+                  onClick={addInfo}
+                  className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
+                >
+                  <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
+                    <FiPlus size={28} />
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Personal */}
+              {(() => {
+                const personalGroup = groupedInfo.find(g => g.id === 'personal');
+                return personalGroup?.items?.length ? (
+                  <div className="admin-card identity-card !p-4 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.015] hover:bg-white/[0.03] transition-all duration-500 !rounded-[1.5rem]" key="personal">
+                    <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                          <FiUser size={20} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-[var(--admin-title)] tracking-tight">Personal Information</h3>
+                          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Identity Details</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{personalGroup.items.length} fields</span>
+                    </div>
+                    <div className="space-y-1">
+                      {personalGroup.items.map((item, itemIdx) => {
+                        const { fieldConfig } = getFieldGroup(item.id);
+                        return (
+                          <IdentityFieldRow
+                            key={item.id}
+                            item={item}
+                            fieldConfig={fieldConfig}
+                            index={itemIdx}
+                            onEdit={setEditingItem}
+                            onDelete={deleteInfo}
+                            onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
+                            isHidden={item.is_hidden}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Contact */}
+              {(() => {
+                const contactGroup = groupedInfo.find(g => g.id === 'contact');
+                return contactGroup?.items?.length ? (
+                  <div className="admin-card identity-card !p-4 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.015] hover:bg-white/[0.03] transition-all duration-500 !rounded-[1.5rem]" key="contact">
+                    <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-blue-500/20 text-blue-400 border-blue-500/30">
+                          <FiMail size={20} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-[var(--admin-title)] tracking-tight">Contact Details</h3>
+                          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Communication Channels</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{contactGroup.items.length} fields</span>
+                    </div>
+                    <div className="space-y-1">
+                      {contactGroup.items.map((item, itemIdx) => {
+                        const { fieldConfig } = getFieldGroup(item.id);
+                        return (
+                          <IdentityFieldRow
+                            key={item.id}
+                            item={item}
+                            fieldConfig={fieldConfig}
+                            index={itemIdx}
+                            onEdit={setEditingItem}
+                            onDelete={deleteInfo}
+                            onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
+                            isHidden={item.is_hidden}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Site Configuration */}
+              {(() => {
+                const siteGroup = groupedInfo.find(g => g.id === 'site');
+                return siteGroup?.items?.length ? (
+                  <div className="admin-card identity-card !p-4 overflow-hidden border-white/[0.05] hover:border-indigo-500/30 bg-white/[0.015] hover:bg-white/[0.03] transition-all duration-500 !rounded-[1.5rem]" key="site">
+                    <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-indigo-500/20 text-indigo-400 border-indigo-500/30">
+                          <FiSettings size={20} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-[var(--admin-title)] tracking-tight">Site Configuration</h3>
+                          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">System Settings</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{siteGroup.items.length} fields</span>
+                    </div>
+                    <div className="space-y-1">
+                      {siteGroup.items.map((item, itemIdx) => {
+                        const { fieldConfig } = getFieldGroup(item.id);
+                        return (
+                          <IdentityFieldRow
+                            key={item.id}
+                            item={item}
+                            fieldConfig={fieldConfig}
+                            index={itemIdx}
+                            onEdit={setEditingItem}
+                            onDelete={deleteInfo}
+                            onToggleVisibility={() => toggleVisibility(item.id, item.is_hidden)}
+                            isHidden={item.is_hidden}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Add new button */}
+              <div className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex items-center justify-center gap-2 py-6 group transition-all !rounded-[1.5rem]" onClick={addInfo}>
+
+(Showing lines 360-459 of 469. Use offset=460 to continue.)
+                <FiPlus size={18} className="group-hover:rotate-90 transition-transform" />
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

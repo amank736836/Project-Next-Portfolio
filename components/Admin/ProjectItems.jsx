@@ -11,15 +11,15 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
       className={`group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] rounded-lg sm:rounded-xl border border-white/5 bg-white/[0.02] hover:border-white/10 ${isSelected ? 'ring-2 ring-[var(--admin-accent)] shadow-[0_0_40px_var(--admin-accent-glow)]' : ''}`}
     >
       {/* Image Section */}
-      <div className="relative h-32 sm:h-40 md:h-48 w-full overflow-hidden bg-[var(--admin-bg)]">
+      <div className="relative h-28 sm:h-36 md:h-40 w-full overflow-hidden bg-[var(--admin-bg)]">
         <Image
           src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'}
           alt={project.title || 'Project image'}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-1000 group-hover:scale-110"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-90" />
 
         {/* Status Badge */}
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
@@ -29,11 +29,11 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
               e.stopPropagation();
               onToggleVisibility();
             }}
-            className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg sm:rounded-xl backdrop-blur-xl border transition-all flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs ${project.is_hidden
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl backdrop-blur-xl border transition-all flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs ${project.is_hidden
                 ? 'bg-rose-500/10 border-rose-500/20 text-rose-400'
                 : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'}`}
           >
-            {project.is_hidden ? <FiEyeOff size={14} className="sm:!size-4" /> : <FiEye size={14} className="sm:!size-4" />}
+            {project.is_hidden ? <FiEyeOff size={12} className="sm:!size-3.5" /> : <FiEye size={12} className="sm:!size-3.5" />}
             <span className="hidden sm:inline font-bold uppercase tracking-[0.2em]">
               {project.is_hidden ? 'Private' : 'Public'}
             </span>
@@ -57,8 +57,8 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
       </div>
 
       {/* Content Section */}
-      <div className="p-3 sm:p-4 md:p-6 flex-1 flex flex-col gap-3 sm:gap-4 project-card-content">
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+      <div className="p-3 sm:p-4 flex-1 flex flex-col gap-2.5 sm:gap-3 project-card-content">
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5">
           <span className="px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 uppercase tracking-tight sm:tracking-tighter">
             {project.category || 'Portfolio Item'}
           </span>
@@ -67,38 +67,63 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
           </span>
         </div>
 
-        <h4 className="text-base sm:text-lg font-bold text-[var(--admin-title)] mb-1 sm:mb-2 tracking-tight group-hover:text-[var(--admin-accent)] transition-colors line-clamp-2">
+        <h4 className="text-base sm:text-lg font-bold text-[var(--admin-title)] mb-1 sm:mb-1.5 tracking-tight group-hover:text-[var(--admin-accent)] transition-colors line-clamp-2">
           {project.title}
         </h4>
 
-        <p className="text-[11px] sm:text-xs text-slate-400 line-clamp-2 group-hover:line-clamp-none leading-relaxed mb-3 sm:mb-4 opacity-70 group-hover:opacity-100 transition-opacity">
+        <p className="text-[11px] sm:text-xs text-slate-400 line-clamp-2 group-hover:line-clamp-none leading-relaxed mb-2 sm:mb-3 opacity-70 group-hover:opacity-100 transition-opacity">
           {project.description}
         </p>
 
-        {/* Action Row */}
-        <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-white/5 gap-1 sm:gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            className="px-3 sm:px-6 py-2 sm:py-2.5 font-black uppercase tracking-wider text-[10px] sm:text-xs hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all rounded-lg sm:rounded-xl flex-1"
-          >
-            Edit
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/5 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 hover:bg-rose-500/10 transition-all flex-shrink-0 admin-delete-btn"
-          >
-            <FiTrash2 className="admin-delete-icon" />
-          </Button>
+        {/* Structured Footer - Actions anchored here */}
+        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/5">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="px-3 sm:px-5 py-2 sm:py-2 font-black uppercase tracking-wider text-[10px] sm:text-xs hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all rounded-lg sm:rounded-xl flex-1"
+            >
+              Edit
+            </Button>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleVisibility();
+                }}
+                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center transition-all border text-xs ${project.is_hidden
+                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}
+              >
+                {project.is_hidden ? <FiEyeOff size={14} className="sm:!size-4" /> : <FiEye size={14} className="sm:!size-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-500/5 text-rose-400 border-none !ring-0 !ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 hover:bg-rose-500/10 transition-all flex-shrink-0 admin-delete-btn"
+              >
+                <FiTrash2 className="admin-delete-icon" />
+              </Button>
+              <a
+                href={(Array.isArray(project.details) ? project.details : []).find(d => /preview|link/i.test(d.title || ''))?.desc || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:bg-indigo-500 hover:text-white transition-all w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-indigo-500/10 text-indigo-400 border-none flex items-center justify-center shadow-sm hover:shadow-indigo-500/10"
+              >
+                <FiExternalLink size={14} className="sm:!size-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -121,7 +146,7 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
         {isSelected && <FiCheck size={10} className="sm:!size-3" strokeWidth={4} />}
       </button>
 
-      <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl overflow-hidden bg-[var(--admin-bg)] flex-shrink-0 border border-border/50">
+      <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-[var(--admin-bg)] flex-shrink-0 border border-border/50">
         <Image
           src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop'}
           alt={project.title || 'Project thumbnail'}
@@ -175,7 +200,7 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
           <FiTrash2 className="admin-delete-icon" />
         </Button>
         <a
-          href={(project.details || []).find(d => /preview|link/i.test(d.title || ''))?.desc || '#'}
+          href={(Array.isArray(project.details) ? project.details : []).find(d => /preview|link/i.test(d.title || ''))?.desc || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:bg-indigo-500 hover:text-white transition-all w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-indigo-500/10 text-indigo-400 border-none flex items-center justify-center shadow-sm hover:shadow-indigo-500/10"

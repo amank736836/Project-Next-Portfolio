@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { FiX, FiChevronDown, FiLoader } from 'react-icons/fi';
+import { FiX, FiChevronDown, FiLoader, FiX as FiClose, FiCheck, FiPalette, FiMaximize } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
@@ -79,78 +79,93 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
       aria-modal="true"
       aria-labelledby="edit-skill-title"
     >
-      <div className="bg-[var(--container-color)] border border-white/10 rounded-2xl sm:rounded-3xl w-full max-w-md sm:max-w-lg overflow-hidden animate-slide-up" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/10">
-          <h3 id="edit-skill-title" className="text-lg sm:text-xl font-bold text-[var(--admin-title)]">
+      <div className="bg-[var(--container-color)] border border-white/10 rounded-2xl sm:rounded-3xl w-full max-w-lg overflow-hidden animate-slide-up" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-5 border-b border-white/10">
+          <h3 id="edit-skill-title" className="text-xl font-bold text-[var(--admin-title)]">
             {editingSkill?.id ? 'Edit Skill' : 'New Skill'}
           </h3>
           <Button variant="outline" size="icon" onClick={handleClose} className="text-slate-500 hover:text-white">
-            <FiX size={20} />
+            <FiX size={22} />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 sm:space-y-5 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-5 space-y-6 max-h-[85vh] overflow-y-auto">
+          {/* Skill Name */}
           <div>
-            <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Skill Name</label>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Skill Name</label>
             <Input
               type="text"
               value={form.title}
               onChange={(e) => setForm({...form, title: e.target.value})}
               placeholder="e.g., React, TypeScript, Node.js"
-              className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base text-white focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-accent)]/20 focus:outline-none transition-colors"
               required
               autoFocus
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <div>
-              <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Proficiency %</label>
-              <Input
-                type="number"
+          {/* Proficiency Slider */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Proficiency</label>
+              <span className="font-mono text-xl font-bold text-[var(--admin-accent)]">{form.percentage}%</span>
+            </div>
+            <div className="relative">
+              <input
+                type="range"
                 min="0"
                 max="100"
                 value={form.percentage}
                 onChange={(e) => setForm({...form, percentage: parseInt(e.target.value) || 0})}
-                className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none transition-colors"
+                className="w-full h-2 bg-white/5 rounded-full appearance-none cursor-pointer accent-[var(--admin-accent)]"
+                onMouseDown={() => {}}
               />
-            </div>
-            <div>
-              <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Category</label>
-              <div className="relative">
-                <select
-                  value={form.category}
-                  onChange={(e) => setForm({...form, category: e.target.value})}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none appearance-none transition-colors cursor-pointer"
-                >
-                  {categories.map(cat => <option key={cat} value={cat} className="bg-[var(--container-color)]">{cat}</option>)}
-                </select>
-                <FiChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <div className="flex justify-between text-[10px] text-slate-500 mt-2">
+                <span>0</span>
+                <span>50</span>
+                <span>100</span>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {/* Category */}
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Category</label>
+            <div className="relative">
+              <select
+                value={form.category}
+                onChange={(e) => setForm({...form, category: e.target.value})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base text-white focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-accent)]/20 focus:outline-none appearance-none transition-colors cursor-pointer"
+              >
+                {categories.map(cat => <option key={cat} value={cat} className="bg-[var(--container-color)]">{cat}</option>)}
+              </select>
+              <FiChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Icon + Color Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Icon Picker */}
             <div>
-              <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Icon (emoji)</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Icon (emoji)</label>
               <div className="relative" ref={emojiPickerRef}>
                 <button
                   type="button"
                   onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowColorPicker(false); }}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-2xl text-center flex items-center justify-center gap-2 transition-colors hover:bg-white/15 focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-3xl text-center flex items-center justify-center gap-2 transition-colors hover:bg-white/10 focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-accent)]/20 focus:outline-none"
                 >
                   {form.icon}
-                  <FiChevronDown size={16} className="text-slate-500" />
+                  <FiChevronDown size={18} className="text-slate-500" />
                 </button>
                 {showEmojiPicker && (
-                  <div className="absolute bottom-full left-0 right-0 mb-2 p-3 bg-[var(--container-color)] border border-white/10 rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto">
-                    <div className="grid grid-cols-8 gap-2">
+                  <div className="absolute bottom-full left-0 right-0 mb-3 p-4 bg-[var(--container-color)] border border-white/10 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto">
+                    <div className="grid grid-cols-9 gap-2">
                       {COMMON_EMOJIS.map((emoji) => (
                         <button
                           key={emoji}
                           type="button"
                           onClick={() => { setForm({...form, icon: emoji}); setShowEmojiPicker(false); }}
-                          className={`p-2 rounded-lg text-2xl transition-colors ${form.icon === emoji ? 'bg-[var(--admin-accent)]/30 ring-1 ring-[var(--admin-accent)]' : 'hover:bg-white/5'}`}
+                          className={`p-2.5 rounded-lg text-2xl transition-colors ${form.icon === emoji ? 'bg-[var(--admin-accent)]/30 ring-2 ring-[var(--admin-accent)]' : 'hover:bg-white/5'}`}
                         >
                           {emoji}
                         </button>
@@ -160,29 +175,34 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                 )}
               </div>
             </div>
+
+            {/* Color Picker */}
             <div>
-              <label className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Color</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Color</label>
               <div className="relative" ref={colorPickerRef}>
                 <button
                   type="button"
                   onClick={() => { setShowColorPicker(!showColorPicker); setShowEmojiPicker(false); }}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 h-10 flex items-center justify-between transition-colors hover:bg-white/15 focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 h-12 flex items-center justify-between transition-colors hover:bg-white/10 focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-accent)]/20 focus:outline-none"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded shadow-sm border border-black/20" style={{backgroundColor: form.color}}></div>
-                    <span className="text-xs font-mono text-slate-300">{form.color.toUpperCase()}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg shadow-sm border border-black/20 flex-shrink-0" style={{backgroundColor: form.color}}></div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-mono text-slate-300 block">{form.color.toUpperCase()}</span>
+                      <span className="text-[10px] text-slate-500">Click to change</span>
+                    </div>
                   </div>
-                  <FiChevronDown size={16} className="text-slate-500" />
+                  <FiChevronDown size={18} className="text-slate-500" />
                 </button>
                 {showColorPicker && (
-                  <div className="absolute bottom-full left-0 right-0 mb-2 p-3 bg-[var(--container-color)] border border-white/10 rounded-xl shadow-2xl z-50">
-                    <div className="grid grid-cols-6 gap-2 mb-2">
+                  <div className="absolute bottom-full left-0 right-0 mb-3 p-4 bg-[var(--container-color)] border border-white/10 rounded-xl shadow-2xl z-50">
+                    <div className="grid grid-cols-7 gap-2 mb-3">
                       {COLOR_SWATCHES.map((color) => (
                         <button
                           key={color}
                           type="button"
                           onClick={() => { setForm({...form, color}); setShowColorPicker(false); }}
-                          className={`w-8 h-8 rounded-lg border-2 transition-all ${form.color === color ? 'border-[var(--admin-accent)] scale-110' : 'border-transparent hover:border-white/20'}`}
+                          className={`w-10 h-10 rounded-lg border-2 transition-all ${form.color === color ? 'border-[var(--admin-accent)] scale-110' : 'border-transparent hover:border-white/20'}`}
                           style={{backgroundColor: color}}
                           title={color}
                         />
@@ -193,7 +213,7 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
                       value={form.color}
                       onChange={(e) => setForm({...form, color: e.target.value})}
                       placeholder="#RRGGBB"
-                      className="w-full bg-white/10 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-1 focus:ring-[var(--admin-accent)] focus:outline-none text-center font-mono transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-[var(--admin-accent)] focus:ring-2 focus:ring-[var(--admin-accent)]/20 focus:outline-none text-center font-mono transition-colors"
                     />
                   </div>
                 )}
@@ -201,20 +221,22 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
             </div>
           </div>
 
+          {/* Featured Checkbox */}
           <div className="flex items-center gap-3 pt-2">
             <input
               type="checkbox"
               id="featured-checkbox"
               checked={form.is_featured}
               onChange={(e) => setForm({...form, is_featured: e.target.checked})}
-              className="w-4 h-4 accent-[var(--admin-accent)] mt-0.5"
+              className="w-5 h-5 accent-[var(--admin-accent)] mt-0.5 rounded border-white/20"
             />
             <label htmlFor="featured-checkbox" className="text-sm font-medium text-slate-300 cursor-pointer">
               Featured in Hero Badges (max 5)
             </label>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-white/10 mt-2">
+          {/* Actions */}
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <Button variant="outline" type="button" onClick={handleClose} className="flex-1 hover:bg-white/5" disabled={saving}>
               Cancel
             </Button>
@@ -223,7 +245,7 @@ export default function EditSkillForm({ editingSkill, setEditingSkill, categorie
               className={`flex-1 transition-all ${isValid && !saving ? 'bg-[var(--admin-accent)] hover:brightness-110 text-black border-transparent' : 'opacity-50 cursor-not-allowed'}`}
               disabled={saving || !isValid}
             >
-              {saving ? 'Saving...' : (editingSkill?.id ? 'Update Skill' : 'Add Skill')}
+              {saving ? <><FiLoader className="animate-spin mr-2" size={16} /> Saving...</> : (editingSkill?.id ? 'Update Skill' : 'Add Skill')}
             </Button>
           </div>
         </form>

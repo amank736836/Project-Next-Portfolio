@@ -114,9 +114,11 @@ export async function proxy(request) {
 
   if (needsAuth && !isPublicApiRoute) {
     const session = await getSession(request.cookies);
-    const expired = session ? isTokenExpired(session) : 'N/A';
-
-    if (!session || expired === true) {
+    
+    // We do NOT check isTokenExpired here because the Edge proxy cannot reliably refresh tokens.
+    // If they have a session, we let the request through. 
+    // The underlying page/API running on Node will handle refreshing the token.
+    if (!session) {
       const loginUrl = new URL('/api/auth/login', request.url);
       loginUrl.searchParams.set('next', pathname);
       

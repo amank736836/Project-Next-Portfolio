@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
+import {
   FiClock, FiActivity, FiGithub, FiGlobe, FiDatabase, FiZap, FiShield,
   FiLayers, FiTrendingUp, FiMessageSquare
 } from 'react-icons/fi';
@@ -81,14 +81,14 @@ export default function Dashboard() {
     try {
       const ghRes = await fetch('https://www.githubstatus.com/api/v2/status.json');
       const ghData = await ghRes.json();
-      setExternalStatus(prev => ({ 
-        ...prev, 
-        github: { 
-          status: ghData.status.description, 
+      setExternalStatus(prev => ({
+        ...prev,
+        github: {
+          status: ghData.status.description,
           indicator: ghData.status.indicator,
           latency: '15ms',
           uptime: '99.98%'
-        } 
+        }
       }));
     } catch (e) {
       setExternalStatus(prev => ({ ...prev, github: { status: 'Protocol Offline', indicator: 'minor', latency: '--', uptime: '99.2%' } }));
@@ -97,14 +97,14 @@ export default function Dashboard() {
     try {
       const vRes = await fetch('https://www.vercel-status.com/api/v2/status.json');
       const vData = await vRes.json();
-      setExternalStatus(prev => ({ 
-        ...prev, 
-        vercel: { 
-          status: vData.status.description, 
+      setExternalStatus(prev => ({
+        ...prev,
+        vercel: {
+          status: vData.status.description,
           indicator: vData.status.indicator,
           latency: '9ms',
           uptime: '100.0%'
-        } 
+        }
       }));
     } catch (e) {
       setExternalStatus(prev => ({ ...prev, vercel: { status: 'Edge Offline', indicator: 'minor', latency: '--', uptime: '99.7%' } }));
@@ -149,7 +149,7 @@ export default function Dashboard() {
   const fetchThemeSettings = useCallback(async () => {
     const savedColor = localStorage.getItem("color");
     const savedMode = localStorage.getItem("theme");
-    
+
     if (savedColor && savedMode) {
       setThemeSettings({ color: savedColor, mode: savedMode });
       return;
@@ -182,7 +182,7 @@ export default function Dashboard() {
   const saveThemeSettings = useCallback(async (color, mode) => {
     setSavingTheme(true);
     setSuccess('');
-    
+
     setThemeSettings({ color, mode });
     localStorage.setItem("color", color);
     localStorage.setItem("theme", mode);
@@ -247,11 +247,11 @@ export default function Dashboard() {
   })), [stats]);
 
   return (
-    <div 
+    <div
       className="animate-fade-in max-w-[1700px] mx-auto pb-20 px-4 md:px-6"
       style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}
     >
-      
+
       <div className="flex flex-col gap-6 mb-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -264,16 +264,9 @@ export default function Dashboard() {
             Signal Stable // Encrypted
           </p>
         </div>
-        
-        <HUDHeader 
-          uptime={uptime} 
-          isLight={isLight} 
-          textTitle={textTitle} 
-          hudBg={hudBg} 
-          hudBorder={hudBorder} 
-        />
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-black/[0.05] dark:border-white/[0.06] pb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-black/[0.05] dark:border-white/[0.06] pb-8">
+
           <div>
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight !mb-1" style={{ color: textTitle }}>
               Core Telemetry
@@ -282,6 +275,13 @@ export default function Dashboard() {
               Unified Portfolio Command Interface
             </p>
           </div>
+          <HUDHeader
+            uptime={uptime}
+            isLight={isLight}
+            textTitle={textTitle}
+            hudBg={hudBg}
+            hudBorder={hudBorder}
+          />
         </div>
       </div>
 
@@ -315,7 +315,7 @@ export default function Dashboard() {
             <p className="text-sm font-black text-rose-400 uppercase tracking-widest">Protocol Override Required</p>
             <p className="text-xs font-bold text-slate-400 opacity-80 mt-0.5">{error}</p>
           </div>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="sm:ml-auto w-full sm:w-auto px-5 py-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest transition-all border border-rose-500/20 active:scale-95"
           >
@@ -324,11 +324,11 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div 
+      <div
         className="grid grid-cols-1 xl:grid-cols-12"
         style={{ display: 'grid', gap: '40px' }}
       >
-        <div 
+        <div
           className="xl:col-span-8"
           style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
         >
@@ -362,11 +362,11 @@ export default function Dashboard() {
           />
         </div>
 
-        <div 
+        <div
           className="xl:col-span-4"
           style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
         >
-          <section 
+          <section
             style={{
               backgroundColor: cardBg,
               border: `1px solid ${cardBorder}`,
@@ -383,7 +383,7 @@ export default function Dashboard() {
                 <p className="text-[9px] font-bold uppercase tracking-widest mt-0.5" style={{ color: textSub }}>Interactive Telemetry</p>
               </div>
             </div>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <ExternalStatusWidget
                 icon={<FiGithub size={13} />}
@@ -401,7 +401,7 @@ export default function Dashboard() {
                 cardBg={cardBg}
                 cardBorder={cardBorder}
               />
-              
+
               <ExternalStatusWidget
                 icon={<FiGlobe size={13} />}
                 label="Vercel Edge"
@@ -418,7 +418,7 @@ export default function Dashboard() {
                 cardBg={cardBg}
                 cardBorder={cardBorder}
               />
-              
+
               <ExternalStatusWidget
                 icon={<FiDatabase size={13} />}
                 label="Supabase DB"
@@ -436,17 +436,17 @@ export default function Dashboard() {
                 cardBorder={cardBorder}
               />
 
-              <NeuralLinkWidget 
-                isLight={isLight} 
-                cardBg={cardBg} 
-                cardBorder={cardBorder} 
-                textTitle={textTitle} 
+              <NeuralLinkWidget
+                isLight={isLight}
+                cardBg={cardBg}
+                cardBorder={cardBorder}
+                textTitle={textTitle}
                 textDesc={textDesc}
               />
             </div>
           </section>
 
-          <section 
+          <section
             style={{
               backgroundColor: cardBg,
               border: `1px solid ${cardBorder}`,
