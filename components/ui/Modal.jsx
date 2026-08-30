@@ -32,12 +32,14 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
 
     document.addEventListener('keydown', handleKeyDown);
 
+    const trigger = triggerRef?.current;
+
     return () => {
       document.body.style.overflow = 'unset';
       document.removeEventListener('keydown', handleKeyDown);
       
-      if (triggerRef?.current) {
-        triggerRef.current.focus();
+      if (trigger) {
+        trigger.focus();
       } else if (previousActiveElement.current) {
         previousActiveElement.current.focus();
       }

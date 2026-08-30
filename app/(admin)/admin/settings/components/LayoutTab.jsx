@@ -54,7 +54,7 @@ export default function LayoutTab({
       setUploadingResume(false);
       e.target.value = '';
     }
-  }, [successToast, errorToast]);
+  }, [successToast, errorToast, setResumeUrl, setUploadingResume]);
 
   const handleResumeDelete = useCallback(async () => {
     try {
@@ -68,7 +68,7 @@ export default function LayoutTab({
     } catch (e) {
       errorToast('Network error');
     }
-  }, [successToast, errorToast]);
+  }, [successToast, errorToast, setResumeUrl]);
 
   const openResume = useCallback(() => {
     if (resumeUrl) window.open(resumeUrl, '_blank', 'noopener,noreferrer');

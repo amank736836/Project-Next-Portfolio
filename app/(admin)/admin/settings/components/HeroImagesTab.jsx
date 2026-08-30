@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { FiImage, FiUpload, FiStar, FiEdit2, FiTrash, FiCheck, FiX } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from '@/components/Admin/Toast';
 import { Button } from '@/components/ui/Button';
@@ -177,8 +178,8 @@ export default function HeroImagesTab({
         <div className="hero-studio-grid">
           {heroImages.map(image => (
             <div key={image.id} className={`hero-studio-card ${image.is_hero ? 'is-hero' : ''}`}>
-              <div className="hero-studio-card-preview">
-                <img src={image.url} alt={image.alt_text} loading="lazy" />
+              <div className="hero-studio-card-preview relative" style={{ width: '100%', aspectRatio: '16/9' }}>
+                <Image src={image.url} alt={image.alt_text} fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 33vw" />
                 {image.is_hero && (
                   <span className="hero-studio-badge">
                     <FiStar size={14} /> Hero

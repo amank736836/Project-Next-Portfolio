@@ -53,30 +53,6 @@ export default function Dashboard() {
 
   const { startLoading, stopLoading } = useLoading();
 
-  useEffect(() => {
-    setMounted(true);
-    fetchStats();
-    fetchExternalStatuses();
-    fetchThemeSettings();
-
-    const handleThemeChange = () => {
-      const color = localStorage.getItem("color") || 'Blue';
-      const mode = localStorage.getItem("theme") || 'dark-theme';
-      setThemeSettings({ color, mode });
-    };
-
-    window.addEventListener("themeChange", handleThemeChange);
-
-    const timer = setInterval(() => {
-      const now = new Date();
-      setUptime(now.toLocaleTimeString('en-US', { hour12: false }));
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener("themeChange", handleThemeChange);
-    };
-  }, []);
-
   const fetchExternalStatuses = useCallback(async () => {
     try {
       const ghRes = await fetch('https://www.githubstatus.com/api/v2/status.json');
@@ -179,6 +155,30 @@ export default function Dashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    setMounted(true);
+    fetchStats();
+    fetchExternalStatuses();
+    fetchThemeSettings();
+
+    const handleThemeChange = () => {
+      const color = localStorage.getItem("color") || 'Blue';
+      const mode = localStorage.getItem("theme") || 'dark-theme';
+      setThemeSettings({ color, mode });
+    };
+
+    window.addEventListener("themeChange", handleThemeChange);
+
+    const timer = setInterval(() => {
+      const now = new Date();
+      setUptime(now.toLocaleTimeString('en-US', { hour12: false }));
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, [fetchExternalStatuses, fetchStats, fetchThemeSettings]);
+
   const saveThemeSettings = useCallback(async (color, mode) => {
     setSavingTheme(true);
     setSuccess('');
@@ -222,7 +222,7 @@ export default function Dashboard() {
       }));
       setPinging(prev => ({ ...prev, [key]: false }));
     }, 850);
-  }, []);
+  }, [pinging]);
 
   const isLight = themeSettings.mode === 'light-theme';
 
