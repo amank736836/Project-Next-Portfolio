@@ -1,9 +1,13 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 export const runtime = 'nodejs';
+const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
 export async function GET() {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const supabase = await createAdminClient();
     const { data, error } = await supabase
@@ -20,6 +24,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const supabase = await createAdminClient();
     const body = await request.json();
@@ -35,10 +41,10 @@ export async function POST(request) {
       .insert({
         platform,
         url,
-        label: label || platform,
-        icon: icon || platform,
-        display_order: display_order || 99,
-        is_hidden: is_hidden || false,
+        label: label ?? platform,
+        icon: icon ?? platform,
+        display_order: display_order ?? 99,
+        is_hidden: is_hidden ?? false,
       })
       .select()
       .single();

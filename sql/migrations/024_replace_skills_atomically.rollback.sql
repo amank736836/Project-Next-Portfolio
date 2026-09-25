@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS replace_skills(JSONB);

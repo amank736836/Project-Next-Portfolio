@@ -1,9 +1,15 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
+
+const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
 export async function PATCH(request, { params }) {
+  if (!await isAuthenticated()) return unauthorized();
+
+  let id = 'unknown';
   try {
-    const { id } = await params;
+    ({ id } = await params);
     const body = await request.json();
     const supabase = await createAdminClient();
 
@@ -28,13 +34,14 @@ export async function PATCH(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  if (!await isAuthenticated()) return unauthorized();
+
+  let id = 'unknown';
   try {
-    const { id } = await params;
+    ({ id } = await params);
     const supabase = await createAdminClient();
 
     // Get image URL first for Cloudinary cleanup
-    const { data: image } = await supabase.from('hero_images').select('url').eq('id', id).single();
-
     const { error } = await supabase.from('hero_images').delete().eq('id', id);
     if (error) throw error;
 

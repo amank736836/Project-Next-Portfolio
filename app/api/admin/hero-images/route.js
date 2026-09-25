@@ -1,7 +1,12 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
+
+const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
 export async function GET() {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const supabase = await createAdminClient();
     const { data, error } = await supabase
@@ -18,6 +23,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const formData = await request.formData();
     const file = formData.get('file');

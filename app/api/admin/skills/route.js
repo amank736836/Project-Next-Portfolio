@@ -27,8 +27,11 @@ export async function PUT(request) {
   const supabase = await createAdminClient();
   const skills = await request.json();
 
-  await supabase.from('skills').delete().neq('id', -1);
-  const { error } = await supabase.from('skills').insert(skills);
+  if (!Array.isArray(skills)) {
+    return NextResponse.json({ error: 'Skills must be an array' }, { status: 400, headers: NO_CACHE });
+  }
+
+  const { error } = await supabase.rpc('replace_skills', { new_skills: skills });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });

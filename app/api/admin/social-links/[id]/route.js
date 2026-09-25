@@ -1,9 +1,13 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 export const runtime = 'nodejs';
+const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
 export async function PATCH(request, { params }) {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const supabase = await createAdminClient();
     const { id } = await params;
@@ -24,6 +28,8 @@ export async function PATCH(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  if (!await isAuthenticated()) return unauthorized();
+
   try {
     const supabase = await createAdminClient();
     const { id } = await params;
