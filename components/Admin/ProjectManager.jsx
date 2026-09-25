@@ -24,8 +24,27 @@ import ProjectGridView from './ProjectManager/ProjectGridView';
 import ProjectListView from './ProjectManager/ProjectListView';
 import ProjectSkeleton from './ProjectManager/ProjectSkeleton';
 
+const normalizeProject = (project) => {
+  let details = project?.details;
+
+  for (let attempt = 0; attempt < 2 && typeof details === 'string'; attempt += 1) {
+    try {
+      details = JSON.parse(details);
+    } catch {
+      details = [];
+    }
+  }
+
+  return {
+    ...project,
+    details: Array.isArray(details) ? details : [],
+  };
+};
+
 export default function ProjectManager({ initialProjects }) {
-  const [projects, setProjects] = useState(initialProjects || []);
+  const [projects, setProjects] = useState(() =>
+    Array.isArray(initialProjects) ? initialProjects.map(normalizeProject) : []
+  );
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [loading, setLoading] = useState(!initialProjects);
@@ -54,18 +73,7 @@ export default function ProjectManager({ initialProjects }) {
     try {
       const res = await fetch('/api/admin/projects');
       const data = await res.json();
-      const processed = (Array.isArray(data) ? data : []).map(p => {
-        let details = p.details;
-        if (typeof details === 'string') {
-          try {
-            details = JSON.parse(details);
-          } catch (e) {
-            console.error('Failed to parse details for project:', p.id, e);
-            details = [];
-          }
-        }
-        return { ...p, details: Array.isArray(details) ? details : [] };
-      });
+      const processed = (Array.isArray(data) ? data : []).map(normalizeProject);
       setProjects(processed);
     } catch (error) {
       console.error('Failed to fetch projects:', error);
@@ -206,7 +214,7 @@ export default function ProjectManager({ initialProjects }) {
   }, []);
 
   return (
-    <div className="animate-fade-in pb-10">
+    <div className="showcase-page animate-fade-in pb-10">
       {/* Edit Form rendered via portal to escape CSS transform containing block */}
       {typeof window !== 'undefined' && editingProject && createPortal(
         <EditProjectForm
@@ -266,7 +274,7 @@ export default function ProjectManager({ initialProjects }) {
           selectedProjects={selectedProjects}
           onToggleSelect={toggleSelection}
           onToggleVisibility={toggleVisibility}
-          onEdit={() => setEditingProject}
+          onEdit={setEditingProject}
           onDelete={handleDelete}
         />
       ) : (
@@ -276,7 +284,7 @@ export default function ProjectManager({ initialProjects }) {
           selectedProjects={selectedProjects}
           onToggleSelect={toggleSelection}
           onToggleVisibility={toggleVisibility}
-          onEdit={() => setEditingProject}
+          onEdit={setEditingProject}
           onDelete={handleDelete}
         />
       )}

@@ -26,8 +26,8 @@ export default function ProjectFilters({
 }) {
   return (
     <>
-      <div className="mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
-      <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="showcase-toolbar mb-4 mx-4 sm:mx-6 lg:mx-8 p-3 sm:p-4 rounded-2xl border border-white/10 bg-white/[0.025]">
+      <div className="showcase-toolbar-main grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex items-center gap-2 bg-white/5 rounded-lg sm:rounded-xl px-3 sm:px-4 border border-white/10 focus-within:border-indigo-500 transition-all">
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" />
@@ -78,16 +78,15 @@ export default function ProjectFilters({
           />
         </div>
 
-        <CategoryFilter 
+        <CategoryFilter
           categories={categories}
           currentCategory={filterCategory}
           onSelect={setFilterCategory}
           isOpen={showCategoryFilters}
           onToggle={() => setShowCategoryFilters(!showCategoryFilters)}
         />
-      </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
+      <div className="showcase-view-toggle flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
         <button
           onClick={() => setViewMode('grid')}
           className={`h-8 w-8 ${viewMode === 'grid' ? 'bg-white/10 text-[var(--first-color)]' : 'bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all'}`}
@@ -112,9 +111,10 @@ export default function ProjectFilters({
           </svg>
         </button>
       </div>
+      </div>
     </div>
 
-    <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
+    <div className="showcase-toolbar-meta mb-5 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
         {(() => {
           const hasFilters = searchQuery || filterStatus !== 'all' || filterCategory !== 'all';
