@@ -97,29 +97,32 @@ export default function CSPReportsPage() {
 
       {/* Filters */}
       <div className="dashboard-glass-card p-4 mb-6">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
-            <FiFilter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+        <div className="csp-report-filters grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="csp-report-filter-with-icon">
+            <FiFilter className="csp-report-filter-icon text-slate-500" size={16} aria-hidden="true" />
             <input
               type="text"
+              aria-label="Filter by directive"
               placeholder="Filter by directive..."
               value={filters.directive}
               onChange={e => setFilters(prev => ({ ...prev, directive: e.target.value }))}
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[var(--admin-accent)]"
+              className="csp-report-filter-input w-full py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[var(--admin-accent)]"
             />
           </div>
-          <div className="relative">
-            <FiLink className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+          <div className="csp-report-filter-with-icon">
+            <FiLink className="csp-report-filter-icon text-slate-500" size={16} aria-hidden="true" />
             <input
               type="text"
+              aria-label="Filter by blocked URI"
               placeholder="Filter by blocked URI..."
               value={filters.blockedUri}
               onChange={e => setFilters(prev => ({ ...prev, blockedUri: e.target.value }))}
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[var(--admin-accent)]"
+              className="csp-report-filter-input w-full py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[var(--admin-accent)]"
             />
           </div>
           <input
             type="date"
+            aria-label="Filter from date"
             placeholder="From date"
             value={filters.dateFrom}
             onChange={e => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
@@ -127,6 +130,7 @@ export default function CSPReportsPage() {
           />
           <input
             type="date"
+            aria-label="Filter to date"
             placeholder="To date"
             value={filters.dateTo}
             onChange={e => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
