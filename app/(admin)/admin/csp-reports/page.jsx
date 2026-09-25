@@ -86,7 +86,7 @@ export default function CSPReportsPage() {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-full">
+    <div className="csp-report-page p-4 sm:p-6 max-w-full">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-[var(--admin-title)] flex items-center gap-3 mb-2">
           <span className="text-[var(--admin-accent)]"><FiAlertTriangle /></span>
@@ -126,7 +126,7 @@ export default function CSPReportsPage() {
             placeholder="From date"
             value={filters.dateFrom}
             onChange={e => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-            className="bg-white/5 border border-white/10 rounded-lg py-2 px-4 text-sm text-white focus:outline-none focus:border-[var(--admin-accent)]"
+            className="csp-report-date-input bg-white/5 border border-white/10 rounded-lg py-2 px-4 text-sm focus:outline-none focus:border-[var(--admin-accent)]"
           />
           <input
             type="date"
@@ -134,7 +134,7 @@ export default function CSPReportsPage() {
             placeholder="To date"
             value={filters.dateTo}
             onChange={e => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
-            className="bg-white/5 border border-white/10 rounded-lg py-2 px-4 text-sm text-white focus:outline-none focus:border-[var(--admin-accent)]"
+            className="csp-report-date-input bg-white/5 border border-white/10 rounded-lg py-2 px-4 text-sm focus:outline-none focus:border-[var(--admin-accent)]"
           />
         </div>
       </div>

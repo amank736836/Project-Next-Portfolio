@@ -796,6 +796,60 @@
   padding-right: 1rem !important;
 }
 
+.csp-report-date-input {
+  min-width: 0;
+  color: var(--admin-text);
+  color-scheme: dark;
+}
+
+.csp-report-date-input::-webkit-datetime-edit,
+.csp-report-date-input::-webkit-datetime-edit-text,
+.csp-report-date-input::-webkit-datetime-edit-day-field,
+.csp-report-date-input::-webkit-datetime-edit-month-field,
+.csp-report-date-input::-webkit-datetime-edit-year-field {
+  color: var(--admin-text);
+  opacity: 1;
+}
+
+.csp-report-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.light-theme .csp-report-page .csp-report-filter-input,
+.light-theme .csp-report-page .csp-report-date-input {
+  color: #334155 !important;
+}
+
+.light-theme .csp-report-page .csp-report-filter-input::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+.light-theme .csp-report-page .csp-report-date-input {
+  color-scheme: light;
+}
+
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-text,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-day-field,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-month-field,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-year-field {
+  color: #64748b;
+}
+
+/* Keep dense CSP report data readable over the light glass surface. */
+.light-theme .csp-report-page .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light-theme .csp-report-page .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-theme .csp-report-page .text-slate-500 {
+  color: #64748b !important;
+}
+
 .neon-input {
   width: 100%;
   background:
