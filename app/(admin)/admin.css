@@ -716,6 +716,11 @@
   max-width: 100%;
 }
 
+/* Dashboard grids already provide their own gap; avoid double spacing on stat cards. */
+.admin-dashboard .telemetry-card {
+  margin: 0;
+}
+
 /* Softer, more modern shadows and rounded corners for all admin cards */
 .admin-card {
   margin-bottom: 0.75rem;
