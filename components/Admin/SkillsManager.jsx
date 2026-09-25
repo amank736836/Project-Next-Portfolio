@@ -287,7 +287,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
   }, [filteredSkills]);
 
   return (
-    <div className="animate-fade-in pb-10">
+    <div className="matrix-page animate-fade-in pb-10">
       {typeof window !== 'undefined' && editingSkill && createPortal(
         <EditSkillForm
           editingSkill={editingSkill}
@@ -302,7 +302,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       )}
 
       {/* Header - Increased Hierarchy */}
-      <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+      <div className="matrix-page-header flex-1 flex flex-col px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-6 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-5">
         <div className="space-y-2">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--admin-title)]">Skill Matrix</h2>
           <p className="text-[12px] sm:text-xs font-medium uppercase tracking-wider text-slate-500">
@@ -334,9 +334,9 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       </div>
 
       {/* Toolbar - Search + Filters + View */}
-      <div className="mb-6 sm:mb-8 px-4 sm:px-6 lg:px-8">
+      <div className="matrix-toolbar mb-5 mx-4 sm:mx-6 lg:mx-8 p-3 sm:p-4 rounded-2xl border border-white/10 bg-white/[0.025]">
         {/* Row 1: Search Bar - Primary Action */}
-        <div className="relative mb-4 sm:mb-5">
+        <div className="relative mb-3">
           <div className="flex items-center gap-3 bg-white/5 rounded-xl px-4 sm:px-5 border border-white/10 focus-within:border-[var(--admin-accent)] focus-within:ring-2 focus-within:ring-[var(--admin-accent)]/20 focus-within:shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.15)] transition-all h-12 sm:h-13">
             <FiSearch className="w-5 h-5 text-slate-500 flex-shrink-0" />
             <Input
@@ -358,7 +358,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
         </div>
 
         {/* Row 2: Filters + Stats + View Toggle */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-wrap">
+        <div className="matrix-toolbar-controls flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 flex-wrap">
           {/* Category Filter Dropdown */}
           <div className="relative w-full sm:w-auto">
             <Button
@@ -383,14 +383,14 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
           </div>
 
           {/* Stats */}
-          <div className="hidden sm:flex items-center gap-4 text-[11px] font-medium text-slate-400 ml-auto sm:ml-0 border-t sm:border-t-0 pt-3 sm:pt-0">
+          <div className="matrix-toolbar-stats hidden sm:flex items-center gap-4 text-[11px] font-medium text-slate-400 ml-auto sm:ml-0 border-t sm:border-t-0 pt-3 sm:pt-0">
             <span className="font-mono text-[var(--admin-title)]">{filteredSkills.length}<span className="text-slate-500">{filteredSkills.length !== skills.length ? ` / ${skills.length}` : ''}</span> skills</span>
             <span className={featuredCount >= 5 ? 'text-amber-400' : 'text-slate-400'}>★ {featuredCount}/5 featured</span>
             {hiddenCount > 0 && <span className="text-slate-500">🙈 {hiddenCount} hidden</span>}
           </div>
 
           {/* View Toggle - Larger Hit Area */}
-          <div className="flex items-center gap-2 ml-auto w-full sm:w-auto justify-end">
+          <div className="matrix-toolbar-view flex items-center gap-2 ml-auto w-full sm:w-auto justify-end">
             <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
               <Button
                 variant={viewMode === 'list' ? 'secondary' : 'ghost'}
@@ -444,7 +444,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       ) : filteredSkills.length === 0 ? (
         <EmptySearchSkill searchTerm={searchQuery} onClear={() => { setSearchQuery(''); setFilterCategory('all'); }} />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="matrix-grid-content px-4 sm:px-6 lg:px-8">
           {viewMode === 'list' ? (
             /* List View - Category Sections */
             <div className="space-y-6">
@@ -498,7 +498,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
             </div>
           ) : (
             /* Grid View */
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredSkills.map((skill, idx) => (
                 <SkillGridCard
                   key={skill.id}
