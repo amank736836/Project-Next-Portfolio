@@ -88,9 +88,9 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
     try {
       const isNew = !skillData.id;
       const res = await fetch('/api/admin/skills', {
-        method: 'PUT',
+        method: isNew ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify([skillData, ...skills.filter(s => s.id !== skillData.id).map(s => ({ ...s, is_featured: s.is_featured, is_hidden: s.is_hidden }))]),
+        body: JSON.stringify(skillData),
       });
 
       if (res.ok) {
@@ -98,7 +98,9 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
         successToast(isNew ? 'Skill added to matrix' : 'Skill updated');
         setEditingSkill(null);
       } else {
-        errorToast('Failed to save skill');
+        const error = await res.json().catch(() => ({}));
+        console.error('Failed to save skill:', error);
+        errorToast(error.error || 'Failed to save skill');
       }
     } catch (error) {
       console.error('Failed to save skill:', error);
@@ -142,7 +144,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       const res = await fetch('/api/admin/skills', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(skills.map(s => s.id === skill.id ? { ...s, is_featured: !s.is_featured } : s)),
+        body: JSON.stringify({ id: skill.id, is_featured: !skill.is_featured }),
       });
       if (res.ok) {
         fetchSkills();
@@ -324,7 +326,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
             onDeleteCategory={deleteCategory}
           />
           <Button
-            onClick={openNewSkillForm}
+            onClick={() => openNewSkillForm()}
             className="flex items-center gap-2 sm:gap-3 px-5 sm:px-7 h-11 sm:h-12 rounded-lg sm:rounded-xl !bg-[var(--admin-accent)] hover:brightness-110 !text-white transition-all group text-xs sm:text-sm shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.4)] border-none"
           >
             <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />

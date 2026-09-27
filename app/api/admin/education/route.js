@@ -38,7 +38,7 @@ export async function PUT(request) {
   const { id, ...updates } = body;
 
   const allowedUpdates = {};
-  ['year', 'title', 'description', 'is_hidden'].forEach(field => {
+  ['year', 'title', 'description', 'category', 'is_hidden'].forEach(field => {
     if (field in updates) allowedUpdates[field] = updates[field];
   });
 

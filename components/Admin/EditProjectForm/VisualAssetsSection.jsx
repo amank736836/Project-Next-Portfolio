@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Image from 'next/image';
 import { FiRefreshCw, FiCloudLightning, FiGrid } from 'react-icons/fi';
 import { useSuccessToast, useErrorToast } from '../Toast';
 import { Button } from '@/components/ui/Button';
@@ -88,12 +87,11 @@ export default function VisualAssetsSection({ editingProject, setEditingProject 
             <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Preview</label>
             <div className="h-[130px] rounded-lg overflow-hidden border border-white/15 bg-white/5 relative group">
               {(editingProject.image || editingProject.img) ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={editingProject.image || editingProject.img}
                   alt="Preview"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="100%"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600 gap-2">

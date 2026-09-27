@@ -88,6 +88,7 @@ export default function ProjectManager({ initialProjects }) {
   }, [fetchProjects, initialProjects]);
 
   const openNewProjectForm = () => {
+    setIsAddingCategory(false);
     setEditingProject({
       title: '',
       img: '',

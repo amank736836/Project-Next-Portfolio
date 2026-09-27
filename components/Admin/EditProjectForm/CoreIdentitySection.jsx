@@ -76,8 +76,10 @@ export default function CoreIdentitySection({ editingProject, setEditingProject,
                 value={editingProject.category || ''}
                 onChange={(e) => {
                   if (e.target.value === 'new') {
+                    setIsAddingCategory(true);
                     setEditingProject({ ...editingProject, category: '' });
                   } else {
+                    setIsAddingCategory(false);
                     setEditingProject({ ...editingProject, category: e.target.value });
                   }
                 }}
@@ -96,7 +98,7 @@ export default function CoreIdentitySection({ editingProject, setEditingProject,
               </div>
             </div>
 
-            {editingProject.category === '' && (
+            {isAddingCategory && (
               <div className="mt-4 p-4 sm:p-6 bg-indigo-500/5 border border-indigo-500/20 rounded-lg sm:rounded-2xl animate-in fade-in slide-in-from-top-4">
                 <input
                   type="text"
