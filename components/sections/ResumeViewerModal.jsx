@@ -1,7 +1,7 @@
 "use client";
 
 import { Modal } from "@/components/ui/Modal";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function PdfPage({ pdf, pageNumber, width, onRendered }) {
   const canvasRef = useRef(null);
@@ -54,7 +54,7 @@ function PdfPage({ pdf, pageNumber, width, onRendered }) {
   return (
     <div
       className="relative max-w-full overflow-hidden rounded-lg bg-neutral-700 shadow-lg"
-      style={{ width, aspectRatio: "8.5 / 11" }}
+      style={{ width, minHeight: isRendered ? undefined : Math.round(width * 1.3) }}
     >
       {!isRendered && (
         <div className="absolute inset-0 z-10 grid place-items-center bg-neutral-700 text-sm text-white/75">
@@ -75,11 +75,15 @@ function ResumePdfViewer({ url }) {
   const [width, setWidth] = useState(0);
   const [error, setError] = useState("");
   const [firstPageReady, setFirstPageReady] = useState(false);
+  const handlePageRendered = useCallback((page) => {
+    if (page === 1) setFirstPageReady(true);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    container.scrollTop = 0;
     const updateWidth = () => setWidth(Math.max(280, container.clientWidth - 4));
     updateWidth();
     const observer = new ResizeObserver(updateWidth);
@@ -144,9 +148,7 @@ function ResumePdfViewer({ url }) {
               pdf={pdf}
               pageNumber={index + 1}
               width={width}
-              onRendered={(page) => {
-                if (page === 1) setFirstPageReady(true);
-              }}
+              onRendered={handlePageRendered}
             />
           ))}
         </div>
