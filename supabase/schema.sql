@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS personal_info (
 CREATE TABLE IF NOT EXISTS skills (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
-    percentage INTEGER DEFAULT 0,
+    percentage INTEGER NOT NULL DEFAULT 85 CHECK (percentage BETWEEN 0 AND 100),
     category TEXT DEFAULT 'General',
     icon TEXT DEFAULT '⭐',
     color TEXT DEFAULT '#6B7280',
