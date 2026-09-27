@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +13,7 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
     if (!isOpen) return;
 
     previousActiveElement.current = document.activeElement;
+    const triggerElement = triggerRef?.current;
     document.body.style.overflow = 'hidden';
 
     const focusableElements = modalRef.current?.querySelectorAll(
@@ -36,8 +38,8 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
       document.body.style.overflow = 'unset';
       document.removeEventListener('keydown', handleKeyDown);
       
-      if (triggerRef?.current) {
-        triggerRef.current.focus();
+      if (triggerElement) {
+        triggerElement.focus();
       } else if (previousActiveElement.current) {
         previousActiveElement.current.focus();
       }
@@ -65,7 +67,7 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       <div 
         className="fixed inset-0 bg-black/90 backdrop-blur-xl animate-fade-in" 
@@ -99,7 +101,8 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
