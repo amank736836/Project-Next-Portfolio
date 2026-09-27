@@ -14,7 +14,7 @@ function isReportNoise(report) {
   if (process.env.NODE_ENV !== 'production') return true;
 
   const sourceFile = report?.['source-file'] || report?.sourceFile || '';
-  if (/^(chrome|moz|safari)-extension:/i.test(sourceFile)) return true;
+  if (/^(chrome|moz|safari)-extension(?::|$)/i.test(sourceFile)) return true;
 
   const documentUri = report?.['document-uri'] || report?.documentURL;
   if (!documentUri) return false;

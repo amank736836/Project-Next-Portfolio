@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { FaArrowRight, FaDownload, FaBriefcase, FaCode, FaExternalLinkAlt } from "react-icons/fa";
+import { FaDownload, FaBriefcase, FaCode } from "react-icons/fa";
 import Typewriter from "@/components/ui/Typewriter";
 import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
-import "../Home.css";
 
 function ResumeDownloadButton() {
   const [resumeUrl, setResumeUrl] = useState(null);
@@ -31,18 +30,16 @@ function ResumeDownloadButton() {
   if (loading) {
     return (
       <a href="#" className="button button--loading">
-        <FaDownload />
         Loading...
-        <span className="button__icon"><FaArrowRight /></span>
+        <span className="button__icon"><FaDownload /></span>
       </a>
     );
   }
 
   return (
     <a href="/api/resume/download" target="_blank" rel="noopener noreferrer" className={`button ${resumeUrl ? '' : 'button--disabled'}`}>
-      <FaDownload />
       Download Resume
-      <span className="button__icon"><FaArrowRight /></span>
+      <span className="button__icon"><FaDownload /></span>
     </a>
   );
 }
@@ -85,12 +82,12 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
           <div className="home__cta-group reveal delay-5">
             <ResumeDownloadButton />
             <Link href="#projects" className="button">
-              <FaBriefcase />
               View Projects
+              <span className="button__icon"><FaBriefcase /></span>
             </Link>
             <Link href="#contact" className="button">
-              <FaCode />
               Hire Me
+              <span className="button__icon"><FaCode /></span>
             </Link>
           </div>
           <div className="home__badges reveal delay-6">
