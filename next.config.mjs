@@ -42,6 +42,10 @@ const nextConfig = {
 				source: '/:path*',
 				headers: [
 					{
+						key: 'Reporting-Endpoints',
+						value: 'csp-endpoint="/api/csp-report"',
+					},
+					{
 						key: 'X-Content-Type-Options',
 						value: 'nosniff',
 					},
@@ -71,6 +75,7 @@ const nextConfig = {
 							"base-uri 'self'",
 							"form-action 'self' https://formspree.io",
 							"report-uri /api/csp-report",
+							"report-to csp-endpoint",
 						].join('; '),
 					},
 				],
