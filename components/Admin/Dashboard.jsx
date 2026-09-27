@@ -265,7 +265,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-black/[0.05] dark:border-white/[0.06] pb-5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:pr-16 border-b border-black/[0.05] dark:border-white/[0.06] pb-5">
 
           <div>
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight !mb-1" style={{ color: textTitle }}>

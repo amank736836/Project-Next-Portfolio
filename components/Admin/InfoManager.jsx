@@ -280,13 +280,13 @@ export default function InfoManager() {
         saving={saving}
       />
 
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
+      <div className="flex flex-col items-start gap-6 mb-6">
         <div>
           <h2 className="text-3xl font-black text-[var(--admin-title)] tracking-tighter">Identity</h2>
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Core Profile Data Matrix</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="input-icon-wrapper w-72">
+        <div className="flex w-full items-center gap-3 sm:gap-4">
+          <div className="input-icon-wrapper min-w-0 flex-1">
             <FiSearch className="icon" size={18} />
             <input
               type="text"

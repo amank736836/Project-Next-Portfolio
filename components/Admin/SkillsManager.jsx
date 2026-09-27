@@ -304,14 +304,14 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       )}
 
       {/* Header - Increased Hierarchy */}
-      <div className="matrix-page-header flex-1 flex flex-col px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-6 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-5">
-        <div className="space-y-2">
+      <div className="matrix-page-header flex-1 flex flex-col px-4 pt-4 sm:pl-6 sm:pr-20 sm:pt-6 lg:pl-8 lg:pr-24 lg:pt-6 sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-5">
+        <div className="min-w-0 space-y-2">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--admin-title)]">Skill Matrix</h2>
           <p className="text-[12px] sm:text-xs font-medium uppercase tracking-wider text-slate-500">
             Manage skills & hero badges <span className="font-mono text-[var(--admin-accent)]">{featuredCount}/5</span> featured, <span className="font-mono text-slate-400">{hiddenCount}</span> hidden
           </p>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3 flex-wrap sm:mr-14 lg:mr-10">
           <CategoryManager
             categories={categories}
             setCategories={setCategories}
@@ -336,7 +336,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
       </div>
 
       {/* Toolbar - Search + Filters + View */}
-      <div className="matrix-toolbar mb-5 mx-4 sm:mx-6 lg:mx-8 p-3 sm:p-4 rounded-2xl border border-white/10 bg-white/[0.025]">
+      <div className={`matrix-toolbar relative mb-5 mx-4 sm:mx-6 lg:mx-8 p-3 sm:p-4 rounded-2xl border border-white/10 bg-white/[0.025] ${showCategoryFilters ? 'z-[80]' : 'z-[1]'}`}>
         {/* Row 1: Search Bar - Primary Action */}
         <div className="relative mb-3">
           <div className="flex items-center gap-3 bg-white/5 rounded-xl px-4 sm:px-5 border border-white/10 focus-within:border-[var(--admin-accent)] focus-within:ring-2 focus-within:ring-[var(--admin-accent)]/20 focus-within:shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.15)] transition-all h-12 sm:h-13">
@@ -360,9 +360,9 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
         </div>
 
         {/* Row 2: Filters + Stats + View Toggle */}
-        <div className="matrix-toolbar-controls flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 flex-wrap">
+        <div className="matrix-toolbar-controls flex items-center gap-2 sm:gap-3 flex-nowrap sm:flex-wrap">
           {/* Category Filter Dropdown */}
-          <div className="relative w-full sm:w-auto">
+          <div className="relative min-w-0">
             <Button
               variant="outline"
               onClick={() => {
@@ -392,7 +392,7 @@ export default function SkillsManager({ initialSkills, initialCategories }) {
           </div>
 
           {/* View Toggle - Larger Hit Area */}
-          <div className="matrix-toolbar-view flex items-center gap-2 ml-auto w-full sm:w-auto justify-end">
+          <div className="matrix-toolbar-view flex shrink-0 items-center gap-2 ml-auto justify-end">
             <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
               <Button
                 variant={viewMode === 'list' ? 'secondary' : 'ghost'}

@@ -43,7 +43,7 @@ export default function CategoryFilter({ categories, currentCategory, onSelect, 
   const allCategories = ['all', ...categories];
 
   return (
-    <div ref={filterRef} className="category-dropdown absolute top-full left-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl py-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 animate-fade-in">
+    <div ref={filterRef} className="category-dropdown absolute top-full left-0 mt-2 w-56 bg-[#080d1c] border border-white/15 rounded-xl py-2 shadow-[0_24px_60px_rgba(0,0,0,0.78)] ring-1 ring-black/40 z-[100] animate-fade-in">
       {allCategories.map(cat => {
         const CategoryIcon = categoryIcons[cat] || FiZap;
         return (

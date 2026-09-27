@@ -492,6 +492,7 @@
 
 .matrix-page .matrix-page-header {
   padding-top: 2rem !important;
+  padding-right: 6rem !important;
   margin-bottom: 0.75rem !important;
 }
 
@@ -502,6 +503,7 @@
 @media (max-width: 639px) {
   .matrix-page .matrix-page-header {
     padding-top: 1.25rem !important;
+    padding-right: 1rem !important;
     margin-bottom: 0.5rem !important;
   }
 
@@ -538,8 +540,10 @@
   }
 
   .matrix-page .matrix-toolbar-view {
+    grid-column: 3;
     width: auto !important;
-    margin-left: 0 !important;
+    margin-left: auto !important;
+    justify-self: end;
   }
 }
 

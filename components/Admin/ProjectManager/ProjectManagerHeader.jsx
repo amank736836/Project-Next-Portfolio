@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/Button';
 
 export default function ProjectManagerHeader({ onAddProject, selectedCount, onBulkDelete }) {
   return (
-    <div className="showcase-page-header flex-1 flex flex-col px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-5">
-      <div>
+    <div className="showcase-page-header flex-1 flex flex-col px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-5">
+      <div className="min-w-0">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[var(--admin-title)]">Asset Showcase</h2>
         <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
           Node Showcase v4.2 — Unified Asset Management
         </p>
       </div>
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3 flex-wrap">
         {selectedCount > 0 && (
           <Button
             variant="destructive"

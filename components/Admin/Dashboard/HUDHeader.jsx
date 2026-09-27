@@ -21,7 +21,7 @@ export default function HUDHeader({ uptime, textTitle, hudBg, hudBorder, isLight
   };
 
   return (
-    <div className="flex gap-2 sm:gap-4 w-full lg:w-auto">
+    <div className="flex gap-2 sm:gap-4 w-full md:w-[360px] md:min-w-0 md:mr-14 lg:mr-10">
       <div
         style={hudChipStyle}
         className="hover:border-[var(--admin-accent)]/30 group"
