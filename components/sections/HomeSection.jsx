@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FaArrowRight, FaDownload, FaBriefcase, FaCode, FaExternalLinkAlt } from "react-icons/fa";
 import Typewriter from "@/components/ui/Typewriter";
+import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
 import "../Home.css";
 
 function ResumeDownloadButton() {
@@ -54,15 +54,7 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
   return (
     <section className="home section grid reveal">
       <div className="home__img-wrapper cursor-pointer reveal-left delay-1">
-        <Image 
-          src={imageSrc}
-          alt={imageAlt}
-          className="home__img" 
-          width={600} 
-          height={600} 
-          quality={85}
-          priority
-        />
+        <HeroPortrait3D src={imageSrc} alt={imageAlt} priority />
       </div>
       <div className="home__content reveal-right delay-2">
         <div className="home__data">

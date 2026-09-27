@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import { createAdminClient } from "@/lib/supabase/server";
+import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
 import "./Home.css";
 
 export default async function Home() {
@@ -22,15 +22,7 @@ export default async function Home() {
   return (
     <section className="home section grid">
       <div className="home__img-wrapper cursor-pointer">
-        <Image 
-          src="/assets/profile_v4.png" 
-          alt="Profile" 
-          className="home__img" 
-          width={600} 
-          height={600} 
-          quality={85}
-          priority
-        />
+        <HeroPortrait3D src="/assets/profile_v4.png" alt="Profile" priority />
       </div>
       <div className="home__content">
         <div className="home__data">

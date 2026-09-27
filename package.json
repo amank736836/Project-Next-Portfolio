@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run db:prepare && next dev",
+    "dev": "npm run db:prepare && next dev --webpack",
     "dev:turbo": "npm run db:prepare && next dev --turbopack",
     "build": "next build",
     "start": "next start",
