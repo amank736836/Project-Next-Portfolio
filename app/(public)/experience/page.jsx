@@ -3,6 +3,11 @@ import "@/app/(public)/about.css";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
+export const metadata = {
+  title: "Experience",
+  description: "Aman Kumar's professional software engineering and project management experience.",
+  alternates: { canonical: "/experience" },
+};
 
 export default async function ExperiencePage() {
   const supabase = await createAdminClient();

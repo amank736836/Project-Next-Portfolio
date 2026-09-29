@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import "@/app/(public)/resume/page.css";
 
+
 export default function Resume() {
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

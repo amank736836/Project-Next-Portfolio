@@ -3,6 +3,11 @@ import "@/app/(public)/about.css";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
+export const metadata = {
+  title: "Education",
+  description: "Aman Kumar's education, engineering background, and academic experience.",
+  alternates: { canonical: "/education" },
+};
 
 export default async function EducationPage() {
   const supabase = await createAdminClient();

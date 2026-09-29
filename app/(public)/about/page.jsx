@@ -8,6 +8,11 @@ import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
+export const metadata = {
+  title: "About Aman Kumar",
+  description: "Learn about Aman Kumar, a full-stack developer, his background, skills, and professional experience.",
+  alternates: { canonical: "/about" },
+};
 
 export default async function About() {
   const supabase = await createAdminClient();

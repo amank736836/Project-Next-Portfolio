@@ -13,6 +13,12 @@ import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import "@/app/(public)/Contact.css";
 import { FiSend } from "react-icons/fi";
 
+export const metadata = {
+  title: "Contact",
+  description: "Get in touch with Aman Kumar about software engineering, freelance, and collaboration opportunities.",
+  alternates: { canonical: "/contact" },
+};
+
 export default function Contact() {
   return (
     <section className="contact section">
