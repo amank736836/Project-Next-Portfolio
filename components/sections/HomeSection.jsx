@@ -5,6 +5,11 @@ import { useState, useEffect } from "react";
 import { FaDownload, FaBriefcase, FaCode } from "react-icons/fa";
 import Typewriter from "@/components/ui/Typewriter";
 import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
+import SplitText from "@/components/ui/SplitText";
+import Marquee from "@/components/ui/Marquee";
+import CountUp from "@/components/ui/CountUp";
+import Magnetic from "@/components/ui/Magnetic";
+import Parallax from "@/components/ui/Parallax";
 
 function ResumeDownloadButton() {
   const [resumeUrl, setResumeUrl] = useState(null);
@@ -48,19 +53,46 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
   const imageSrc = heroImage?.url || "https://res.cloudinary.com/amank736836/image/upload/v1785565567/portfolio/portfolio/profile_v4.png";
   const imageAlt = heroImage?.alt_text || "Profile";
 
+  const stack = (featuredSkills.length ? featuredSkills : [
+    { title: 'React', icon: '⚛', color: '#61DAFB' },
+    { title: 'Node.js', icon: '🟢', color: '#339933' },
+    { title: 'Java', icon: '☕', color: '#ED8B00' },
+    { title: 'MongoDB', icon: '🍃', color: '#47A248' },
+    { title: 'Tailwind', icon: '💨', color: '#06B6D4' },
+    { title: 'TypeScript', icon: '🔷', color: '#3178C6' },
+  ]).map((s) => ({ label: s.title, icon: s.icon, color: s.color }));
+
   return (
-    <section className="home section grid reveal">
-      <div className="home__img-wrapper cursor-pointer reveal-left delay-1">
+    <section className="home section grid hero-stage reveal">
+      <Parallax speed={0.08} className="home__img-wrapper cursor-pointer reveal-left delay-1">
+        <span className="hero-ring" aria-hidden="true" />
+        <span className="hero-stage__spark" style={{ top: '12%', left: '4%', width: 7, height: 7, animationDelay: '0s' }} aria-hidden="true" />
+        <span className="hero-stage__spark" style={{ bottom: '16%', right: '6%', width: 5, height: 5, animationDelay: '1.4s' }} aria-hidden="true" />
+        <span className="hero-stage__spark" style={{ top: '42%', right: '-2%', width: 4, height: 4, animationDelay: '2.6s' }} aria-hidden="true" />
         <HeroPortrait3D src={imageSrc} alt={imageAlt} priority />
-      </div>
+      </Parallax>
       <div className="home__content reveal-right delay-2">
         <div className="home__data">
-          <h1 className="home__title reveal delay-3">
-            <div>I&apos;m Aman Kumar. </div>
-            <span>Full Stack Developer</span>
+          <span className="hero-kicker reveal delay-2">
+            <span className="hero-kicker__dot" aria-hidden="true" />
+            {enableOpenToWork ? 'Open to opportunities' : 'Full stack developer'}
+          </span>
+
+          <h1 className="home__title hero-title">
+            <SplitText as="span" className="hero-title__lead" text="I'm Aman Kumar." mode="char" />
+            <SplitText
+              as="span"
+              className="hero-title__role"
+              text="Full Stack Developer"
+              mode="char"
+              gradient
+              delay={280}
+              stagger={22}
+            />
           </h1>
+
           <p className="home__subtitle reveal delay-3 home__subtitle--delayed">
-            Specializing in React, Node.js, Java & scalable web applications
+            Specializing in React, Node.js, Java &amp; scalable web applications
           </p>
           <div className="home__description reveal delay-4">
             {enableTypewriter ? (
@@ -79,17 +111,40 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
               "Building scalable web applications with React & Node.js"
             )}
           </div>
-          <div className="home__cta-group reveal delay-5">
-            <ResumeDownloadButton />
-            <Link href="#projects" className="button">
-              View Projects
-              <span className="button__icon"><FaBriefcase /></span>
-            </Link>
-            <Link href="#contact" className="button">
-              Hire Me
-              <span className="button__icon"><FaCode /></span>
-            </Link>
+
+          <div className="hero-stats reveal reveal-stagger delay-5">
+            <div className="hero-stats__item">
+              <span className="hero-stats__value"><CountUp value={18} suffix="+" /></span>
+              <span className="hero-stats__label">Technologies</span>
+            </div>
+            <div className="hero-stats__item">
+              <span className="hero-stats__value"><CountUp value={25} suffix="+" /></span>
+              <span className="hero-stats__label">Projects shipped</span>
+            </div>
+            <div className="hero-stats__item">
+              <span className="hero-stats__value"><CountUp value={4} /></span>
+              <span className="hero-stats__label">Years coding</span>
+            </div>
           </div>
+
+          <div className="home__cta-group reveal delay-6">
+            <Magnetic className="hero-magnetic">
+              <ResumeDownloadButton />
+            </Magnetic>
+            <Magnetic className="hero-magnetic">
+              <Link href="#projects" className="button">
+                View Projects
+                <span className="button__icon"><FaBriefcase /></span>
+              </Link>
+            </Magnetic>
+            <Magnetic className="hero-magnetic">
+              <Link href="#contact" className="button button--secondary">
+                Hire Me
+                <span className="button__icon"><FaCode /></span>
+              </Link>
+            </Magnetic>
+          </div>
+
           <div className="home__badges reveal delay-6">
             {enableOpenToWork && (
               <span className="badge badge--status">
@@ -135,10 +190,22 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
               )}
             </div>
           </div>
+
+          <Link href="#about" className="hero-scroll-cue reveal delay-6">
+            <span className="hero-scroll-cue__track" aria-hidden="true">
+              <span className="hero-scroll-cue__dot" />
+            </span>
+            Scroll to explore
+          </Link>
         </div>
       </div>
 
       <div className="color__block"></div>
+
+      <div className="hero-stack-strip reveal delay-3">
+        <span className="hero-stack-strip__label">Daily stack</span>
+        <Marquee items={stack} speed={34} ariaLabel="Frequently used technologies" />
+      </div>
     </section>
   );
 }

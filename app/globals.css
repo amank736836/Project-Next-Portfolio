@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+@import "./motion.css";
 
 :root {
   /* Core Colors - Modern Indigo/Violet Palette */

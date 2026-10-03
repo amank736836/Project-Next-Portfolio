@@ -13,6 +13,8 @@ import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import "@/app/(public)/Contact.css";
 import "@/app/(public)/Home.css";
 import { FiSend, FiFacebook, FiMessageSquare, FiGhost } from "react-icons/fi";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Magnetic from "@/components/ui/Magnetic";
 
 const SOCIAL_ICONS = {
   facebook: FaFacebookF,
@@ -64,11 +66,9 @@ const SOCIAL_ORDER = {
 export default function ContactSection({ socialLinks = {} }) {
   return (
     <section id="contact" className="contact section reveal" suppressHydrationWarning>
-      <h2 className="section__title reveal delay-1">
-        Get In <span>Touch</span>
-      </h2>
+      <SectionHeading title="Get In" highlight="Touch" eyebrow="Say hello" className="reveal" />
       <div className="contact__container container grid reveal delay-2">
-        <div className="contact__data">
+        <div className="contact__data reveal-left">
           <h3 className="contact__title">Don&apos;t be Shy !</h3>
           <p className="contact__description">
             Feel free to get in touch with me. I am always open to discussing
@@ -100,7 +100,7 @@ export default function ContactSection({ socialLinks = {} }) {
             )}
           </div>
 
-          <div className="contact__socials-card">
+          <div className="contact__socials-card reveal reveal-stagger delay-2">
             <span className="contact__socials-title">Connect</span>
             <div className="contact__socials">
               {/* Personal/Social - First half */}
@@ -149,7 +149,7 @@ export default function ContactSection({ socialLinks = {} }) {
         <form
           action="https://formspree.io/f/mgvwardg"
           method="POST"
-          className="contact__form"
+          className="contact__form reveal-right delay-2"
           suppressHydrationWarning
         >
           <div className="form__input-group">
@@ -192,12 +192,14 @@ export default function ContactSection({ socialLinks = {} }) {
             ></textarea>
           </div>
           <div className="button-center">
-            <button className="button" type="Submit">
-              Send Message
-              <span className="button__icon contact__button-icon">
-                <FiSend />
-              </span>
-            </button>
+            <Magnetic>
+              <button className="button" type="Submit">
+                Send Message
+                <span className="button__icon contact__button-icon">
+                  <FiSend />
+                </span>
+              </button>
+            </Magnetic>
           </div>
         </form>
       </div>
