@@ -401,6 +401,8 @@ html.light-theme .amb__orb {
   width: min(220px, 45vw);
   height: 12px;
   overflow: visible;
+  color: var(--first-color);
+  opacity: 0.9;
 }
 
 .sh__rule path {
