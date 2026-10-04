@@ -23,6 +23,7 @@ export default async function SinglePageLayout({ featuredSkills = [], enableType
   const aboutDescription = infoData.find(i => i.key === 'about_description')?.description;
   const personalInfo = infoData.filter(i => i.key !== 'about_description' && i.key !== 'site_mode' && !i.key.startsWith('default_theme_'));
   const resumeUrl = resumeRes.data?.file_url || null;
+  const location = personalInfo.find(i => i.key === 'address')?.description?.trim() || null;
   
   // Contact info (shown in Contact section) - exclude from About
   const contactKeys = ['linkedin', 'github', 'twitter', 'facebook', 'instagram', 'threads', 'snapchat', 'telegram', 'codolio', 'email', 'website', 'phone'];
@@ -47,7 +48,7 @@ export default async function SinglePageLayout({ featuredSkills = [], enableType
 
   return (
     <>
-      <section id="home"><HomeSection enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills} heroImage={heroImage} /></section>
+      <section id="home"><HomeSection enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills} heroImage={heroImage} location={location} /></section>
       <section id="about"><AboutSection aboutDescription={aboutDescription} personalInfo={aboutInfo} resumeUrl={resumeUrl} /></section>
       <section id="skills"><SkillsSection skillsData={skillsRes.data} /></section>
       <section id="education"><EducationSection educationData={educationRes.data} /></section>

@@ -884,6 +884,12 @@ html.light-theme .amb__orb {
   color: color-mix(in srgb, var(--text-color) 88%, transparent);
 }
 
+.hero-kicker__icon {
+  color: var(--first-color);
+  font-size: 0.95em;
+  flex-shrink: 0;
+}
+
 .hero-kicker__dot {
   width: 7px;
   height: 7px;

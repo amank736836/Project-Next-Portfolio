@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaArrowRight, FaBriefcase, FaCode } from "react-icons/fa";
+import { FaArrowRight, FaBriefcase, FaCode, FaMapMarkerAlt } from "react-icons/fa";
 import { createAdminClient } from "@/lib/supabase/server";
 import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
 import SplitText from "@/components/ui/SplitText";
@@ -12,12 +12,14 @@ import "./Home.css";
 export default async function Home() {
   const supabase = await createAdminClient();
   const [{ data: infoData }, { data: featuredSkills }, { data: stats }] = await Promise.all([
-    supabase.from('personal_info').select('description').eq('key', 'site_mode').single(),
+    supabase.from('personal_info').select('key, description').in('key', ['site_mode', 'address']),
     supabase.from('skills').select('title, icon, color').eq('is_featured', true).order('id', { ascending: true }).limit(8),
     supabase.from('skills').select('id').limit(1000),
   ]);
 
-  const siteMode = infoData?.description || 'multi';
+  const infoByKey = Object.fromEntries((infoData || []).map((item) => [item.key, item.description]));
+  const siteMode = infoByKey.site_mode || 'multi';
+  const location = infoByKey.address?.trim() || null;
 
   // In single-page mode, the Home section is rendered by SinglePageLayout
   if (siteMode === 'single') {
@@ -45,10 +47,12 @@ export default async function Home() {
         </Parallax>
         <div className="home__content">
           <div className="home__data">
-            <span className="hero-kicker reveal delay-1">
-              <span className="hero-kicker__dot" aria-hidden="true" />
-              Available for new projects
-            </span>
+            {location ? (
+              <span className="hero-kicker reveal delay-1">
+                <FaMapMarkerAlt className="hero-kicker__icon" aria-hidden="true" />
+                {location}
+              </span>
+            ) : null}
 
             <h1 className="home__title hero-title">
               <SplitText as="span" className="hero-title__lead" text="I'm Aman Kumar." mode="char" />

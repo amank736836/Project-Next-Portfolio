@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { FaDownload, FaBriefcase, FaCode } from "react-icons/fa";
+import { FaDownload, FaBriefcase, FaCode, FaMapMarkerAlt } from "react-icons/fa";
 import Typewriter from "@/components/ui/Typewriter";
 import HeroPortrait3D from "@/components/ui/HeroPortrait3D";
 import SplitText from "@/components/ui/SplitText";
@@ -49,7 +49,7 @@ function ResumeDownloadButton() {
   );
 }
 
-export default function HomeSection({ enableTypewriter = true, enableOpenToWork = true, featuredSkills = [], heroImage = null }) {
+export default function HomeSection({ enableTypewriter = true, enableOpenToWork = true, featuredSkills = [], heroImage = null, location = null }) {
   const imageSrc = heroImage?.url || "https://res.cloudinary.com/amank736836/image/upload/v1785565567/portfolio/portfolio/profile_v4.png";
   const imageAlt = heroImage?.alt_text || "Profile";
 
@@ -73,10 +73,12 @@ export default function HomeSection({ enableTypewriter = true, enableOpenToWork 
       </Parallax>
       <div className="home__content reveal-right delay-2">
         <div className="home__data">
-          <span className="hero-kicker reveal delay-2">
-            <span className="hero-kicker__dot" aria-hidden="true" />
-            {enableOpenToWork ? 'Open to opportunities' : 'Full stack developer'}
-          </span>
+          {location ? (
+            <span className="hero-kicker reveal delay-2">
+              <FaMapMarkerAlt className="hero-kicker__icon" aria-hidden="true" />
+              {location}
+            </span>
+          ) : null}
 
           <h1 className="home__title hero-title">
             <SplitText as="span" className="hero-title__lead" text="I'm Aman Kumar." mode="char" />
