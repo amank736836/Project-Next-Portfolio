@@ -967,11 +967,9 @@ html.light-theme .amb__orb {
   width: 100%;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1150px) {
   .hero-stack-strip {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
+    gap: 12px;
     margin-top: -20px;
   }
 
@@ -1592,28 +1590,28 @@ html.light-theme .amb__orb {
 
 /* ====================== 15. layout guards & escape hatches =============== */
 
-/* Magnetic wrappers replace the raw buttons as flex/grid items, so they need to
-   stretch where the original buttons did. */
-.home__cta-group > .magnetic {
-  display: inline-flex;
-}
-
-@media screen and (max-width: 1024px) and (min-width: 577px) {
-  .home__cta-group > .magnetic {
-    width: 100%;
-  }
-}
-
-@container (max-width: 600px) {
-  .home__cta-group > .magnetic {
-    width: 100%;
-  }
-}
-
+/* Magnetic wrappers replace the raw buttons as flex/grid items. The wrapper
+   itself is transparent to layout — the button inside is what stretches.
+   (Grid/flex sizing for `.home__cta-group` lives in app/(public)/Home.css so
+   the layout rules stay in one place.) */
+.home__cta-group > .magnetic,
 .contact__form .magnetic,
 .button-center .magnetic {
   display: inline-flex;
 }
+
+@media screen and (max-width: 1200px) {
+  .home__cta-group > .magnetic {
+    display: flex;
+  }
+}
+
+@container (max-width: 640px) {
+  .home__cta-group > .magnetic {
+    display: flex;
+  }
+}
+
 
 /* Manual opt-out: <html class="no-motion"> disables the whole layer. */
 html.no-motion *,
