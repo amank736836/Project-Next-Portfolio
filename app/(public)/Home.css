@@ -6,6 +6,10 @@
   gap: 24px;
   min-height: 100vh;
   padding: 80px 40px 80px 160px; /* Increased left padding for desktop nav */
+  /* The rotating orbit rings around the portrait are wider than their box at
+     some rotation angles; clip horizontally so they never widen the document
+     (which produced a sideways scroll on phones). */
+  overflow-x: clip;
 }
 
 /* Narrower desktops: the nav rail only needs ~80px, so hand the rest back to
@@ -187,6 +191,18 @@
   .hero-scroll-cue {
     justify-content: center;
     margin-inline: auto;
+  }
+
+  .home__content {
+    text-align: center;
+  }
+
+  /* Legacy rules at <=450px justified this paragraph (huge word gaps) and
+     reserved 120px for the typewriter, which read as dead space on phones. */
+  .home__description {
+    text-align: center;
+    text-wrap: pretty;
+    min-height: 0;
   }
 }
 
@@ -474,7 +490,8 @@
   .home__cta-group {
     display: grid;
     grid-template-columns: 1fr;
-    width: min(100%, 280px);
+    width: 100%;
+    max-width: 420px;
     margin-inline: auto;
   }
 

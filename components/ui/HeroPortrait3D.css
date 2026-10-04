@@ -129,9 +129,22 @@
     width: 86%;
   }
 
+  /* Keep the rotating rings close to the portrait on phones: a square ring's
+     bounding box grows by up to 41% while it spins (r * (cos a + sin a)). */
   .hero-portrait-3d__orbit--outer {
-    width: 96%;
-    height: 96%;
+    width: 88%;
+    height: 88%;
+  }
+
+  .hero-portrait-3d__orbit--inner {
+    width: 68%;
+    height: 68%;
+  }
+
+  .hero-portrait-3d__glow {
+    width: 62%;
+    height: 62%;
+    filter: blur(48px);
   }
 }
 

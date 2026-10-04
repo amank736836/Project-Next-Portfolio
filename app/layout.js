@@ -77,7 +77,9 @@ export default async function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={`${outfit.variable} ${poppins.variable}`}>
+    // suppressHydrationWarning: the theme + motion classes are applied to <html>
+      // before hydration (inline script / ThemeController), which React would flag.
+    <html lang="en" className={`${outfit.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         {children}
