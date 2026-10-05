@@ -1,6 +1,10 @@
 .home {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* `minmax(0, 1fr)` and not `1fr`: a plain 1fr track is floored at its
+     items' min-content size, and the nowrap marquee in `.hero-stack-strip`
+     is ~1140px wide, which blew the whole hero out and got clipped by the
+     `overflow-x: clip` below. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   justify-items: center;
   gap: 24px;
@@ -159,7 +163,7 @@
    columns next to the fixed nav rail. */
 @media screen and (max-width: 1150px) {
   .home {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     text-align: center;
     padding: 120px 24px 60px; /* Centered padding for mobile/tablet */
     gap: 32px;

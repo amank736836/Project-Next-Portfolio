@@ -941,6 +941,10 @@ html.light-theme .amb__orb {
   display: flex;
   align-items: center;
   gap: 18px;
+  /* `min-width: 0` keeps the nowrap marquee from setting the strip's
+     min-content width floor (it would otherwise push a whole grid column —
+     and with it the hero — off-screen on narrow viewports). */
+  min-width: 0;
   max-width: 1140px;
   margin: -40px auto 60px;
   padding-inline: 24px;
@@ -957,6 +961,7 @@ html.light-theme .amb__orb {
 
 .hero-stack-strip .mq {
   flex: 1;
+  min-width: 0;
 }
 
 /* When the strip lives inside the hero grid it must span both columns. */
@@ -965,6 +970,8 @@ html.light-theme .amb__orb {
   margin: 8px auto 0;
   padding-inline: 0;
   width: 100%;
+  min-width: 0;
+  max-width: min(1140px, 100%);
 }
 
 @media screen and (max-width: 1150px) {
