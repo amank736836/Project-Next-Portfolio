@@ -287,8 +287,8 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
         {statItems.map((stat, i) => (
+          <div key={i} className="admin-reveal" data-reveal-delay={i * 90}>
           <StatCard
-            key={i}
             stat={stat}
             loading={loading}
             error={error}
@@ -303,6 +303,7 @@ export default function Dashboard() {
             cardBorder={cardBorder}
             cardInset={cardInset}
           />
+          </div>
         ))}
       </div>
 
@@ -329,7 +330,7 @@ export default function Dashboard() {
         style={{ display: 'grid', gap: '24px' }}
       >
         <div
-          className="xl:col-span-8"
+          className="xl:col-span-8 admin-reveal"
           style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
         >
           <OperationLogs
@@ -363,7 +364,7 @@ export default function Dashboard() {
         </div>
 
         <div
-          className="xl:col-span-4"
+          className="xl:col-span-4 admin-reveal" data-reveal-delay="140"
           style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
         >
           <section
@@ -372,7 +373,8 @@ export default function Dashboard() {
               border: `1px solid ${cardBorder}`,
               boxShadow: `0 10px 30px ${isLight ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.2)'}, ${cardInset}`,
             }}
-            className="rounded-2xl p-6 backdrop-blur-2xl"
+            className="rounded-2xl p-6 backdrop-blur-2xl admin-lift"
+            data-spotlight
           >
             <div className="flex items-center gap-3" style={{ marginBottom: '24px' }}>
               <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/15 flex items-center justify-center text-[var(--admin-accent)] border border-[var(--admin-accent)]/20">
@@ -452,7 +454,8 @@ export default function Dashboard() {
               border: `1px solid ${cardBorder}`,
               boxShadow: `0 10px 30px ${isLight ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.2)'}, ${cardInset}`,
             }}
-            className="rounded-2xl p-8 backdrop-blur-2xl"
+            className="rounded-2xl p-8 backdrop-blur-2xl admin-lift"
+            data-spotlight
           >
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Total Command hits</p>
             <h4 className="text-3xl font-black tracking-tight hud-text" style={{ color: textTitle, textShadow: isLight ? 'none' : '0 0 15px rgba(255,255,255,0.1)' }}>

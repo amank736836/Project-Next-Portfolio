@@ -12,6 +12,9 @@ const REVEAL_SELECTOR = [
   ".reveal-flip",
   ".reveal-zoom",
   ".reveal-stagger",
+  // Admin variant (its keyframes end at `transform: none` so a filled
+  // animation never leaves a containing block behind inside the tool).
+  ".admin-reveal",
   ".section__title",
 ].join(", ");
 

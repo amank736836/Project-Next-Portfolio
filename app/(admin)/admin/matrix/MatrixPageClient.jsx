@@ -34,7 +34,7 @@ export default function MatrixPageClient() {
 
   if (loading) {
     return (
-      <div className="animate-fade-in pb-10">
+      <div className="admin-reveal pb-10">
         <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
           <div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[var(--admin-title)]">Skill Matrix</h2>

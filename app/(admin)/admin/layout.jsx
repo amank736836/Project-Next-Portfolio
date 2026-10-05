@@ -6,6 +6,9 @@ import Sidebar from '@/components/Admin/Sidebar';
 import Themes from '@/components/Themes/Themes';
 import { usePathname } from 'next/navigation';
 import { ToastProvider } from '@/components/Admin/Toast';
+import ScrollReveal from '@/components/ScrollReveal';
+import PageTransition from '@/components/ui/PageTransition';
+import AdminMotion from '@/components/Admin/AdminMotion';
 import { ConfirmProvider } from '@/components/Admin/ConfirmModal';
 import { LoadingProvider } from '@/components/Admin/LoadingContext';
 import { FiMenu } from 'react-icons/fi';
@@ -122,6 +125,18 @@ export default function AdminLayout({ children }) {
       </svg>
       <Themes />
 
+      {/* Motion layer: reveal-on-scroll, route fade and the pointer spotlight.
+          The inline script sets `motion-ready` before paint so reveal elements
+          don't flash in visible and then hide once React hydrates. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('motion-ready');}",
+        }}
+      />
+      <ScrollReveal />
+      <AdminMotion />
+
       <div 
         className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
         onClick={closeSidebar} 
@@ -180,7 +195,9 @@ export default function AdminLayout({ children }) {
           <ToastProvider>
             <ConfirmProvider>
               <LoadingProvider>
-                {children}
+                <PageTransition variant="fade">
+                  {children}
+                </PageTransition>
               </LoadingProvider>
             </ConfirmProvider>
           </ToastProvider>

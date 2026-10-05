@@ -86,7 +86,7 @@ export default function CSPReportsPage() {
   }
 
   return (
-    <div className="csp-report-page p-4 sm:p-6 max-w-full">
+    <div className="csp-report-page p-4 sm:p-6 max-w-full admin-reveal">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-[var(--admin-title)] flex items-center gap-3 mb-2">
           <span className="text-[var(--admin-accent)]"><FiAlertTriangle /></span>
