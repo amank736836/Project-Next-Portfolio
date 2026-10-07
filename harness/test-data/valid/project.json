@@ -1,0 +1,12 @@
+{
+  "title": "Valid Project",
+  "img": "https://res.cloudinary.com/example/image/upload/v1/valid.png",
+  "description": "A complete project with all required detail sections.",
+  "category": "Web",
+  "is_hidden": false,
+  "details": [
+    { "title": "Github", "desc": "https://github.com/example/valid" },
+    { "title": "Preview", "desc": "https://valid.example.com" },
+    { "title": "Language", "desc": "TypeScript" }
+  ]
+}

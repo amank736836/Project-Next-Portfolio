@@ -1,0 +1,9 @@
+{
+  "title": "Missing Github",
+  "img": "https://res.cloudinary.com/example/image/upload/v1/missing.png",
+  "description": "Has preview but no GitHub link.",
+  "details": [
+    { "title": "Preview", "desc": "https://preview.example.com" },
+    { "title": "Language", "desc": "TypeScript" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Valid Skill",
+  "percentage": 80,
+  "category": "Frontend",
+  "icon": "🎨",
+  "color": "#61DAFB",
+  "is_featured": true,
+  "is_hidden": false
+}
