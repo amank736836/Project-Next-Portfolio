@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "title": "Sample Resume",
+  "file_url": "https://example.supabase.co/storage/v1/object/public/portfolio-resumes/sample.pdf",
+  "file_name": "Aman_Resume.pdf",
+  "file_size": 12345,
+  "is_active": true,
+  "is_favorite": false,
+  "uploaded_at": "2026-01-01T00:00:00.000Z"
+}

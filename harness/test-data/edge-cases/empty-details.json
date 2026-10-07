@@ -1,0 +1,6 @@
+{
+  "title": "Has no details",
+  "img": "https://res.cloudinary.com/example/image/upload/v1/empty.png",
+  "description": "Empty details array — should be filtered out.",
+  "details": []
+}

@@ -1,0 +1,7 @@
+{
+  "id": "00000000-0000-0000-0000-000000000001",
+  "url": "https://res.cloudinary.com/example/image/upload/v1/sample.png",
+  "alt_text": "Sample hero",
+  "is_hero": true,
+  "display_order": 0
+}
