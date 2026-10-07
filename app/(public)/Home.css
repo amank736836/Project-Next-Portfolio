@@ -1,11 +1,28 @@
 .home {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* `minmax(0, 1fr)` and not `1fr`: a plain 1fr track is floored at its
+     items' min-content size, and the nowrap marquee in `.hero-stack-strip`
+     is ~1140px wide, which blew the whole hero out and got clipped by the
+     `overflow-x: clip` below. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   justify-items: center;
   gap: 24px;
   min-height: 100vh;
   padding: 80px 40px 80px 160px; /* Increased left padding for desktop nav */
+  /* The rotating orbit rings around the portrait are wider than their box at
+     some rotation angles; clip horizontally so they never widen the document
+     (which produced a sideways scroll on phones). */
+  overflow-x: clip;
+}
+
+/* Narrower desktops: the nav rail only needs ~80px, so hand the rest back to
+   the two columns instead of squeezing the text column. */
+@media screen and (max-width: 1400px) {
+  .home {
+    padding: 80px 32px 80px 120px;
+    gap: 40px;
+  }
 }
 
 .home__img-wrapper {
@@ -142,25 +159,54 @@
   opacity: 0.6;
 }
 
-@media screen and (max-width: 1024px) {
+/* Stack the hero while the window is still too narrow for two comfortable
+   columns next to the fixed nav rail. */
+@media screen and (max-width: 1150px) {
   .home {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     text-align: center;
     padding: 120px 24px 60px; /* Centered padding for mobile/tablet */
+    gap: 32px;
   }
-  
+
   .home__img {
     height: 400px;
     max-width: 400px;
     margin: 0 auto; /* Centered margin for mobile/tablet */
   }
-  
+
+  .home__img-wrapper {
+    max-width: 420px;
+  }
+
   .home__data {
     margin: 0 auto;
   }
-  
+
   .home__description {
     margin-inline: auto;
+  }
+
+  .home__cta-group {
+    margin-inline: auto;
+  }
+
+  .hero-stats,
+  .hero-scroll-cue {
+    justify-content: center;
+    margin-inline: auto;
+  }
+
+  .home__content {
+    text-align: center;
+  }
+
+  /* Legacy rules at <=450px justified this paragraph (huge word gaps) and
+     reserved 120px for the typewriter, which read as dead space on phones. */
+  .home__description {
+    text-align: center;
+    text-wrap: pretty;
+    min-height: 0;
   }
 }
 
@@ -207,32 +253,49 @@
   align-items: center;
 }
 
-@media screen and (max-width: 1024px) and (min-width: 577px) {
+/* Adaptive CTA layout.
+   Below 1200px — or whenever the hero text column is narrower than 640px —
+   the buttons move into an auto-fitting grid: two columns while there is room,
+   then a single full-width column. Buttons always span their cell so the
+   label can never slide under the absolutely positioned icon. */
+@media screen and (max-width: 1200px) {
   .home__cta-group {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: min(100%, 630px);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    width: 100%;
+    max-width: 560px;
   }
 
-  .home .button {
+  .home__cta-group > *,
+  .home__cta-group .button {
+    display: flex;
     width: 100%;
-    min-width: 0;
-    padding-left: 22px;
-    padding-right: 58px;
+  }
+
+  /* Odd trailing button (e.g. "Hire Me") spans the row to stay balanced */
+  .home__cta-group > *:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 
-@container (max-width: 600px) {
+@container (max-width: 640px) {
   .home__cta-group {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: min(100%, 520px);
-    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    width: 100%;
+    max-width: 560px;
   }
 
-  .home__cta-group .button:last-child {
+  .home__cta-group > *,
+  .home__cta-group .button {
+    display: flex;
+    width: 100%;
+  }
+
+  .home__cta-group > *:last-child:nth-child(odd) {
     grid-column: 1 / -1;
-    justify-self: center;
-    width: calc(50% - 8px);
   }
 }
 
@@ -243,7 +306,10 @@
   gap: 10px;
   color: var(--title-color);
   border: 1px solid var(--first-color);
-  padding: 0 32px;
+  /* The pill icon is absolutely positioned at `right: 0` and is 1:1 with the
+     button height (52px), so the label needs >= 60px of room on that side. */
+  padding: 0 62px 0 30px;
+  white-space: nowrap;
   height: 52px;
   border-radius: 32px;
   font-family: var(--second-font);
@@ -414,15 +480,11 @@
 }
 
 /* Mobile adjustments for new elements */
-@media screen and (max-width: 1024px) {
-  .home__cta-group {
-    justify-content: center;
-  }
-  
+@media screen and (max-width: 1150px) {
   .home__badges {
     justify-content: center;
   }
-  
+
   .badge__tech-stack {
     justify-content: center;
   }
@@ -432,7 +494,8 @@
   .home__cta-group {
     display: grid;
     grid-template-columns: 1fr;
-    width: min(100%, 280px);
+    width: 100%;
+    max-width: 420px;
     margin-inline: auto;
   }
 
@@ -444,9 +507,14 @@
   }
 
   .button {
-    padding: 0 24px;
+    /* 48px tall => 48px icon, so reserve 56px on the icon side */
+    padding: 0 56px 0 22px;
     height: 48px;
     font-size: var(--smaller-font-size);
+  }
+
+  .home__cta-group {
+    max-width: 100%;
   }
   
   .home__subtitle {

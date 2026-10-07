@@ -4330,3 +4330,99 @@ input.premium-input {
   color: #ffffff !important;
   border: none !important;
 }
+
+/* ==========================================================================
+   Motion layer (mirrors the public motion system, tuned for a tool UI).
+   Driven by <ScrollReveal /> (via .admin-reveal / .reveal-scale) and
+   <AdminMotion /> (the pointer spotlight). Inert under reduced motion.
+   ========================================================================== */
+
+/* Admin's own reveal: unlike the public `fadeInUp`, the end state is
+   `transform: none`, so a filled animation never leaves a containing block
+   behind (which would mis-position fixed modals and dropdowns inside). */
+.admin-reveal {
+  opacity: 0;
+}
+
+.admin-reveal.active {
+  animation: admin-rise-in 520ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) forwards;
+}
+
+@keyframes admin-rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Without JS the elements must stay readable. */
+html:not(.motion-ready) .admin-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Existing admin screens that reuse the shared classes get tool pacing. */
+.admin-root .reveal.active,
+.admin-root .reveal-left.active,
+.admin-root .reveal-right.active,
+.admin-root .reveal-scale.active {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- pointer spotlight ----------------------------------------------------
+   Painted as an overlay child so it sits above the card background but below
+   the card's own content (which uses z-10). */
+[data-spotlight] {
+  position: relative;
+}
+
+[data-spotlight]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: radial-gradient(
+    220px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    var(--admin-accent-glow),
+    transparent 68%
+  );
+}
+
+[data-spotlight].is-spotlit:hover::after {
+  opacity: 1;
+}
+
+/* --- panel hover lift -----------------------------------------------------
+   Transform only: these panels set their border/box-shadow inline, which beats
+   any class-level rule, so promising a shadow here would be a lie. */
+.admin-lift {
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.admin-lift:hover {
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-reveal,
+  .admin-root .reveal,
+  .admin-root .reveal-left,
+  .admin-root .reveal-right,
+  .admin-root .reveal-scale {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-spotlight]::after,
+  .admin-lift {
+    transition: none;
+  }
+
+  .admin-lift:hover {
+    transform: none;
+  }
+}

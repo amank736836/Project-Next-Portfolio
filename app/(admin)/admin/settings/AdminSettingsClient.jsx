@@ -75,7 +75,7 @@ export default function AdminSettingsClient({
   ];
 
   return (
-    <div className="admin-settings animate-fade-in">
+    <div className="admin-settings admin-reveal">
       <div className="admin-settings__header">
         <h1 className="admin-settings__title">Settings</h1>
         <p className="admin-settings__subtitle">Operator-only configuration and system settings.</p>

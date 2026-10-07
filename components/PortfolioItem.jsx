@@ -17,6 +17,7 @@ import {
   FiX
 } from "react-icons/fi";
 import { FaCode, FaMobileAlt } from "react-icons/fa";
+import TiltCard from "@/components/ui/TiltCard";
 
 // Map icon NAMES (strings) to components - used by details data
 const iconMap = {
@@ -85,6 +86,15 @@ const PortfolioItem = ({
 
   const delayClass = `delay-${((index || 0) % 6) + 1}`;
 
+  // Prefer the admin-provided summary; fall back to the project detail copy.
+  const summary = useMemo(() => {
+    if (shortDescription) return shortDescription;
+    const detail = Array.isArray(parsedDetails)
+      ? parsedDetails.find((d) => d?.title?.toLowerCase().includes('project') && typeof d.desc === 'string')
+      : null;
+    return detail?.desc || '';
+  }, [shortDescription, parsedDetails]);
+
   const toggleModal = () => setModal(!modal);
 
   const handleKeyDown = (e) => {
@@ -149,7 +159,7 @@ const PortfolioItem = ({
   );
 
   return (
-    <div
+    <TiltCard
       className={`portfolio__item reveal-scale ${delayClass}`}
       onClick={toggleModal}
       role="button"
@@ -172,7 +182,7 @@ const PortfolioItem = ({
       <div className="portfolio__hover">
         <h3 className="portfolio__title">{title}</h3>
         {category && <span className="portfolio__category">{category}</span>}
-        {shortDescription && <p className="portfolio__description">{shortDescription}</p>}
+        {summary && <p className="portfolio__description">{summary}</p>}
         {parsedTechStack.length > 0 && (
           <div className="portfolio__tech-stack">
             {parsedTechStack.slice(0, 6).map((tech, i) => {
@@ -216,7 +226,7 @@ const PortfolioItem = ({
       </div>
       
       {modal && createPortal(ModalContent, document.body)}
-    </div>
+    </TiltCard>
   );
 };
 

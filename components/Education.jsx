@@ -1,5 +1,6 @@
 import parse from "html-react-parser";
 import { FaGraduationCap, FaBriefcase } from "react-icons/fa";
+import TiltCard from "@/components/ui/TiltCard";
 
 const Education = ({ data, type }) => {
   if (!data || data.length === 0) return null;
@@ -9,7 +10,7 @@ const Education = ({ data, type }) => {
       {data.map((val, index) => {
         const delayClass = `delay-${(index % 6) + 1}`;
         return (
-          <div className={`resume__item reveal-left ${delayClass}`} key={val.id}>
+          <TiltCard as="div" max={5} className={`resume__item reveal-left ${delayClass}`} key={val.id}>
             <div className="resume__icon">
               {type === 'experience' ? <FaBriefcase /> : <FaGraduationCap />}
             </div>
@@ -34,7 +35,7 @@ const Education = ({ data, type }) => {
                 <span className="resume__detail-value">{val.achievements}</span>
               </div>
             )}
-          </div>
+          </TiltCard>
         );
       })}
     </>

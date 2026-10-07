@@ -7,6 +7,10 @@ import TransitionLoader from '@/components/TransitionLoader';
 import RootShell from '@/components/RootShell';
 import SinglePageLayout from '@/components/SinglePageLayout';
 import ScrollReveal from '@/components/ScrollReveal';
+import AuroraBackground from '@/components/ui/AuroraBackground';
+import ScrollProgress from '@/components/ui/ScrollProgress';
+import CursorGlow from '@/components/ui/CursorGlow';
+import PageTransition from '@/components/ui/PageTransition';
 import './Home.css';
 
 export default async function PublicLayout({ children }) {
@@ -34,12 +38,23 @@ export default async function PublicLayout({ children }) {
 
   return (
     <RootShell>
+      {enableScrollReveal ? (
+        // Runs before paint so reveal elements never flash in un-animated.
+        <script
+          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('motion-ready');" }}
+        />
+      ) : null}
+      <AuroraBackground />
+      <ScrollProgress />
+      <CursorGlow />
       <Navbar siteMode={siteMode} initialUser={initialUser} />
       <Themes />
       <ScrollHandler siteMode={siteMode} />
       <TransitionLoader />
       <ScrollReveal enabled={enableScrollReveal} />
-      {siteMode === 'single' ? <SinglePageLayout enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills || []} heroImage={heroImages} socialLinks={allLinks} /> : children}
+      <PageTransition>
+        {siteMode === 'single' ? <SinglePageLayout enableTypewriter={enableTypewriter} enableOpenToWork={enableOpenToWork} featuredSkills={featuredSkills || []} heroImage={heroImages} socialLinks={allLinks} /> : children}
+      </PageTransition>
     </RootShell>
   );
 }

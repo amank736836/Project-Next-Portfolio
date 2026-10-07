@@ -119,6 +119,17 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
     <nav className="nav">
       <div className={`${showMenu ? "nav__menu show-menu" : "nav__menu"}`}>
         <ul className="nav__list">
+          <li className="nav__item nav__item--brand">
+            <Link
+              href={siteMode === 'single' ? '#home' : '/'}
+              className="nav__brand"
+              aria-label="Aman Kumar — home"
+              onClick={() => setShowMenu(false)}
+            >
+              <span className="nav__brand-mark" aria-hidden="true">AK</span>
+              <span className="nav__brand-ring" aria-hidden="true" />
+            </Link>
+          </li>
           {navLinks.map(({ name, icon, path }) => {
             const isActive = siteMode === 'single' 
               ? activeSection === (path === '#home' ? 'home' : path.replace('#', ''))
