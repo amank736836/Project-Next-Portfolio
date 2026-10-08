@@ -37,9 +37,10 @@ COMMENT ON COLUMN api_logs.ip_address IS 'Client IP address';
 -- Enable RLS
 ALTER TABLE api_logs ENABLE ROW LEVEL SECURITY;
 
--- Public read access
-CREATE POLICY "Public read access" ON api_logs
-    FOR SELECT USING (true);
+-- Service role read access only (the anon key is public; api_logs contains
+-- IPs, user agents, error stacks and request/response bodies).
+CREATE POLICY "Service role read access" ON api_logs
+    FOR SELECT USING (auth.role() = 'service_role');
 
 -- Service role write access (INSERT needs WITH CHECK)
 CREATE POLICY "Service role write access" ON api_logs

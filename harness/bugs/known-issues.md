@@ -1,7 +1,9 @@
 # Known issues
 
-This file lists **known issues** observed during the harness build that may
-or may not be fixed. Each is also recorded as a `BUG-xxx` in the bugs system.
+This file lists **known issues** observed during the harness build. Each is
+also recorded as a `BUG-xxx` in the bugs system. All four issues below were
+fixed and verified on 2026-10-08; the authoritative records (with fix and
+verification notes) now live in `bugs/resolved/`.
 
 ## BUG-001 — `audit_log` table is not written to by application code
 
@@ -27,7 +29,7 @@ Root Cause:  No application code calls `supabase.from('audit_log').insert(...)`
 Fix:         Add a helper `lib/audit.js` and call it from every admin POST/PUT/DELETE
              handler, or define a Postgres trigger.
 Regression Test: TC-ADM-SK-014 (drafted below).
-Status:      OPEN
+Status:      CLOSED 2026-10-08 — lib/audit.js created (logAudit) and wired into every admin write handler; see bugs/resolved/BUG-001-audit-log-never-written.md
 
 Proposed regression test:
   - ADMIN-AUDIT-001: After POST /api/admin/skills, a row exists in audit_log
@@ -55,7 +57,7 @@ Root Cause:  proxy.js uses an in-memory Map().
 Fix:         Use Upstash Redis when env vars are set; this is already wired but
              not enabled by default.
 Regression Test: TC-SEC-031.
-Status:      OPEN
+Status:      CLOSED 2026-10-08 — proxy.js now uses Upstash Redis when configured (in-memory fallback); see bugs/resolved/BUG-002-rate-limiter-in-memory-only.md (fixed together with BUG-007)
 ```
 
 ## BUG-003 — `lib/api-logger.js` imports a non-existent NextAuth module
@@ -78,7 +80,7 @@ Evidence:    lib/api-logger.js
 Root Cause:  The logger assumes NextAuth, but the project uses Scalekit for sessions.
 Fix:         Replace with `await getCurrentUser()` from `lib/auth.js`.
 Regression Test: TC-ADM-AL-002 (drafted).
-Status:      OPEN
+Status:      CLOSED 2026-10-08 — lib/api-logger.js uses getCurrentUser() from lib/auth.js instead of the non-existent next-auth import; see bugs/resolved/BUG-003-api-logger-imports-next-auth.md
 ```
 
 ## BUG-004 — `audit_log` insert is missing; no RLS test exists
@@ -100,5 +102,5 @@ Evidence:    UNKNOWN
 Root Cause:  No RLS tests in the harness.
 Fix:         Add `automation/database/rls.test.mjs` that uses anon + service role.
 Regression Test: TC-DB-019.
-Status:      OPEN
+Status:      CLOSED 2026-10-08 — harness/automation/database/rls.test.mjs added (anon-key RLS tests; skip gracefully offline); see bugs/resolved/BUG-004-no-automated-rls-coverage.md
 ```

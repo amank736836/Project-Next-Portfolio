@@ -11,8 +11,9 @@ export default async function SinglePageLayout({ featuredSkills = [], enableType
   const supabase = await createAdminClient();
 
   const [infoRes, skillsRes, educationRes, experienceRes, projectsRes, resumeRes] = await Promise.all([
-    supabase.from('personal_info').select('*'),
-    supabase.from('skills').select('*').order('id', { ascending: true }),
+    // Public surface: never render rows the admin has marked as hidden.
+    supabase.from('personal_info').select('*').eq('is_hidden', false),
+    supabase.from('skills').select('*').eq('is_hidden', false).order('id', { ascending: true }),
     supabase.from('education').select('*').eq('is_hidden', false).order('id', { ascending: true }),
     supabase.from('experience').select('*').eq('is_hidden', false).order('id', { ascending: true }),
     supabase.from('projects').select('*').eq('is_hidden', false).order('id', { ascending: true }),

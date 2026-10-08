@@ -56,14 +56,22 @@ function hasValidSameOrigin(request) {
   }
 }
 
-function enforceRateLimit(request) {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    return null;
-  }
+function tooManyRequests(retryAfterSeconds) {
+  return NextResponse.json(
+    { error: 'Too many requests. Please slow down.' },
+    {
+      status: 429,
+      headers: {
+        'Retry-After': String(Math.max(1, retryAfterSeconds)),
+      },
+    }
+  );
+}
 
-  const pathname = request.nextUrl.pathname;
-  const ip = getClientIp(request);
-  const key = `${ip}:${pathname}:${request.method}`;
+/**
+ * In-memory fixed-window limiter (per-process fallback).
+ */
+function enforceRateLimitInMemory(key) {
   const now = Date.now();
 
   const current = rateLimitStore.get(key);
@@ -75,18 +83,61 @@ function enforceRateLimit(request) {
   current.count += 1;
   if (current.count > RATE_LIMIT_MAX_REQUESTS) {
     const retryAfterSeconds = Math.ceil((current.resetAt - now) / 1000);
-    return NextResponse.json(
-      { error: 'Too many requests. Please slow down.' },
-      {
-        status: 429,
-        headers: {
-          'Retry-After': String(Math.max(1, retryAfterSeconds)),
-        },
-      }
-    );
+    return tooManyRequests(retryAfterSeconds);
   }
 
   return null;
+}
+
+/**
+ * Upstash Redis fixed-window limiter (shared across instances).
+ * Uses the Upstash REST API directly so no extra dependency is required.
+ * Falls back to the in-memory limiter if Upstash is unreachable.
+ */
+async function enforceRateLimitUpstash(key) {
+  const baseUrl = process.env.UPSTASH_REDIS_REST_URL.replace(/\/$/, '');
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const now = Date.now();
+  const windowStart = Math.floor(now / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
+  const redisKey = `ratelimit:${key}:${windowStart}`;
+  const headers = { Authorization: `Bearer ${token}` };
+
+  try {
+    const incrRes = await fetch(`${baseUrl}/incr/${encodeURIComponent(redisKey)}`, { headers });
+    if (!incrRes.ok) throw new Error(`Upstash INCR failed: ${incrRes.status}`);
+    const { result } = await incrRes.json();
+    const count = Number(result);
+
+    if (count === 1) {
+      // First hit in this window — make sure the key expires with the window.
+      await fetch(
+        `${baseUrl}/expire/${encodeURIComponent(redisKey)}/${Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)}`,
+        { headers }
+      ).catch(() => {});
+    }
+
+    if (count > RATE_LIMIT_MAX_REQUESTS) {
+      const retryAfterSeconds = Math.ceil((windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000);
+      return tooManyRequests(retryAfterSeconds);
+    }
+
+    return null;
+  } catch (error) {
+    console.error('[RateLimit] Upstash unavailable, falling back to in-memory limiter:', error?.message);
+    return enforceRateLimitInMemory(key);
+  }
+}
+
+async function enforceRateLimit(request) {
+  const pathname = request.nextUrl.pathname;
+  const ip = getClientIp(request);
+  const key = `${ip}:${pathname}:${request.method}`;
+
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return enforceRateLimitUpstash(key);
+  }
+
+  return enforceRateLimitInMemory(key);
 }
 
 export async function proxy(request) {
@@ -96,7 +147,7 @@ export async function proxy(request) {
   const shouldProtectWriteApi = isProtectedWriteApi(pathname) && isMutatingMethod(method);
 
   if (shouldProtectWriteApi) {
-    const limited = enforceRateLimit(request);
+    const limited = await enforceRateLimit(request);
     if (limited) {
       return limited;
     }

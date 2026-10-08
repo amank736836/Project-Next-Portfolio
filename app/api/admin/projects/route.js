@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 const ALLOWED_PROJECT_FIELDS = [
@@ -41,6 +42,7 @@ export async function POST(request) {
   const { data, error } = await supabase.from('projects').insert([safeBody]).select();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'create', resourceType: 'projects', resourceId: data?.[0]?.id, newData: safeBody, request });
   return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
@@ -57,6 +59,7 @@ export async function PUT(request) {
   const { data, error } = await supabase.from('projects').update(updates).eq('id', id).select();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'update', resourceType: 'projects', resourceId: id, newData: updates, request });
   return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
@@ -72,5 +75,6 @@ export async function DELETE(request) {
   const { error } = await supabase.from('projects').delete().eq('id', id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'delete', resourceType: 'projects', resourceId: id, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
