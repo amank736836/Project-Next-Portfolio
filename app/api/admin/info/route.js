@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -35,6 +36,7 @@ export async function POST(request) {
 
   const { data, error } = await supabase.from('personal_info').upsert([item]).select();
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'create', resourceType: 'personal_info', resourceId: item.key, newData: item, request });
   return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
@@ -50,6 +52,7 @@ export async function PUT(request) {
   const { error } = await supabase.from('personal_info').upsert(payload);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'update', resourceType: 'personal_info', resourceId: payload?.[0]?.key, newData: payload, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
 
@@ -73,6 +76,7 @@ export async function PATCH(request) {
     .eq('key', key);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'visibility_toggle', resourceType: 'personal_info', resourceId: key, newData: { is_hidden: body.is_hidden }, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
 
@@ -91,5 +95,6 @@ export async function DELETE(request) {
 
   const { error } = await supabase.from('personal_info').delete().eq('key', key);
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'delete', resourceType: 'personal_info', resourceId: key, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

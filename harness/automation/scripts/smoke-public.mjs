@@ -93,7 +93,13 @@ async function runApis() {
     const url = BASE + a.path;
     let res;
     try {
-      res = await http(url, { method: a.method, body: a.body ? JSON.stringify(a.body) : undefined });
+      res = await http(url, {
+        method: a.method,
+        body: a.body ? JSON.stringify(a.body) : undefined,
+        // Send Content-Type whenever there is a body, otherwise the route
+        // rejects the request with a 400 before doing any real work.
+        headers: a.body ? { 'content-type': 'application/json' } : undefined,
+      });
     } catch (e) {
       record(`api ${a.method} ${a.path}`, false, { error: e.message });
       continue;

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -77,19 +78,22 @@ export async function POST(request) {
     const nextOrder = (maxOrder?.display_order || 0) + 1;
 
     // Insert new image
-    const { data, error } = await supabase
-      .from('hero_images')
-      .insert({
+    const newImage = {
         url: imageUrl,
         alt_text: altText,
         is_hero: isHero,
         display_order: nextOrder,
-      })
+      };
+
+    const { data, error } = await supabase
+      .from('hero_images')
+      .insert(newImage)
       .select()
       .single();
 
     if (error) throw error;
 
+    await logAudit({ action: 'create', resourceType: 'hero_images', resourceId: data?.id, newData: newImage, request });
     return NextResponse.json({ data });
   } catch (error) {
     console.error('POST /api/admin/hero-images error:', error);

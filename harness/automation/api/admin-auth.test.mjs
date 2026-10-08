@@ -43,7 +43,12 @@ test('GET /admin without session redirects to /api/auth/login', async () => {
 });
 
 test('POST /api/auth/refresh without session returns 401', async () => {
-  const res = await fetch(BASE + '/api/auth/refresh', { method: 'POST' });
+  // Send a same-origin Origin header so the proxy CSRF check lets the
+  // request through and the route itself answers 401 (no session).
+  const res = await fetch(BASE + '/api/auth/refresh', {
+    method: 'POST',
+    headers: { origin: BASE },
+  });
   assert.equal(res.status, 401, `expected 401, got ${res.status}`);
 });
 

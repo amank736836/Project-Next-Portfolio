@@ -1,9 +1,16 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
 export async function GET(request) {
+  // Defense in depth: the proxy guards /api/admin, but CSP reports contain
+  // attacker-influenced data and should not rely on edge protection alone.
+  if (!await isAuthenticated()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const startTotal = Date.now();
   try {
     const t1 = Date.now();

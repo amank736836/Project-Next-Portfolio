@@ -12,14 +12,17 @@ import "./Home.css";
 export default async function Home() {
   const supabase = await createAdminClient();
   const [{ data: infoData }, { data: featuredSkills }, { data: stats }] = await Promise.all([
-    supabase.from('personal_info').select('key, description').in('key', ['site_mode', 'address']),
-    supabase.from('skills').select('title, icon, color').eq('is_featured', true).order('id', { ascending: true }).limit(8),
-    supabase.from('skills').select('id').limit(1000),
+    supabase.from('personal_info').select('key, description, is_hidden').in('key', ['site_mode', 'address']),
+    supabase.from('skills').select('title, icon, color').eq('is_featured', true).eq('is_hidden', false).order('id', { ascending: true }).limit(8),
+    // Stat must count only publicly visible skills.
+    supabase.from('skills').select('id').eq('is_hidden', false).limit(1000),
   ]);
 
   const infoByKey = Object.fromEntries((infoData || []).map((item) => [item.key, item.description]));
   const siteMode = infoByKey.site_mode || 'multi';
-  const location = infoByKey.address?.trim() || null;
+  // The address is public-facing: respect the admin's is_hidden flag.
+  const addressItem = (infoData || []).find((item) => item.key === 'address');
+  const location = addressItem && !addressItem.is_hidden ? (addressItem.description?.trim() || null) : null;
 
   // In single-page mode, the Home section is rendered by SinglePageLayout
   if (siteMode === 'single') {

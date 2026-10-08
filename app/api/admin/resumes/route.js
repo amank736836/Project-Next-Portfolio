@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -60,6 +61,7 @@ export async function PUT(request) {
 
     if (error) throw error;
 
+    await logAudit({ action: 'update', resourceType: 'resumes', resourceId: id, newData: updates, request });
     return NextResponse.json(data, { headers: NO_CACHE });
   } catch (error) {
     console.error('Update resume error:', error);
@@ -104,6 +106,7 @@ export async function DELETE(request) {
     const { error } = await supabase.from('resumes').delete().eq('id', id);
     if (error) throw error;
 
+    await logAudit({ action: 'delete', resourceType: 'resumes', resourceId: id, oldData: resume, request });
     return NextResponse.json({ success: true }, { headers: NO_CACHE });
   } catch (error) {
     console.error('Delete resume error:', error);

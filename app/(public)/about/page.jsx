@@ -17,7 +17,8 @@ export const metadata = {
 
 export default async function About() {
   const supabase = await createAdminClient();
-  const { data: infoData } = await supabase.from('personal_info').select('*');
+  // Public surface: never render rows the admin has marked as hidden.
+  const { data: infoData } = await supabase.from('personal_info').select('*').eq('is_hidden', false);
 
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
   let personalInfo = infoData?.filter(i => 

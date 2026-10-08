@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -53,6 +54,7 @@ export async function POST(request) {
     return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   }
 
+  await logAudit({ action: 'create', resourceType: 'skill_categories', resourceId: data?.id, newData: data, request });
   return NextResponse.json(data, { headers: NO_CACHE });
 }
 
@@ -87,6 +89,8 @@ export async function DELETE(request) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
 
+  await logAudit({ action: 'delete', resourceType: 'skill_categories', resourceId: id, oldData: cat, request });
+
   await supabase
     .from('skills')
     .update({ category: 'General' })
@@ -109,5 +113,6 @@ export async function PUT(request) {
     .eq('id', id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'update', resourceType: 'skill_categories', resourceId: id, newData: { display_order }, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

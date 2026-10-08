@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 const ALLOWED_SKILL_FIELDS = [
@@ -44,6 +45,7 @@ export async function POST(request) {
     console.error('Skill Create Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   }
+  await logAudit({ action: 'create', resourceType: 'skills', resourceId: data?.id, newData: skill, request });
   return NextResponse.json(data, { headers: NO_CACHE });
 }
 
@@ -65,6 +67,7 @@ export async function PUT(request) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'update', resourceType: 'skills', resourceId: id, newData: sanitizeSkill(body), request });
   return NextResponse.json(data, { headers: NO_CACHE });
 }
 
@@ -88,6 +91,7 @@ export async function PATCH(request) {
     .eq('id', id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'visibility_toggle', resourceType: 'skills', resourceId: id, newData: { is_hidden: body.is_hidden }, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
 
@@ -103,5 +107,6 @@ export async function DELETE(request) {
 
   const { error } = await supabase.from('skills').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'delete', resourceType: 'skills', resourceId: id, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -26,6 +27,7 @@ export async function PATCH(request, { params }) {
       .single();
 
     if (error) throw error;
+    await logAudit({ action: 'update', resourceType: 'hero_images', resourceId: id, newData: body, request });
     return NextResponse.json({ data });
   } catch (error) {
     console.error(`PATCH /api/admin/hero-images/${id} error:`, error);
@@ -44,6 +46,8 @@ export async function DELETE(request, { params }) {
     // Get image URL first for Cloudinary cleanup
     const { error } = await supabase.from('hero_images').delete().eq('id', id);
     if (error) throw error;
+
+    await logAudit({ action: 'delete', resourceType: 'hero_images', resourceId: id, request });
 
     // TODO: Delete from Cloudinary if needed
 
