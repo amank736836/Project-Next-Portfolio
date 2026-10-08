@@ -10,6 +10,9 @@
   z-index: 9999;
   transform: translateX(100%);
   transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  border-right: 0;
+  border-radius: 5px 0 0 5px;
 }
 
 .show-switcher{
@@ -100,4 +103,145 @@
     position: absolute;
     top: 2%;
     left: 15px;
+}
+
+/* ===== Theme mode icon (sun / moon morph) =====
+   Both shapes live in one SVG and cross-animate on toggle — see
+   components/Themes/ThemeModeIcon.jsx and motion.css §16 for the page-level
+   circular wipe this pairs with. */
+.tt-icon {
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+  display: block;
+}
+
+.tt-icon__sun,
+.tt-icon__moon {
+  transform-origin: 50% 50%;
+  transition:
+    transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 320ms ease;
+}
+
+.tt-icon__sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.tt-icon__moon {
+  opacity: 0;
+  transform: rotate(-110deg) scale(0.35);
+}
+
+/* The toggler shows the *target* mode: light page → moon, dark page → sun. */
+.tt-icon--to-moon .tt-icon__sun {
+  opacity: 0;
+  transform: rotate(140deg) scale(0.35);
+}
+
+.tt-icon--to-moon .tt-icon__moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.tt-icon--to-sun .tt-icon__sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.tt-icon--to-sun .tt-icon__moon {
+  opacity: 0;
+  transform: rotate(-110deg) scale(0.35);
+}
+
+.tt-icon__sun-core {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.tt-icon__ray {
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 50% 50%;
+}
+
+/* Rays flare gently while the toggle is hovered. */
+.theme__toggler:hover .tt-icon__rays {
+  transform: scale(1.14);
+  transform-origin: 50% 50%;
+}
+
+.tt-icon__rays {
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tt-icon__moon-body {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.tt-icon__star {
+  fill: currentColor;
+  opacity: 0.9;
+  animation: mx-tt-twinkle 2.4s ease-in-out infinite;
+}
+
+.tt-icon__star--2 {
+  animation-delay: 1.1s;
+}
+
+@keyframes mx-tt-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7); transform-origin: 50% 50%; }
+  50% { opacity: 1; transform: scale(1.15); transform-origin: 50% 50%; }
+}
+
+/* Press feedback on the toggle */
+.theme__toggler:active {
+  transform: scale(0.92);
+}
+
+.theme__toggler:focus-visible {
+  outline: 2px solid var(--first-color);
+  outline-offset: 2px;
+}
+
+/* Swatches pop in with a stagger when the switcher slides open */
+.show-switcher .theme__item-color {
+  animation: mx-theme-swatch-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.show-switcher .theme__item-color:nth-child(1) { animation-delay: 0ms; }
+.show-switcher .theme__item-color:nth-child(2) { animation-delay: 35ms; }
+.show-switcher .theme__item-color:nth-child(3) { animation-delay: 70ms; }
+.show-switcher .theme__item-color:nth-child(4) { animation-delay: 105ms; }
+.show-switcher .theme__item-color:nth-child(5) { animation-delay: 140ms; }
+.show-switcher .theme__item-color:nth-child(6) { animation-delay: 175ms; }
+.show-switcher .theme__item-color:nth-child(7) { animation-delay: 210ms; }
+.show-switcher .theme__item-color:nth-child(8) { animation-delay: 245ms; }
+.show-switcher .theme__item-color:nth-child(9) { animation-delay: 280ms; }
+.show-switcher .theme__item-color:nth-child(10) { animation-delay: 315ms; }
+
+@keyframes mx-theme-swatch-in {
+  from { opacity: 0; transform: rotate(-45deg) scale(0.2); }
+  to { opacity: 1; transform: rotate(-45deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tt-icon__sun,
+  .tt-icon__moon,
+  .tt-icon__ray,
+  .tt-icon__rays {
+    transition: none;
+  }
+
+  .tt-icon__star,
+  .show-switcher .theme__item-color {
+    animation: none;
+  }
 }

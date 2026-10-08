@@ -34,7 +34,7 @@ export default function ThemeController({ themeSettings, savingTheme, success, o
               return (
                 <button
                   key={idx}
-                  onClick={() => onSaveTheme(t.color, themeSettings.mode)}
+                  onClick={(e) => onSaveTheme(t.color, themeSettings.mode, e.currentTarget)}
                   onMouseEnter={() => setThemeHovered(idx)}
                   onMouseLeave={() => setThemeHovered(null)}
                   className="w-8 h-8 transition-all relative outline-none cursor-pointer"
@@ -79,7 +79,7 @@ export default function ThemeController({ themeSettings, savingTheme, success, o
           </div>
           <div>
             <button
-              onClick={() => onSaveTheme(themeSettings.color, themeSettings.mode === 'dark-theme' ? 'light-theme' : 'dark-theme')}
+              onClick={(e) => onSaveTheme(themeSettings.color, themeSettings.mode === 'dark-theme' ? 'light-theme' : 'dark-theme', e.currentTarget)}
               aria-label="Toggle visual protocol"
               className="w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg cursor-pointer"
               style={{ 

@@ -1660,3 +1660,173 @@ html.no-motion [class*="reveal-"] {
     animation: none;
   }
 }
+
+/* ======================= 16. theme mode transition =======================
+   A circular reveal wipe that expands from the theme control when the
+   light/dark mode flips — View Transitions API where supported (the new
+   palette is revealed inside a growing circle from the toggle), with an
+   overlay-veil fallback elsewhere. Plus: accent swatch changes morph
+   smoothly instead of snapping, and a ring pulse on every theme action.
+
+   Geometry comes from `lib/themeTransition.js` via --tt-x / --tt-y / --tt-r
+   (origin point + radius to the farthest viewport corner). */
+
+/* Register the accent so swatch picks interpolate (gradients, glows, rings
+   and the admin accent all derive from --first-color). */
+@property --first-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: hsl(250, 84%, 60%);
+}
+
+html {
+  transition: --first-color 520ms var(--mx-ease-smooth);
+}
+
+/* --- View Transitions wipe -------------------------------------------------
+   The old snapshot sits still underneath while the new one is revealed by an
+   expanding circle centred on the control the user clicked. */
+.theme__toggler {
+  view-transition-name: mx-theme-togg;
+}
+
+html.mx-theme-wipe::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+html.mx-theme-wipe::view-transition-new(root) {
+  z-index: 2147483646;
+  mix-blend-mode: normal;
+  animation: mx-theme-reveal 620ms var(--mx-ease-out-expo) forwards;
+}
+
+html.mx-theme-wipe::view-transition-group(root) {
+  animation-duration: 620ms;
+}
+
+/* Keep the toggle above the reveal and make it visibly react: the old state
+   spins away while the new state springs in. (View-transition snapshots are
+   static images, so the flip is driven here — the icon's own CSS transitions
+   still run on the fallback-veil path and cross-tab sync.) */
+html.mx-theme-wipe::view-transition-group(mx-theme-togg) {
+  z-index: 2147483647;
+  animation-duration: 560ms;
+}
+
+html.mx-theme-wipe::view-transition-old(mx-theme-togg),
+html.mx-theme-wipe::view-transition-new(mx-theme-togg) {
+  mix-blend-mode: normal;
+  transform-origin: 50% 50%;
+}
+
+html.mx-theme-wipe::view-transition-old(mx-theme-togg) {
+  animation: mx-togg-flip-out 260ms var(--mx-ease-smooth) forwards;
+}
+
+html.mx-theme-wipe::view-transition-new(mx-theme-togg) {
+  animation: mx-togg-flip-in 520ms var(--mx-ease-out-expo) forwards;
+}
+
+@keyframes mx-togg-flip-out {
+  to {
+    opacity: 0;
+    transform: rotate(85deg) scale(0.35);
+  }
+}
+
+@keyframes mx-togg-flip-in {
+  from {
+    opacity: 0;
+    transform: rotate(-85deg) scale(0.35);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes mx-theme-reveal {
+  from { clip-path: circle(0px at var(--tt-x, 92vw) var(--tt-y, 12vh)); }
+  to { clip-path: circle(var(--tt-r, 130vmax) at var(--tt-x, 92vw) var(--tt-y, 12vh)); }
+}
+
+/* --- fallback veil (no View Transitions API) -------------------------------
+   Expands from the same origin, carrying the incoming body color. */
+.mx-tt-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  clip-path: circle(0px at var(--tt-x, 92vw) var(--tt-y, 12vh));
+  transition: clip-path 560ms var(--mx-ease-out-expo), opacity 320ms ease;
+}
+
+.mx-tt-veil.is-open {
+  clip-path: circle(var(--tt-r, 130vmax) at var(--tt-x, 92vw) var(--tt-y, 12vh));
+}
+
+.mx-tt-veil.is-fade {
+  opacity: 0;
+}
+
+/* --- ring pulse -----------------------------------------------------------
+   Shared "energy" feedback for toggles and swatch clicks (see burstRing). */
+.mx-tt-ring {
+  position: fixed;
+  z-index: 2147483000;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--first-color) 72%, transparent);
+  box-shadow:
+    0 0 26px var(--mx-glow),
+    inset 0 0 16px var(--mx-glow);
+  pointer-events: none;
+  transform: scale(0.18);
+  opacity: 0.92;
+  animation: mx-tt-ring 700ms var(--mx-ease-out-expo) forwards;
+}
+
+@keyframes mx-tt-ring {
+  to {
+    transform: scale(var(--mx-tt-scale, 8));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+
+  html.mx-theme-wipe::view-transition-old(root),
+  html.mx-theme-wipe::view-transition-new(root),
+  html.mx-theme-wipe::view-transition-group(root),
+  html.mx-theme-wipe::view-transition-group(mx-theme-togg),
+  html.mx-theme-wipe::view-transition-old(mx-theme-togg),
+  html.mx-theme-wipe::view-transition-new(mx-theme-togg) {
+    animation: none !important;
+  }
+
+  .mx-tt-veil,
+  .mx-tt-ring {
+    display: none !important;
+  }
+}
+
+html.no-motion.mx-theme-wipe::view-transition-old(root),
+html.no-motion.mx-theme-wipe::view-transition-new(root),
+html.no-motion.mx-theme-wipe::view-transition-group(root),
+html.no-motion.mx-theme-wipe::view-transition-group(mx-theme-togg),
+html.no-motion.mx-theme-wipe::view-transition-old(mx-theme-togg),
+html.no-motion.mx-theme-wipe::view-transition-new(mx-theme-togg) {
+  animation: none !important;
+}
+
+html.no-motion .mx-tt-veil,
+html.no-motion .mx-tt-ring {
+  display: none !important;
+}

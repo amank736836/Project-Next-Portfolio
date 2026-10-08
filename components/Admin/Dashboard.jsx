@@ -6,6 +6,7 @@ import {
   FiLayers, FiTrendingUp, FiMessageSquare
 } from 'react-icons/fi';
 import { syncThemeCssVars } from '@/lib/utils';
+import { runThemeTransition, applyThemeMode } from '@/lib/themeTransition';
 import { useLoading } from './LoadingContext';
 import OperationLogs from './Dashboard/OperationLogs';
 import ThemeController from './Dashboard/ThemeController';
@@ -179,16 +180,22 @@ export default function Dashboard() {
     }
   }, []);
 
-  const saveThemeSettings = useCallback(async (color, mode) => {
+  const saveThemeSettings = useCallback(async (color, mode, originEl) => {
     setSavingTheme(true);
     setSuccess('');
 
     setThemeSettings({ color, mode });
-    localStorage.setItem("color", color);
-    localStorage.setItem("theme", mode);
-    syncThemeCssVars(color);
-    document.documentElement.className = mode;
-    window.dispatchEvent(new Event("themeChange"));
+
+    // Circular reveal from the clicked control (View Transitions where
+    // available) — same engine the public style switcher uses.
+    runThemeTransition(() => {
+      localStorage.setItem("color", color);
+      localStorage.setItem("theme", mode);
+      syncThemeCssVars(color);
+      // Class-safe swap: keeps the next/font variable classes on <html>.
+      applyThemeMode(mode);
+      window.dispatchEvent(new Event("themeChange"));
+    }, originEl, { incomingClass: mode });
 
     try {
       const payload = [
