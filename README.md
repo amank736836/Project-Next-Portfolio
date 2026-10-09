@@ -33,8 +33,9 @@ Personal portfolio and admin dashboard built with Next.js App Router, React 19, 
 
 ### 🖼 Portfolio/Projects
 - Filter by category tabs
+- **Live previews**: project cards embed the deployed site (lazy, sandboxed iframes) with a screenshot fallback
 - Hover overlay: description, tech tags, Live/Code action buttons
-- Modal with full details, explicit 800×450 images
+- Modal with full details, Live Preview / Screenshot tabs, and 800×450 images
 - Masonry or Fixed Ratio grid layout (admin toggle)
 
 ### 📧 Contact
