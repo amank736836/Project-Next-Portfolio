@@ -69,8 +69,10 @@ const nextConfig = {
 							"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 							"font-src 'self' https://fonts.gstatic.com https://vercel.live data:",
 							"img-src 'self' data: https: blob:",
-							"connect-src 'self' https://res.cloudinary.com https://api.scalekit.com https://va.vercel-scripts.com https://ptjssukfxkxtlbehxdqk.supabase.co https://www.vercel-status.com https://www.githubstatus.com https://vercel.live wss://ws-us3.pusher.com",
-							"frame-src 'self' https://res.cloudinary.com https://vercel.live blob:",
+						"connect-src 'self' https://res.cloudinary.com https://api.scalekit.com https://va.vercel-scripts.com https://ptjssukfxkxtlbehxdqk.supabase.co https://www.vercel-status.com https://www.githubstatus.com https://vercel.live wss://ws-us3.pusher.com",
+						// frame-src allows any https origin: project live previews are
+						// admin-managed and deployed on arbitrary hosts (Vercel, Render, ...).
+						"frame-src 'self' https: blob:",
 							"frame-ancestors 'self'",
 							"base-uri 'self'",
 							"form-action 'self' https://formspree.io",

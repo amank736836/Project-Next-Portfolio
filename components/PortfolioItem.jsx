@@ -11,13 +11,15 @@ import {
   FiCode, 
   FiDatabase, 
   FiServer, 
-  FiGlobe, 
-  FiLayers, 
+  FiGlobe,
+  FiLayers,
   FiCpu,
-  FiX
+  FiX,
+  FiImage
 } from "react-icons/fi";
 import { FaCode, FaMobileAlt } from "react-icons/fa";
 import TiltCard from "@/components/ui/TiltCard";
+import LivePreview from "@/components/LivePreview";
 
 // Map icon NAMES (strings) to components - used by details data
 const iconMap = {
@@ -74,6 +76,7 @@ const PortfolioItem = ({
   techStack
 }) => {
   const [modal, setModal] = useState(false);
+  const [previewTab, setPreviewTab] = useState(null); // null = default (live when available)
 
   const parsedDetails = useMemo(() => 
     typeof details === 'string' ? JSON.parse(details) : details, 
@@ -83,6 +86,19 @@ const PortfolioItem = ({
     typeof techStack === 'string' ? JSON.parse(techStack) : techStack || [], 
     [techStack]
   );
+
+  // Prefer the dedicated live URL column; fall back to the "Preview"/"Link" detail entry.
+  const livePreviewUrl = useMemo(() => {
+    const isHttpUrl = (value) => typeof value === 'string' && /^https?:\/\//i.test(value.trim());
+    if (isHttpUrl(liveUrl)) return liveUrl.trim();
+    const detail = Array.isArray(parsedDetails)
+      ? parsedDetails.find((d) => d?.title && /(preview|link)/i.test(d.title) && isHttpUrl(d.desc))
+      : null;
+    return detail ? detail.desc.trim() : null;
+  }, [liveUrl, parsedDetails]);
+
+  // Modal preview tab: "live" (embedded site) or "shot" (static screenshot).
+  const activePreviewTab = previewTab || (livePreviewUrl ? 'live' : 'shot');
 
   const delayClass = `delay-${((index || 0) % 6) + 1}`;
 
@@ -142,17 +158,75 @@ const PortfolioItem = ({
             );
           })}
         </ul>
-        <div className="modal__img-wrapper">
-          <Image 
-            src={img} 
-            alt={title} 
-            className="modal__img" 
-            width={800}
-            height={450}
-            loading="lazy"
-            sizes="(max-width: 768px) 92vw, 800px"
-            quality={85}
-          />
+        <div className="modal__preview">
+          <div className="modal__preview-tabs" role="tablist" aria-label={`${title} preview`}>
+            {livePreviewUrl && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activePreviewTab === 'live'}
+                className={`modal__preview-tab ${activePreviewTab === 'live' ? 'active-tab' : ''}`}
+                onClick={() => setPreviewTab('live')}
+              >
+                <FiGlobe size={14} />
+                Live Preview
+              </button>
+            )}
+            {img && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activePreviewTab === 'shot'}
+                className={`modal__preview-tab ${activePreviewTab === 'shot' ? 'active-tab' : ''}`}
+                onClick={() => setPreviewTab('shot')}
+              >
+                <FiImage size={14} />
+                Screenshot
+              </button>
+            )}
+            {livePreviewUrl && (
+              <a
+                href={livePreviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="modal__preview-open"
+              >
+                <FiExternalLink size={14} />
+                Open site
+              </a>
+            )}
+          </div>
+          <div className="modal__img-wrapper" role="tabpanel">
+            {activePreviewTab === 'live' && livePreviewUrl ? (
+              <LivePreview
+                liveUrl={livePreviewUrl}
+                img={img}
+                title={title}
+                interactive
+                sizes="(max-width: 768px) 92vw, 720px"
+                quality={85}
+              />
+            ) : (
+              img && (
+                <Image 
+                  src={img} 
+                  alt={title} 
+                  className="modal__img" 
+                  width={800}
+                  height={450}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 92vw, 800px"
+                  quality={85}
+                />
+              )
+            )}
+          </div>
+          {activePreviewTab === 'live' && livePreviewUrl && (
+            <p className="modal__preview-note">
+              Interactive preview of the deployed project. If a site blocks embedding, use
+              &ldquo;Open site&rdquo; or switch to the screenshot.
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -169,12 +243,10 @@ const PortfolioItem = ({
       suppressHydrationWarning
     >
 <div className="portfolio__media">
-        <Image 
-          src={img} 
-          alt={title} 
-          className="portfolio__img" 
-          fill
-          loading="lazy"
+        <LivePreview
+          liveUrl={livePreviewUrl}
+          img={img}
+          title={title}
           sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 500px"
           quality={80}
         />
