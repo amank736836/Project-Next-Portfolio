@@ -428,9 +428,12 @@ img {
   .portfolio__modal-content {
     padding: 25px 20px;
   }
+  /* Keep the close button inside the card on small screens (the old
+     top: -10% pushed it off-screen above the modal) */
   .modal__close {
-    top: -10% !important;
-    left: 0% !important;
+    top: 12px !important;
+    right: 12px !important;
+    left: auto !important;
   }
 }
 

@@ -7,16 +7,15 @@ import Image from "next/image";
  * Live project preview with graceful degradation.
  *
  * Renders the deployed project inside a sandboxed iframe on top of the static
- * screenshot. The screenshot stays visible until the frame reports `load`, and
- * takes over permanently if the live site never loads (or refuses to embed).
+ * screenshot. The screenshot stays visible until the frame reports `load`, then
+ * the live site fades in — even on slow mobile connections the frame stays
+ * mounted and appears whenever it is ready (no give-up timer).
  *
  * - The iframe is only mounted once the surface nears the viewport so a grid of
  *   project cards doesn't boot every live site at once.
  * - `interactive` is off for grid cards (the card owns hover + click) and on
  *   inside the details modal where the visitor can actually use the site.
  */
-
-const LOAD_TIMEOUT_MS = 12000;
 const PREVIEW_SANDBOX = [
   "allow-forms",
   "allow-modals",
@@ -38,7 +37,7 @@ export default function LivePreview({
 }) {
   const wrapperRef = useRef(null);
   const [inView, setInView] = useState(false);
-  const [status, setStatus] = useState("idle"); // idle | loading | ready | failed
+  const [status, setStatus] = useState("idle"); // idle | ready | failed
 
   // Defer mounting the iframe until the surface is near the viewport.
   useEffect(() => {
@@ -63,18 +62,10 @@ export default function LivePreview({
     return () => observer.disconnect();
   }, []);
 
-  // If the live site never finishes loading (unreachable host, blocked embed),
-  // drop back to the screenshot instead of leaving a dead frame.
-  useEffect(() => {
-    if (!inView || !liveUrl || status === "failed") return undefined;
-    if (status === "ready") return undefined;
-
-    const timer = setTimeout(() => {
-      setStatus((current) => (current === "ready" ? current : "failed"));
-    }, LOAD_TIMEOUT_MS);
-    return () => clearTimeout(timer);
-  }, [inView, liveUrl, status]);
-
+  // No give-up timer: on slow connections (mobile data, cold starts) the frame
+  // is kept mounted and simply fades in whenever `load` finally fires. The
+  // screenshot underlay covers the whole waiting period. Only a genuine load
+  // error falls back permanently.
   const canShowFrame = Boolean(liveUrl) && inView && status !== "failed";
 
   return (

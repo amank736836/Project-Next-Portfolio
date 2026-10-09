@@ -34,7 +34,7 @@
 
 .style__switcher-title,
 .style__switcher-toggler,
-.them__toggler,
+.theme__toggler,
 .style__switcher-close {
   color: var(--title-color)
 }
@@ -79,7 +79,11 @@
     cursor: pointer;
     display: grid;
     place-items: center;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+    /* Defined edge-tab look in both themes (bare glass on white reads as a
+       cut-off shape in light mode) */
+    border: 1px solid var(--border-color);
+    border-right: 0;
+    box-shadow: 0 4px 14px rgba(2, 6, 23, 0.12);
     transition: all 0.3s ease;
 }
 
