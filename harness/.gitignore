@@ -1,0 +1,18 @@
+# Local evidence / results
+evidence/api-responses/*
+!evidence/api-responses/README.md
+evidence/logs/*
+!evidence/logs/README.md
+evidence/database-results/*
+!evidence/database-results/README.md
+evidence/screenshots/*
+!evidence/screenshots/README.md
+test-results/latest/*
+!test-results/latest/.gitkeep
+test-results/historical/*
+!test-results/historical/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

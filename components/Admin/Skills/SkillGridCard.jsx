@@ -10,15 +10,15 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
 
   return (
     <div
-      className={`reveal-scale ${delayClass} group relative bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 transition-all hover:border-[var(--admin-accent)]/40 hover:bg-white/[0.075] hover:shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.07)] ${isFeatured ? 'ring-1 ring-amber-400/30' : ''} ${isHidden ? 'opacity-50' : ''} flex flex-col`}
+      className={`matrix-skill-grid-card reveal-scale ${delayClass} group relative bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 transition-all hover:border-[var(--admin-accent)]/40 hover:bg-white/[0.075] hover:shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.07)] ${isFeatured ? 'is-featured ring-1 ring-amber-400/30' : ''} ${isHidden ? 'opacity-50' : ''} flex flex-col`}
     >
       {/* Top section: icon + title/badges */}
-      <div className="flex items-start gap-4 mb-5">
+      <div className="flex items-start gap-3 mb-4">
 
         {/* Clickable icon — opens edit modal */}
         <button
           onClick={onEdit}
-          className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--admin-accent)]/20 to-transparent flex items-center justify-center text-2xl cursor-pointer transition-all hover:from-[var(--admin-accent)]/40 hover:ring-2 hover:ring-[var(--admin-accent)]/50 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--admin-accent)]"
+          className="skill-grid-icon flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--admin-accent)]/20 to-transparent flex items-center justify-center text-2xl cursor-pointer transition-all hover:from-[var(--admin-accent)]/40 hover:ring-2 hover:ring-[var(--admin-accent)]/50 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--admin-accent)]"
           title={`Edit ${skill.title}`}
           aria-label={`Edit ${skill.title}`}
         >
@@ -27,13 +27,13 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
 
         <div className="flex-1 min-w-0 pt-1">
           <h3
-            className="font-bold text-sm text-[var(--admin-title)] truncate cursor-pointer hover:text-[var(--admin-accent)] transition-colors leading-snug"
+            className="text-[15px] font-extrabold text-[var(--admin-title)] truncate cursor-pointer hover:text-[var(--admin-accent)] transition-colors leading-snug"
             onClick={onEdit}
             title={`Edit ${skill.title}`}
           >
             {skill.title}
           </h3>
-          <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               {skill.category}
             </span>
@@ -57,7 +57,7 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
       </div>
 
       {/* Metadata row */}
-      <div className="flex items-center gap-3 text-[10px] text-slate-600 group-hover:text-slate-500 transition-colors mb-4">
+      <div className="skill-grid-meta flex items-center gap-2 text-[10px] text-slate-500 transition-colors mb-2.5">
         <span className="font-mono">#{skill.id}</span>
         <span className="text-slate-700">·</span>
         <span className="flex items-center gap-1.5">
@@ -69,8 +69,8 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
       </div>
 
       {/* Proficiency bar */}
-      <div className="mb-5">
-        <div className="w-full h-[4px] bg-white/5 rounded-full overflow-hidden relative">
+      <div className="mb-3">
+        <div className="skill-grid-progress w-full h-[6px] bg-white/5 rounded-full overflow-hidden relative">
           <div
             className="h-full rounded-full transition-all duration-500 ease-out"
             style={{
@@ -83,10 +83,10 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
       </div>
 
       {/* Additional metadata row */}
-      <div className="flex items-center gap-2.5 text-[10px] text-slate-500 mb-4">
+      <div className="skill-grid-meta flex items-center justify-between gap-2.5 text-[10px] text-slate-500 mb-3">
         <span className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/50 animate-pulse" />
-          Proficiency
+          {skill.percentage || 85}% proficiency
         </span>
         <span className="text-slate-700">·</span>
         <span className="flex items-center gap-1.5">
@@ -96,13 +96,13 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
       </div>
 
       {/* Actions — always visible but compact; appear more prominently on hover */}
-      <div className="flex items-center justify-between gap-1.5 mt-auto pt-3 border-t border-white/5">
+      <div className="skill-grid-actions flex items-center justify-between gap-1.5 mt-auto pt-3 border-t border-white/5">
         <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="icon"
             onClick={onToggleVisibility}
-            className={`w-7 h-7 transition-all ${
+            className={`w-8 h-8 transition-all ${
               isHidden
                 ? 'text-slate-500 border-slate-500/30 bg-slate-500/10 hover:bg-slate-500 hover:text-white'
                 : 'text-emerald-400 border-emerald-400/20 bg-emerald-400/5 hover:bg-emerald-500 hover:text-white'
@@ -117,7 +117,7 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
             size="icon"
             onClick={featuredCapReached ? undefined : onToggleFeatured}
             disabled={featuredCapReached}
-            className={`w-7 h-7 transition-all ${
+            className={`w-8 h-8 transition-all ${
               isFeatured
                 ? 'text-amber-400 border-amber-400/30 bg-amber-400/10 hover:bg-amber-400/20'
                 : featuredCapReached
@@ -141,7 +141,7 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
             variant="outline"
             size="icon"
             onClick={onEdit}
-            className="w-7 h-7 text-slate-500 hover:text-[var(--first-color)] hover:border-[var(--first-color)]/30 transition-all"
+            className="w-8 h-8 text-slate-500 hover:text-[var(--first-color)] hover:border-[var(--first-color)]/30 transition-all"
             title="Edit skill"
           >
             <FiEdit size={12} />
@@ -150,7 +150,7 @@ export default function SkillGridCard({ skill, index, onToggleFeatured, onToggle
             variant="outline"
             size="icon"
             onClick={onDelete}
-            className="w-7 h-7 text-slate-500 hover:text-destructive hover:border-destructive/30 transition-all"
+            className="w-8 h-8 text-slate-500 hover:text-destructive hover:border-destructive/30 transition-all"
             title="Delete skill"
           >
             <FiTrashIcon size={12} />

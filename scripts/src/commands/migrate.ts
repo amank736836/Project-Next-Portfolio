@@ -86,14 +86,6 @@ async function runMigration(migration: { id: string; name: string; sql: string; 
     logger.debug(`  Statement ${i + 1}: ${preview}`);
   }
   
-  // Debug: show raw SQL start
-  console.log(`Raw SQL start: ${migration.sql.substring(0, 300)}`);
-  
-  // Extra debug: trace first statement finding
-  const firstSemi = migration.sql.indexOf(';');
-  console.log(`First semicolon at index: ${firstSemi}`);
-  console.log(`Content around first semicolon: ${migration.sql.substring(Math.max(0, firstSemi - 50), firstSemi + 50)}`);
-  
   for (const stmt of statements) {
     await executeSql(stmt + ';');
   }
@@ -130,8 +122,6 @@ function splitSqlStatements(sql: string): string[] {
   let inDoubleQuote = false;
   let inLineComment = false;
   let inBlockComment = false;
-  
-  console.log(`[splitter] Starting parse, sql length: ${sql.length}`);
   
   for (let i = 0; i < sql.length; i++) {
     const char = sql[i];
@@ -197,14 +187,12 @@ function splitSqlStatements(sql: string): string[] {
         dollarTag = '$$';
         current += char + nextChar;
         i++;
-        console.log(`[splitter] Dollar quote START at ${i}`);
         continue;
       } else if (dollarTag === '$$') {
         inDollarQuote = false;
         dollarTag = '';
         current += char + nextChar;
         i++;
-        console.log(`[splitter] Dollar quote END at ${i}`);
         continue;
       }
     }
@@ -228,10 +216,7 @@ function splitSqlStatements(sql: string): string[] {
       const withoutLeadingComments = trimmed.replace(/^(--.*\n)*/, '').trim();
       
       if (withoutLeadingComments.length > 0) {
-        console.log(`[splitter] Found statement at ${i}: ${trimmed.substring(0, 60)}...`);
         statements.push(trimmed);
-      } else {
-        console.log(`[splitter] Skipping statement (comment-only): "${trimmed.substring(0, 50)}"`);
       }
       current = '';
     }
@@ -241,7 +226,6 @@ function splitSqlStatements(sql: string): string[] {
   const trimmed = current.trim();
   const withoutLeadingComments = trimmed.replace(/^(--.*\n)*/, '').trim();
   if (withoutLeadingComments.length > 0) {
-    console.log(`[splitter] Final statement: ${trimmed.substring(0, 60)}...`);
     statements.push(trimmed);
   }
   

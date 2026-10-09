@@ -20,3 +20,25 @@ COMMENT ON COLUMN projects.image IS 'Primary image URL (Cloudinary or local path
 COMMENT ON COLUMN projects.description IS 'Strategic overview / detailed description of the project';
 COMMENT ON COLUMN projects.details IS 'JSONB array of project detail objects (tech stack, links, etc.)';
 COMMENT ON COLUMN projects.is_hidden IS 'Soft delete flag - hidden from public portfolio';
+-- Enable RLS
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+
+-- Public can view visible (non-hidden) projects
+CREATE POLICY "Public can view visible projects" ON projects
+    FOR SELECT USING (is_hidden = FALSE);
+
+-- Admins can manage all projects
+CREATE POLICY "Admins can manage projects" ON projects
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'amankarguwal0@gmail.com'
+        )
+    );
+
+-- Service role full access (used by the admin API routes)
+CREATE POLICY "Service role full access on projects" ON projects
+    FOR ALL USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import CountUp from '@/components/ui/CountUp';
 
 export default function StatCard({ stat, loading, error, isHovered, onMouseEnter, onMouseLeave, STAT_THEMES, textTitle, textDesc, isLight, cardBg, cardBorder, cardInset }) {
   const t = useMemo(() => STAT_THEMES[stat.color] ?? STAT_THEMES.indigo, [stat.color, STAT_THEMES]);
@@ -25,6 +26,7 @@ export default function StatCard({ stat, loading, error, isHovered, onMouseEnter
   return (
     <div 
       style={cardStyle}
+      data-spotlight
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -72,7 +74,11 @@ export default function StatCard({ stat, loading, error, isHovered, onMouseEnter
           <p className="text-xs font-black text-rose-500/80 uppercase tracking-tighter">Signal Error</p>
         ) : (
           <p className="text-4xl sm:text-5xl font-black tracking-tight" style={{ color: textTitle, textShadow: isLight ? 'none' : '0 2px 10px rgba(0,0,0,0.3)' }}>
-            {stat.value}
+            {Number.isFinite(Number(stat.value)) ? (
+              <CountUp value={Number(stat.value)} duration={900} />
+            ) : (
+              stat.value
+            )}
           </p>
         )}
         

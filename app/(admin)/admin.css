@@ -483,6 +483,196 @@
     inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
+/* Matrix page: denser toolbar and clearer grid-card hierarchy. */
+.matrix-page .matrix-toolbar {
+  margin-top: 1rem !important;
+  margin-bottom: 1.25rem !important;
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 12px 30px rgba(2, 6, 23, 0.08);
+}
+
+.matrix-page .matrix-page-header {
+  padding-top: 2rem !important;
+  padding-right: 6rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.matrix-page .matrix-grid-content {
+  padding-top: 1rem !important;
+}
+
+@media (max-width: 639px) {
+  .matrix-page .matrix-page-header {
+    padding-top: 1.25rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .matrix-page .matrix-toolbar {
+    margin-top: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .matrix-page .matrix-grid-content {
+    padding-top: 0.75rem !important;
+  }
+}
+
+.matrix-skill-grid-card {
+  min-height: 180px;
+  background:
+    radial-gradient(circle at 0 0, rgba(var(--admin-accent-rgb), 0.07), transparent 42%),
+    rgba(var(--admin-card-rgb), 0.32);
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 8px 24px rgba(2, 6, 23, 0.08);
+}
+
+@media (min-width: 640px) {
+  .matrix-page .matrix-toolbar-controls {
+    display: grid !important;
+    grid-template-columns: max-content 1fr max-content;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .matrix-page .matrix-toolbar-stats {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .matrix-page .matrix-toolbar-view {
+    grid-column: 3;
+    width: auto !important;
+    margin-left: auto !important;
+    justify-self: end;
+  }
+}
+
+.matrix-skill-grid-card.is-featured {
+  background:
+    radial-gradient(circle at 0 0, rgba(251, 191, 36, 0.09), transparent 44%),
+    rgba(var(--admin-card-rgb), 0.34);
+}
+
+.matrix-skill-grid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 16px 34px rgba(2, 6, 23, 0.16);
+}
+
+.matrix-skill-grid-card .skill-grid-icon {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.matrix-skill-grid-card .skill-grid-meta {
+  line-height: 1.35;
+}
+
+.matrix-skill-grid-card .skill-grid-actions button {
+  border-radius: 0.55rem;
+}
+
+.light-theme .matrix-page .matrix-toolbar {
+  background: rgba(255, 255, 255, 0.58) !important;
+  border-color: rgba(15, 23, 42, 0.09) !important;
+}
+
+.light-theme .matrix-skill-grid-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(var(--admin-accent-rgb), 0.07), transparent 42%),
+    rgba(255, 255, 255, 0.68);
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+.light-theme .matrix-skill-grid-card.is-featured {
+  border-color: rgba(245, 158, 11, 0.34) !important;
+}
+
+.light-theme .matrix-skill-grid-card .skill-grid-meta,
+.light-theme .matrix-skill-grid-card .text-slate-500,
+.light-theme .matrix-skill-grid-card .text-slate-600 {
+  color: #52627a !important;
+}
+
+.light-theme .matrix-skill-grid-card .skill-grid-progress {
+  background: rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Showcase page: unified controls and clearly bounded project cards. */
+.showcase-page .showcase-page-header {
+  padding-top: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.showcase-page .showcase-toolbar {
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 12px 30px rgba(2, 6, 23, 0.08);
+}
+
+.showcase-page .showcase-toolbar-meta {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.showcase-project-card {
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 0 0, rgba(var(--admin-accent-rgb), 0.06), transparent 42%),
+    rgba(var(--admin-card-rgb), 0.32);
+  border-color: var(--admin-border-strong) !important;
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 10px 26px rgba(2, 6, 23, 0.1);
+}
+
+.showcase-project-card:hover {
+  border-color: rgba(var(--admin-accent-rgb), 0.34) !important;
+  box-shadow: inset 0 1px 0 var(--glass-edge-glow), 0 18px 38px rgba(2, 6, 23, 0.16);
+}
+
+.showcase-project-card .project-card-content {
+  flex: 1;
+}
+
+@media (min-width: 640px) {
+  .showcase-page .showcase-toolbar-main {
+    display: grid !important;
+    grid-template-columns: minmax(18rem, 1fr) max-content max-content max-content;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .showcase-page .showcase-view-toggle {
+    justify-self: end;
+    width: auto !important;
+    padding: 0.2rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 0.75rem;
+    background: rgba(var(--admin-card-rgb), 0.18);
+  }
+}
+
+.light-theme .showcase-page .showcase-toolbar {
+  background: rgba(255, 255, 255, 0.62) !important;
+  border-color: rgba(15, 23, 42, 0.09) !important;
+}
+
+.light-theme .showcase-project-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(var(--admin-accent-rgb), 0.06), transparent 42%),
+    rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+.light-theme .showcase-project-card .text-slate-400,
+.light-theme .showcase-project-card .text-slate-500,
+.light-theme .showcase-project-card .text-slate-600 {
+  color: #52627a !important;
+}
+
+@media (max-width: 639px) {
+  .showcase-page .showcase-page-header {
+    padding-top: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+}
+
 .matrix-skill-actions button {
   border: 1px solid var(--admin-border-strong);
   background: rgba(var(--admin-card-rgb), 0.22);
@@ -716,6 +906,11 @@
   max-width: 100%;
 }
 
+/* Dashboard grids already provide their own gap; avoid double spacing on stat cards. */
+.admin-dashboard .telemetry-card {
+  margin: 0;
+}
+
 /* Softer, more modern shadows and rounded corners for all admin cards */
 .admin-card {
   margin-bottom: 0.75rem;
@@ -774,6 +969,80 @@
 .input-icon-wrapper input,
 .input-icon-wrapper .admin-input {
   padding-left: 4.5rem !important;
+}
+
+/* CSP report filters keep their leading icons out of the input text flow. */
+.csp-report-filter-with-icon {
+  position: relative;
+  min-width: 0;
+}
+
+.csp-report-filter-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  z-index: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.csp-report-filter-input {
+  padding-left: 2.5rem !important;
+  padding-right: 1rem !important;
+}
+
+.csp-report-date-input {
+  min-width: 0;
+  color: var(--admin-text);
+  color-scheme: dark;
+}
+
+.csp-report-date-input::-webkit-datetime-edit,
+.csp-report-date-input::-webkit-datetime-edit-text,
+.csp-report-date-input::-webkit-datetime-edit-day-field,
+.csp-report-date-input::-webkit-datetime-edit-month-field,
+.csp-report-date-input::-webkit-datetime-edit-year-field {
+  color: var(--admin-text);
+  opacity: 1;
+}
+
+.csp-report-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.light-theme .csp-report-page .csp-report-filter-input,
+.light-theme .csp-report-page .csp-report-date-input {
+  color: #334155 !important;
+}
+
+.light-theme .csp-report-page .csp-report-filter-input::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+.light-theme .csp-report-page .csp-report-date-input {
+  color-scheme: light;
+}
+
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-text,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-day-field,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-month-field,
+.light-theme .csp-report-page .csp-report-date-input::-webkit-datetime-edit-year-field {
+  color: #64748b;
+}
+
+/* Keep dense CSP report data readable over the light glass surface. */
+.light-theme .csp-report-page .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light-theme .csp-report-page .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-theme .csp-report-page .text-slate-500 {
+  color: #64748b !important;
 }
 
 .neon-input {
@@ -965,6 +1234,13 @@
     0 24px 60px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(var(--admin-accent-rgb), 0.1),
     inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.identity-add-card {
+  min-height: 160px;
+  width: 100%;
+  padding: 1.5rem !important;
+  cursor: pointer;
 }
 
 /* Light-theme aggressive overrides for identity glassmorphism */
@@ -4053,4 +4329,100 @@ input.premium-input {
   background: var(--admin-accent) !important;
   color: #ffffff !important;
   border: none !important;
+}
+
+/* ==========================================================================
+   Motion layer (mirrors the public motion system, tuned for a tool UI).
+   Driven by <ScrollReveal /> (via .admin-reveal / .reveal-scale) and
+   <AdminMotion /> (the pointer spotlight). Inert under reduced motion.
+   ========================================================================== */
+
+/* Admin's own reveal: unlike the public `fadeInUp`, the end state is
+   `transform: none`, so a filled animation never leaves a containing block
+   behind (which would mis-position fixed modals and dropdowns inside). */
+.admin-reveal {
+  opacity: 0;
+}
+
+.admin-reveal.active {
+  animation: admin-rise-in 520ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) forwards;
+}
+
+@keyframes admin-rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Without JS the elements must stay readable. */
+html:not(.motion-ready) .admin-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Existing admin screens that reuse the shared classes get tool pacing. */
+.admin-root .reveal.active,
+.admin-root .reveal-left.active,
+.admin-root .reveal-right.active,
+.admin-root .reveal-scale.active {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- pointer spotlight ----------------------------------------------------
+   Painted as an overlay child so it sits above the card background but below
+   the card's own content (which uses z-10). */
+[data-spotlight] {
+  position: relative;
+}
+
+[data-spotlight]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: radial-gradient(
+    220px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    var(--admin-accent-glow),
+    transparent 68%
+  );
+}
+
+[data-spotlight].is-spotlit:hover::after {
+  opacity: 1;
+}
+
+/* --- panel hover lift -----------------------------------------------------
+   Transform only: these panels set their border/box-shadow inline, which beats
+   any class-level rule, so promising a shadow here would be a lie. */
+.admin-lift {
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.admin-lift:hover {
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-reveal,
+  .admin-root .reveal,
+  .admin-root .reveal-left,
+  .admin-root .reveal-right,
+  .admin-root .reveal-scale {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-spotlight]::after,
+  .admin-lift {
+    transition: none;
+  }
+
+  .admin-lift:hover {
+    transform: none;
+  }
 }

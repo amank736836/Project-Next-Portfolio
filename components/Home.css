@@ -38,10 +38,6 @@
   mix-blend-mode: normal !important;
 }
 
-.home__img:hover {
-  transform: scale(1.02);
-}
-
 .home__data {
   max-width: 650px;
   z-index: 2;

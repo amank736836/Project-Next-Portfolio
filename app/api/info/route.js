@@ -8,6 +8,8 @@ export async function GET() {
   const { data, error } = await supabase
     .from('personal_info')
     .select('*')
+    // Public surface: never expose rows the admin has marked as hidden.
+    .eq('is_hidden', false)
     .order('key', { ascending: true });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

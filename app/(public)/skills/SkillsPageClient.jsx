@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import SectionHeading from "@/components/ui/SectionHeading";
 import "@/app/(public)/about.css";
 
 export default function SkillsPageClient() {
@@ -127,9 +128,7 @@ export default function SkillsPageClient() {
   return (
     <main className="section container page-enter">
       <section className="skills">
-        <h2 className="section__title">
-          My <span>Skills</span>
-        </h2>
+        <SectionHeading title="My" highlight="Skills" eyebrow="Toolbox" />
         <div className="skills__container grid">
           <Skills data={skillsData} />
         </div>

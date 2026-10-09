@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -25,6 +26,7 @@ export async function POST(request) {
   const item = await request.json();
   const { data, error } = await supabase.from('experience').insert([item]).select();
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'create', resourceType: 'experience', resourceId: data?.[0]?.id, newData: item, request });
   return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
@@ -38,7 +40,7 @@ export async function PUT(request) {
   const { id, ...updates } = body;
 
   const allowedUpdates = {};
-  ['year', 'title', 'description', 'is_hidden'].forEach(field => {
+  ['year', 'title', 'description', 'category', 'is_hidden'].forEach(field => {
     if (field in updates) allowedUpdates[field] = updates[field];
   });
 
@@ -47,6 +49,7 @@ export async function PUT(request) {
     console.error('Experience Update Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
   }
+  await logAudit({ action: 'update', resourceType: 'experience', resourceId: id, newData: allowedUpdates, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
 
@@ -70,6 +73,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
     }
 
+    await logAudit({ action: 'delete', resourceType: 'experience', resourceId: id, request });
     return NextResponse.json({ success: true }, { headers: NO_CACHE });
   } catch (err) {
     console.error('[API] Experience Delete Runtime Error:', err);

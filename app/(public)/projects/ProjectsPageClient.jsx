@@ -3,11 +3,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import PortfolioItem from "@/components/PortfolioItem";
+import SectionHeading from "@/components/ui/SectionHeading";
 import "@/app/(public)/Portfolio.css";
 
 export default function ProjectsPageClient() {
   const [projects, setProjects] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
     async function fetchProjects() {
@@ -33,6 +35,11 @@ export default function ProjectsPageClient() {
   const categories = useMemo(() => 
     ['all', ...new Set(allProjects.map(p => p.category).filter(Boolean))].sort(), 
     [allProjects]
+  );
+
+  const visibleProjects = useMemo(
+    () => (activeCategory === 'all' ? allProjects : allProjects.filter((project) => project.category === activeCategory)),
+    [activeCategory, allProjects]
   );
 
   if (loading) {
@@ -70,28 +77,30 @@ export default function ProjectsPageClient() {
 
   return (
     <section className="portfolio section">
-      <h2 className="section__title">
-        My <span>Projects</span>
-      </h2>
+      <SectionHeading title="My" highlight="Projects" eyebrow="Selected work" />
 
       {categories.length > 2 && (
-        <div className="portfolio__filters container">
+        <div className="portfolio__filters container" role="tablist" aria-label="Filter projects by category">
           {categories.map((category) => (
-            <span
+            <button
               key={category}
-              className={`portfolio__item ${category === 'all' ? 'active-portfolio' : ''}`}
+              type="button"
+              role="tab"
+              aria-selected={category === activeCategory}
+              className={`portfolio__item ${category === activeCategory ? 'active-portfolio' : ''}`}
               data-filter={category}
+              onClick={() => setActiveCategory(category)}
             >
               {category}
-            </span>
+            </button>
           ))}
         </div>
       )}
 
-      <div className="portfolio__container container grid">
-        {allProjects.length > 0 ? (
-          allProjects.map((item) => (
-            <PortfolioItem key={item.id} {...item} />
+      <div className="portfolio__container container grid" key={activeCategory} aria-live="polite">
+        {visibleProjects.length > 0 ? (
+          visibleProjects.map((item, index) => (
+            <PortfolioItem key={item.id} {...item} index={index} shortDescription={item.description} />
           ))
         ) : (
           <div className="col-span-full text-center text-gray-400 py-10">

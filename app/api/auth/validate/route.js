@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession, isTokenExpired, getAccessToken } from '@/lib/cookies';
+import { getSession, isTokenExpired } from '@/lib/cookies';
 import { refreshAccessToken } from '@/lib/auth';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };

@@ -5,8 +5,8 @@ const ThemeItem = ({ color, changeColor }) => {
     <div
       className="theme__item-color"
       style={{ backgroundColor: color }}
-      onClick={() => {
-        changeColor(color);
+      onClick={(e) => {
+        changeColor(color, e.currentTarget);
       }}
     />
   );

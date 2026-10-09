@@ -9,6 +9,7 @@ Personal portfolio and admin dashboard built with Next.js App Router, React 19, 
 - **OAuth Login Flow**: Via Scalekit with refresh token rotation
 - **Data Persistence**: Supabase (PostgreSQL) with Row Level Security
 - **Media Upload**: Cloudinary SDK
+- **Motion Layer**: Ambient gradients, kinetic typography, 3D tilt surfaces, self-drawing SVG rules and scroll progress — dependency-free (CSS + tiny hooks)
 
 ## Features
 
@@ -48,6 +49,18 @@ Personal portfolio and admin dashboard built with Next.js App Router, React 19, 
 - **Skills Manager**: Category filter, featured toggle, inline edit modal
 - **Dashboard Widgets**: Stats, Operation Logs, Theme Controller, External Status, Neural Link
 
+### 🎞 UI Motion Layer
+- `app/motion.css` holds the whole animation system (tokens, keyframes, utility classes); every animation is disabled by `prefers-reduced-motion` and by `<html class="no-motion">`
+- **Ambient background** — drifting gradient orbs, panning grid, film grain, pointer spotlight (`components/ui/AuroraBackground.jsx`)
+- **Kinetic typography** — per-character rise/flip with a gradient sweep (`SplitText`), gradient shimmer text
+- **Self-drawing lines** — section headings animate an SVG rule into view (`SectionHeading`)
+- **Scroll feedback** — top progress rail (`ScrollProgress`), reveal variants (`reveal-blur/mask/flip/zoom/stagger`), parallax hero (`Parallax`), scrollytelling reveal engine in `components/ScrollReveal.jsx`
+- **Hover surfaces** — 3D tilt + pointer glare (`TiltCard`), animated conic borders, card sheen sweeps, tech-tag pop-in
+- **Microinteractions** — magnetic buttons (`Magnetic`), count-up stats (`CountUp`), icon tada, animated skill bars, timeline draw-in
+- **Route transitions** — circular curtain wipe + progress run (`PageTransition`) and a morphing loader (`TransitionLoader`)
+- **Loading skeletons** — travelling shimmer over every skeleton block
+- **Playground** — visit `/test-ui` to see every effect in one page
+
 ### 📊 API & Logging
 - `withApiLogging` HOC wraps API routes → auto-logs to `api_logs` table
 - `useApiCall` hook for client-side calls with loading state
@@ -85,6 +98,9 @@ components/
 ├── Navbar/             # Navigation with IntersectionObserver (single-page)
 ├── sections/           # Portfolio section components
 ├── ui/                 # Reusable UI primitives (Button, Input, Typewriter)
+│                       # + motion primitives: AuroraBackground, ScrollProgress,
+│                       #   CursorGlow, PageTransition, SplitText, TiltCard,
+│                       #   Magnetic, Marquee, CountUp, SectionHeading, Parallax
 lib/                    # Auth, cookies, Supabase clients, API logger
 scripts/                # Migration runner, seed scripts
 sql/
@@ -138,6 +154,21 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Running without Supabase (offline preview)
+
+`npm run dev` fails fast without Supabase credentials (`supabaseUrl is required`). For UI work you
+can run the app against an in-memory dataset instead — when `NEXT_PUBLIC_SUPABASE_URL` is unset,
+`lib/supabase/server.js` and `lib/supabase/client.js` fall back to
+`lib/supabase/offline-client.js`, a query-builder stand-in backed by
+`lib/supabase/offline-data.js` (seed-shaped content, local images from `public/assets`).
+
+```bash
+npx next dev --webpack -p 3000   # or: npm run dev (needs a reachable database)
+```
+
+Note: the offline layer is development-only convenience — as soon as the env vars (or a production
+build) are present, the real Supabase client is used.
 
 ## Scripts
 

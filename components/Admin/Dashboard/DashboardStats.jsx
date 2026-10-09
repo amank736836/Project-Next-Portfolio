@@ -1,7 +1,7 @@
 'use client';
 
 import { FiLayers, FiTrendingUp, FiMessageSquare, FiGlobe } from 'react-icons/fi';
-import { STAT_THEMES } from '../data/dashboardThemes';
+import { STAT_THEMES } from './data/dashboardData';
 
 export default function DashboardStats({ stats, loading, error, hoveredCard, setHoveredCard, isLight, textTitle, textDesc, cardBg, cardBorder, cardInset, hudBg, hudBorder }) {
   const statItems = [
@@ -16,6 +16,15 @@ export default function DashboardStats({ stats, loading, error, hoveredCard, set
       {statItems.map((stat, i) => {
         const t = STAT_THEMES[stat.color] ?? STAT_THEMES.indigo;
         const isHovered = hoveredCard === i;
+        // STAT_THEMES values are { light, dark } pairs — pick per current mode.
+        const bg = t.bg[isLight ? 'light' : 'dark'];
+        const text = t.text[isLight ? 'light' : 'dark'];
+        const border = t.border[isLight ? 'light' : 'dark'];
+        const borderHover = t.borderHover[isLight ? 'light' : 'dark'];
+        const bullet = t.bullet[isLight ? 'light' : 'dark'];
+        const badgeBg = t.badgeBg[isLight ? 'light' : 'dark'];
+        const badgeBorder = t.badgeBorder[isLight ? 'light' : 'dark'];
+        const glowShadow = t.glowShadow[isLight ? 'light' : 'dark'];
 
         const cardStyle = {
           position: 'relative',
@@ -24,9 +33,9 @@ export default function DashboardStats({ stats, loading, error, hoveredCard, set
           backgroundColor: cardBg,
           backdropFilter: 'blur(28px) saturate(220%)',
           WebkitBackdropFilter: 'blur(28px) saturate(220%)',
-          border: isHovered ? `1px solid ${t.borderHover}` : `1px solid ${cardBorder}`,
+          border: isHovered ? `1px solid ${borderHover}` : `1px solid ${cardBorder}`,
           boxShadow: isHovered 
-            ? `${t.glowShadow}, 0 20px 45px -10px ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(0,0,0,0.5)'}, ${cardInset}` 
+            ? `${glowShadow}, 0 20px 45px -10px ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(0,0,0,0.5)'}, ${cardInset}` 
             : `0 10px 25px -5px ${isLight ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.3)'}, ${cardInset}`,
           transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
           transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -41,35 +50,35 @@ export default function DashboardStats({ stats, loading, error, hoveredCard, set
             onMouseEnter={() => setHoveredCard(i)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div 
+            <div
               className="absolute -bottom-6 -right-6 opacity-[0.02] pointer-events-none transition-all duration-500"
-              style={{ 
+              style={{
                 transform: isHovered ? 'scale(1.18) rotate(-12deg)' : 'scale(1) rotate(0deg)',
                 opacity: isHovered ? 0.07 : 0.02,
-                color: t.text
+                color: text
               }}
             >
               <stat.icon size={135} />
             </div>
 
             <div className="relative z-10 flex items-center justify-between">
-              <div 
+              <div
                 className="w-9 h-9 sm:w-[46px] sm:h-[46px] rounded-xl flex items-center justify-center transition-all duration-300"
                 style={{
-                  backgroundColor: t.bg,
-                  border: `1px solid ${t.border}`,
-                  color: t.text,
+                  backgroundColor: bg,
+                  border: `1px solid ${border}`,
+                  color: text,
                   transform: isHovered ? 'scale(1.1) rotate(3deg)' : 'scale(1)',
                 }}
               >
                 <stat.icon size={16} />
               </div>
-              <span 
+              <span
                 style={{
                   fontSize: '8px', fontWeight: 900,
-                  color: t.text,
-                  backgroundColor: t.badgeBg,
-                  border: `1px solid ${t.badgeBorder}`,
+                  color: text,
+                  backgroundColor: badgeBg,
+                  border: `1px solid ${badgeBorder}`,
                   padding: '4px 8px', borderRadius: '8px',
                   textTransform: 'uppercase', letterSpacing: '0.15em',
                 }}
@@ -90,7 +99,7 @@ export default function DashboardStats({ stats, loading, error, hoveredCard, set
               )}
               
               <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mt-3 sm:mt-4 flex items-center gap-2" style={{ color: textDesc }}>
-                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: t.bullet, boxShadow: `0 0 8px ${t.bullet}` }} />
+                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: bullet, boxShadow: `0 0 8px ${bullet}` }} />
                 <span className="truncate">{stat.desc}</span>
               </p>
             </div>

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
+const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: NO_CACHE });
 
 export async function GET(request) {
   if (!await isAuthenticated()) {
@@ -68,6 +69,12 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  // Defense in depth: the proxy already guards /api/admin writes, but this
+  // route must not rely on that alone (api_logs contains operational data).
+  if (!await isAuthenticated()) {
+    return unauthorized();
+  }
+
   const supabase = await createAdminClient();
   const body = await request.json();
 

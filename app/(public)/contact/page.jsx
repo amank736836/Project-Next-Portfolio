@@ -12,13 +12,18 @@ import Image from "next/image";
 import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import "@/app/(public)/Contact.css";
 import { FiSend } from "react-icons/fi";
+import SectionHeading from "@/components/ui/SectionHeading";
+
+export const metadata = {
+  title: "Contact",
+  description: "Get in touch with Aman Kumar about software engineering, freelance, and collaboration opportunities.",
+  alternates: { canonical: "/contact" },
+};
 
 export default function Contact() {
   return (
     <section className="contact section">
-      <h2 className="section__title">
-        Get In <span>Touch</span>
-      </h2>
+      <SectionHeading title="Get In" highlight="Touch" eyebrow="Say hello" />
       <div className="contact__container container grid">
         <div className="contact__data">
           <h3 className="contact__title">Don&apos;t be Shy !</h3>

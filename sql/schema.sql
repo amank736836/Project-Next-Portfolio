@@ -44,9 +44,11 @@ COMMENT ON COLUMN api_logs.ip_address IS 'Client IP address';
 -- Enable RLS
 ALTER TABLE api_logs ENABLE ROW LEVEL SECURITY;
 
--- Public read access (for admin dashboard)
-CREATE POLICY "Public read access" ON api_logs
-    FOR SELECT USING (true);
+-- Service role read access only (for the admin dashboard API route).
+-- The anon key is public, so api_logs must never be world-readable: it
+-- contains IPs, user agents, error stacks and request/response bodies.
+CREATE POLICY "Service role read access" ON api_logs
+    FOR SELECT USING (auth.role() = 'service_role');
 
 -- Service role write access (for API logging)
 CREATE POLICY "Service role write access" ON api_logs
@@ -125,6 +127,24 @@ COMMENT ON COLUMN personal_info.key IS 'Unique identifier for the info item';
 COMMENT ON COLUMN personal_info.title IS 'Human-readable label';
 COMMENT ON COLUMN personal_info.description IS 'Value/content of the info item';
 
+-- Enable RLS (no public read policy: personal data is served via the
+-- service-role /api/info route, which filters is_hidden)
+ALTER TABLE personal_info ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins can manage personal info" ON personal_info
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'amankarguwal0@gmail.com'
+        )
+    );
+
+CREATE POLICY "Service role full access on personal info" ON personal_info
+    FOR ALL USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
+
 -- ===================================================================
 -- Table: projects
 -- ===================================================================
@@ -151,6 +171,26 @@ COMMENT ON COLUMN projects.description IS 'Strategic overview / detailed descrip
 COMMENT ON COLUMN projects.details IS 'JSONB array of project detail objects (tech stack, links, etc.)';
 COMMENT ON COLUMN projects.is_hidden IS 'Soft delete flag - hidden from public portfolio';
 
+-- Enable RLS
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view visible projects" ON projects
+    FOR SELECT USING (is_hidden = FALSE);
+
+CREATE POLICY "Admins can manage projects" ON projects
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'amankarguwal0@gmail.com'
+        )
+    );
+
+CREATE POLICY "Service role full access on projects" ON projects
+    FOR ALL USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
+
 -- ===================================================================
 -- Table: skills
 -- ===================================================================
@@ -162,7 +202,7 @@ COMMENT ON COLUMN projects.is_hidden IS 'Soft delete flag - hidden from public p
 CREATE TABLE IF NOT EXISTS skills (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
-    percentage INTEGER DEFAULT 0,
+    percentage INTEGER NOT NULL DEFAULT 85 CHECK (percentage BETWEEN 0 AND 100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

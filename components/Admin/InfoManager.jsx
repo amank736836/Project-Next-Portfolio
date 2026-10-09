@@ -280,13 +280,13 @@ export default function InfoManager() {
         saving={saving}
       />
 
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
+      <div className="flex flex-col items-start gap-6 mb-6">
         <div>
           <h2 className="text-3xl font-black text-[var(--admin-title)] tracking-tighter">Identity</h2>
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Core Profile Data Matrix</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="input-icon-wrapper w-72">
+        <div className="flex w-full items-center gap-3 sm:gap-4">
+          <div className="input-icon-wrapper min-w-0 flex-1">
             <FiSearch className="icon" size={18} />
             <input
               type="text"
@@ -350,17 +350,18 @@ export default function InfoManager() {
                 />
               ))}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-                <button
-                  onClick={addInfo}
-                  className="admin-card identity-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex flex-col items-center justify-center py-8 group transition-all !rounded-[1.5rem]"
-                >
-                  <div className="w-14 h-14 rounded-2xl border border-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
-                    <FiPlus size={28} />
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Inject Identity Node</p>
-                </button>
-              </div>
+              <button
+                onClick={addInfo}
+                className="admin-card identity-card identity-add-card holographic-card border-2 border-dashed border-white/5 hover:border-indigo-500/30 bg-white/[0.01] hover:bg-white/[0.03] flex items-center justify-center gap-4 group transition-all !rounded-[1.5rem]"
+              >
+                <div className="w-14 h-14 shrink-0 rounded-2xl border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform bg-white/[0.02] text-slate-600 group-hover:text-indigo-400 group-hover:border-indigo-500/20">
+                  <FiPlus size={28} />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-black text-[var(--admin-title)] uppercase tracking-wider">Add Identity Node</p>
+                  <p className="mt-1 text-[9px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-300 transition-colors">Create a new profile field</p>
+                </div>
+              </button>
             </div>
           ) : (
             <div className="space-y-6">

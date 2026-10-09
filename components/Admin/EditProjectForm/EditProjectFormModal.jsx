@@ -83,7 +83,7 @@ export default function EditProjectFormModal({
     try {
       const payload = {
         ...editingProject,
-        details: JSON.stringify(editingProject.details || [])
+        details: editingProject.details || []
       };
       const res = await fetch('/api/admin/projects', {
         method: isNew ? 'POST' : 'PUT',

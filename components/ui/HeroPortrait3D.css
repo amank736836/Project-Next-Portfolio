@@ -1,0 +1,163 @@
+.hero-portrait-3d {
+  --portrait-rotate-x: 0deg;
+  --portrait-rotate-y: 0deg;
+  position: relative;
+  width: min(100%, 480px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  perspective: 1100px;
+}
+
+.hero-portrait-3d__frame {
+  position: relative;
+  width: 88%;
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--portrait-rotate-x)) rotateY(var(--portrait-rotate-y));
+  transition: transform 180ms ease-out;
+  will-change: transform;
+  z-index: 2;
+}
+
+.hero-portrait-3d__image {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 30px;
+  transform: translateZ(28px);
+  transition: transform 350ms ease, filter 350ms ease;
+  box-shadow: 0 30px 70px rgba(3, 8, 20, 0.38), 0 12px 26px rgba(108, 99, 255, 0.18);
+}
+
+.hero-portrait-3d__depth {
+  position: absolute;
+  inset: 4px -14px -18px 14px;
+  border-radius: 32px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--first-color) 78%, #fff), #8b5cf6 65%, #111827);
+  transform: translateZ(-28px);
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.28);
+}
+
+.hero-portrait-3d__edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  pointer-events: none;
+  transform: translateZ(30px);
+}
+
+.hero-portrait-3d__edge {
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.hero-portrait-3d__glow {
+  position: absolute;
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--first-color) 42%, #8b5cf6);
+  filter: blur(68px);
+  opacity: 0.4;
+  animation: portraitGlow 5s ease-in-out infinite;
+}
+
+.hero-portrait-3d__orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--first-color) 42%, transparent);
+  pointer-events: none;
+}
+
+.hero-portrait-3d__orbit::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--first-color);
+  box-shadow: 0 0 16px var(--first-color);
+}
+
+.hero-portrait-3d__orbit--outer {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-11deg);
+  animation: portraitOrbit 18s linear infinite;
+}
+
+.hero-portrait-3d__orbit--inner {
+  width: 78%;
+  height: 78%;
+  border-style: dashed;
+  opacity: 0.62;
+  transform: rotate(22deg);
+  animation: portraitOrbitReverse 14s linear infinite;
+}
+
+.hero-portrait-3d:hover .hero-portrait-3d__image {
+  transform: translateZ(34px) scale(1.012);
+  filter: saturate(1.04) contrast(1.02);
+}
+
+@keyframes portraitGlow {
+  0%, 100% { transform: scale(0.94); opacity: 0.32; }
+  50% { transform: scale(1.06); opacity: 0.48; }
+}
+
+@keyframes portraitOrbit {
+  to { transform: rotate(349deg); }
+}
+
+@keyframes portraitOrbitReverse {
+  to { transform: rotate(-338deg); }
+}
+
+@media (max-width: 640px) {
+  .hero-portrait-3d {
+    width: min(82vw, 360px);
+  }
+
+  .hero-portrait-3d__frame {
+    width: 86%;
+  }
+
+  /* Keep the rotating rings close to the portrait on phones: a square ring's
+     bounding box grows by up to 41% while it spins (r * (cos a + sin a)). */
+  .hero-portrait-3d__orbit--outer {
+    width: 88%;
+    height: 88%;
+  }
+
+  .hero-portrait-3d__orbit--inner {
+    width: 68%;
+    height: 68%;
+  }
+
+  .hero-portrait-3d__glow {
+    width: 62%;
+    height: 62%;
+    filter: blur(48px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait-3d__frame,
+  .hero-portrait-3d__image,
+  .hero-portrait-3d__glow,
+  .hero-portrait-3d__orbit {
+    animation: none;
+    transition: none;
+  }
+
+  .hero-portrait-3d__frame {
+    transform: none;
+  }
+}

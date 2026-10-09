@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) => {
   return (
     <div
-      className={`group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] rounded-lg sm:rounded-xl border border-white/5 bg-white/[0.02] hover:border-white/10 ${isSelected ? 'ring-2 ring-[var(--admin-accent)] shadow-[0_0_40px_var(--admin-accent-glow)]' : ''}`}
+      className={`showcase-project-card group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] rounded-lg sm:rounded-xl border border-white/5 bg-white/[0.02] hover:border-white/10 ${isSelected ? 'ring-2 ring-[var(--admin-accent)] shadow-[0_0_40px_var(--admin-accent-glow)]' : ''}`}
     >
       {/* Image Section */}
       <div className="relative h-28 sm:h-36 md:h-40 w-full overflow-hidden bg-[var(--admin-bg)]">

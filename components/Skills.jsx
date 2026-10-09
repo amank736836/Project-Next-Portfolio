@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import TiltCard from "@/components/ui/TiltCard";
 import "@/app/(public)/about.css";
 
 const skillConfig = {
@@ -98,9 +99,10 @@ export default function Skills({ data }) {
                 const delayClass = `delay-${(index % 6) + 1}`;
                 const isHovered = hoveredSkill === skill.title;
                 return (
-                  <div
+                  <TiltCard
                     key={skill.id || skill.title}
                     className={`skills__item reveal-scale ${delayClass} ${isHovered ? "hovered" : ""}`}
+                    max={6}
                     onMouseEnter={() => setHoveredSkill(skill.title)}
                     onMouseLeave={() => setHoveredSkill(null)}
                   >
@@ -124,7 +126,7 @@ export default function Skills({ data }) {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </TiltCard>
                 );
               })}
             </div>
@@ -142,9 +144,10 @@ export default function Skills({ data }) {
                 const delayClass = `delay-${(index % 6) + 1}`;
                 const isHovered = hoveredSkill === skill.title;
                 return (
-                  <div
+                  <TiltCard
                     key={skill.id || skill.title}
                     className={`skills__item reveal-scale ${delayClass} ${isHovered ? "hovered" : ""}`}
+                    max={6}
                     onMouseEnter={() => setHoveredSkill(skill.title)}
                     onMouseLeave={() => setHoveredSkill(null)}
                   >
@@ -168,7 +171,7 @@ export default function Skills({ data }) {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </TiltCard>
                 );
               })}
             </div>

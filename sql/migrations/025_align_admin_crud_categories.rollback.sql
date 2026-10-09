@@ -1,0 +1,3 @@
+ALTER TABLE projects DROP COLUMN IF EXISTS category;
+ALTER TABLE education DROP COLUMN IF EXISTS category;
+ALTER TABLE experience DROP COLUMN IF EXISTS category;

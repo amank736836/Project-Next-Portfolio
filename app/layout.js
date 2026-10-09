@@ -18,6 +18,7 @@ const poppins = Poppins({
 
 const siteUrl = getSiteUrl();
 const siteName = "Aman Portfolio";
+const siteDescription = "Aman Kumar is a full-stack developer specializing in React, Node.js, Java, and scalable web applications.";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,13 +26,18 @@ export const metadata = {
     default: siteName,
     template: `%s | ${siteName}`,
   },
-  description: "Aman's professional portfolio showcasing projects, skills, and experience.",
+  description: siteDescription,
+  applicationName: siteName,
+  keywords: ["Aman Kumar", "full-stack developer", "React developer", "Node.js developer", "Java developer", "portfolio"],
+  authors: [{ name: "Aman Kumar", url: siteUrl }],
+  creator: "Aman Kumar",
+  publisher: "Aman Kumar",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: siteName,
-    description: "Aman's professional portfolio showcasing projects, skills, and experience.",
+    description: siteDescription,
     url: siteUrl,
     siteName,
     locale: "en_US",
@@ -48,15 +54,34 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: siteName,
-    description: "Aman's professional portfolio showcasing projects, skills, and experience.",
+    description: siteDescription,
     images: ["/assets/profile_v4.png"],
   },
 };
 
 export default async function RootLayout({ children }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Aman Kumar",
+    url: siteUrl,
+    jobTitle: "Full Stack Developer",
+    description: siteDescription,
+    image: `${siteUrl}/assets/profile_v4.png`,
+    sameAs: [
+      "https://www.linkedin.com/in/amank736836",
+      "https://github.com/amank736836",
+      "https://codolio.com/profile/amank736836",
+    ],
+    knowsAbout: ["React", "Node.js", "Java", "JavaScript", "PostgreSQL", "MongoDB"],
+  };
+
   return (
-    <html lang="en" className={`${outfit.variable} ${poppins.variable}`}>
+    // suppressHydrationWarning: the theme + motion classes are applied to <html>
+      // before hydration (inline script / ThemeController), which React would flag.
+    <html lang="en" className={`${outfit.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         {children}
         <Analytics />
       </body>

@@ -11,13 +11,11 @@ import "./Navbar.css";
 const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(initialUser);
-  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const pathname = usePathname();
   const activeSectionIdRef = useRef('home');
 
   useEffect(() => {
-    setMounted(true);
     if (!pathname?.startsWith('/admin')) return; // Only validate auth on admin routes
     
     const checkUser = async () => {
@@ -73,8 +71,7 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
       }
     };
 
-    // Initial check
-    setTimeout(updateActiveSection, 100);
+    const initialCheckTimeout = window.setTimeout(updateActiveSection, 100);
 
     // Scroll listener with throttling
     let scrollTimeout = null;
@@ -83,35 +80,18 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
       scrollTimeout = setTimeout(updateActiveSection, 50);
     };
 
-    // Click handlers for nav links
-    const handleNavClick = (e) => {
-      const href = e.currentTarget.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        const targetId = href.substring(1);
-        activeSectionIdRef.current = targetId;
-        setActiveSection(targetId);
-      }
-    };
-
-    // Initial check
     updateActiveSection();
 
-    // Add scroll listener
     window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Add click listeners to nav links
-    const navLinks = document.querySelectorAll('.nav__link[href^="#"]');
-    navLinks.forEach(link => link.addEventListener('click', handleNavClick));
-
-    // Initial section check
     window.addEventListener('load', updateActiveSection);
 
     return () => {
+      window.clearTimeout(initialCheckTimeout);
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('load', updateActiveSection);
       if (scrollTimeout) clearTimeout(scrollTimeout);
-      navLinks.forEach(link => link.removeEventListener('click', handleNavClick));
     };
-  }, [siteMode, activeSection]);
+  }, [siteMode]);
 
   const handleLogin = () => {
     window.location.href = '/api/auth/login';
@@ -135,41 +115,35 @@ const Navbar = ({ siteMode = 'multi', initialUser = null }) => {
     path: siteMode === 'single' ? `#${link.path === '/' ? 'home' : link.path.replace('/', '')}` : link.path
   }));
 
-  if (!mounted) {
-    return (
-      <nav className="nav" suppressHydrationWarning>
-        <div className="nav__menu">
-          <ul className="nav__list">
-            {navLinks.map(({ name }, index) => (
-              <li key={index} className="nav__item">
-                <div className="nav__link skeleton">
-                  <div className="skeleton__icon"></div>
-                  <div className="skeleton__text"></div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="nav__toggle skeleton__toggle"></div>
-      </nav>
-    );
-  }
-
   return (
-    <nav className="nav" suppressHydrationWarning>
+    <nav className="nav">
       <div className={`${showMenu ? "nav__menu show-menu" : "nav__menu"}`}>
         <ul className="nav__list">
-          {navLinks.map(({ name, icon, path }, index) => {
+          <li className="nav__item nav__item--brand">
+            <Link
+              href={siteMode === 'single' ? '#home' : '/'}
+              className="nav__brand"
+              aria-label="Aman Kumar — home"
+              onClick={() => setShowMenu(false)}
+            >
+              <span className="nav__brand-mark" aria-hidden="true">AK</span>
+              <span className="nav__brand-ring" aria-hidden="true" />
+            </Link>
+          </li>
+          {navLinks.map(({ name, icon, path }) => {
             const isActive = siteMode === 'single' 
               ? activeSection === (path === '#home' ? 'home' : path.replace('#', ''))
               : pathname === path;
             return (
-              <li key={index} className="nav__item">
+              <li key={path} className="nav__item">
                 {siteMode === 'single' ? (
                   <a
                     href={path}
                     className={isActive ? "nav__link active-nav" : "nav__link"}
                     onClick={() => {
+                      const targetId = path.slice(1);
+                      activeSectionIdRef.current = targetId;
+                      setActiveSection(targetId);
                       setShowMenu(false);
                     }}
                   >

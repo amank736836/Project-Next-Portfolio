@@ -2,6 +2,7 @@ import { cloudinary } from '@/lib/cloudinary';
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
@@ -82,6 +83,19 @@ export async function POST(request) {
         await supabase.storage.from('portfolio-resumes').remove([uploadData.path]);
         return NextResponse.json({ error: dbError.message }, { status: 500, headers: NO_CACHE });
       }
+
+      await logAudit({
+        action: 'create',
+        resourceType: 'resumes',
+        resourceId: resumeData?.id,
+        newData: {
+          title: resumeTitle,
+          file_url: urlData.publicUrl,
+          file_name: file.name,
+          file_size: file.size,
+        },
+        request,
+      });
 
       return NextResponse.json({ 
         url: urlData.publicUrl, 

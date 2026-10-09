@@ -6,12 +6,19 @@ import "@/app/(public)/about.css";
 import { FaEye } from "react-icons/fa6";
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/server";
+import SectionHeading from "@/components/ui/SectionHeading";
 
 export const revalidate = 60;
+export const metadata = {
+  title: "About Aman Kumar",
+  description: "Learn about Aman Kumar, a full-stack developer, his background, skills, and professional experience.",
+  alternates: { canonical: "/about" },
+};
 
 export default async function About() {
   const supabase = await createAdminClient();
-  const { data: infoData } = await supabase.from('personal_info').select('*');
+  // Public surface: never render rows the admin has marked as hidden.
+  const { data: infoData } = await supabase.from('personal_info').select('*').eq('is_hidden', false);
 
   const aboutDescription = infoData?.find(i => i.key === 'about_description')?.description;
   let personalInfo = infoData?.filter(i => 
@@ -51,23 +58,21 @@ export default async function About() {
   }
 
   return (
-    <main className="section container">
+    <main className="section container page-enter">
       <section className="about">
-        <h2 className="section__title">
-          About <span>Me</span>
-        </h2>
+        <SectionHeading title="About" highlight="Me" eyebrow="Who I am" />
         <div className="about__container grid">
-          <div className="about__info">
-            <h3 className="section__subtitle">Personal Infos</h3>
+          <div className="about__info reveal-left">
+            <h3 className="section__subtitle reveal delay-1">Personal Infos</h3>
             {aboutDescription && (
               <p className="about__description mb-8 text-slate-400 leading-relaxed">
                 {aboutDescription}
               </p>
             )}
-            <ul className="info__list grid">
+            <ul className="info__list grid reveal reveal-stagger delay-2">
               <Info data={personalInfo} />
             </ul>
-            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8">
+            <div className="mt-12 flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 reveal delay-4">
               <a href="/assets/Aman_Resume.pdf" download="" className="button">
                 Download Cv
                 <span className="button__icon">

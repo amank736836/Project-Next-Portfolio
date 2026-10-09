@@ -5,6 +5,7 @@ import { FaDownload } from "react-icons/fa";
 import { FaEye } from "react-icons/fa6";
 import { useState, useRef } from "react";
 import { ResumeViewerModal } from "@/components/sections/ResumeViewerModal";
+import SectionHeading from "@/components/ui/SectionHeading";
 import "@/app/(public)/about.css";
 
 function ResumeDownloadLink({ resumeUrl }) {
@@ -27,9 +28,7 @@ export default function AboutSection({ aboutDescription, personalInfo, resumeUrl
   return (
     <section id="about" className="section container reveal" suppressHydrationWarning>
       <section className="about">
-        <h2 className="section__title reveal delay-1">
-          About <span>Me</span>
-        </h2>
+        <SectionHeading title="About" highlight="Me" eyebrow="Who I am" className="reveal" />
         <div className="about__container grid">
           <div className="about__info reveal-left delay-2">
             <h3 className="section__subtitle reveal delay-3">Personal Infos</h3>

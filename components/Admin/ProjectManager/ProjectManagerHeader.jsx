@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/Button';
 
 export default function ProjectManagerHeader({ onAddProject, selectedCount, onBulkDelete }) {
   return (
-    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
-      <div>
+    <div className="showcase-page-header flex-1 flex flex-col px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-5">
+      <div className="min-w-0">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-[var(--admin-title)]">Asset Showcase</h2>
         <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
           Node Showcase v4.2 — Unified Asset Management
         </p>
       </div>
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3 flex-wrap">
         {selectedCount > 0 && (
           <Button
             variant="destructive"
@@ -28,15 +28,11 @@ export default function ProjectManagerHeader({ onAddProject, selectedCount, onBu
           </Button>
         )}
         <Button
-          variant="outline"
           onClick={onAddProject}
-          className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 h-10 sm:h-12 rounded-lg sm:rounded-xl border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all group text-xs sm:text-sm"
+          className="flex items-center gap-2 sm:gap-3 px-5 sm:px-7 h-11 sm:h-12 rounded-lg sm:rounded-xl !bg-[var(--admin-accent)] hover:brightness-110 !text-white transition-all group text-xs sm:text-sm shadow-[0_0_20px_rgba(var(--admin-accent-rgb),0.4)] border-none"
         >
-          <svg className="group-hover:rotate-90 transition-transform duration-300" size={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          <span className="font-black uppercase tracking-[0.15em] sm:tracking-[0.2em]">New Mission</span>
+          <FiPlus className="group-hover:rotate-90 transition-transform duration-300" size={18} />
+          <span className="whitespace-nowrap font-black uppercase tracking-[0.15em] sm:tracking-[0.2em]">New Mission</span>
         </Button>
       </div>
     </div>

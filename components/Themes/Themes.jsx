@@ -3,28 +3,49 @@
 import { FaCog } from "react-icons/fa";
 import { themes } from "@/data";
 import ThemeItem from "./ThemeItem";
-import { BsMoon, BsSun } from "react-icons/bs";
+import ThemeModeIcon from "./ThemeModeIcon";
 import "./Themes.css";
 import { useEffect, useState, useRef, memo } from "react";
+import { flushSync } from "react-dom";
 import { syncThemeCssVars } from "@/lib/utils";
+import {
+  runThemeTransition,
+  applyThemeMode,
+  burstRing,
+} from "@/lib/themeTransition";
 
 const Themes = () => {
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [color, setColor] = useState("Blue");
   const [theme, setTheme] = useState("dark-theme");
   const switcherRef = useRef(null);
+  const togglerRef = useRef(null);
 
-  const changeColor = (newColor) => {
+  const changeColor = (newColor, originEl) => {
     setColor(newColor);
     localStorage.setItem("color", newColor);
     window.dispatchEvent(new Event("themeChange"));
+    // Quick ring pulse at the swatch; the accent itself morphs smoothly via
+    // the registered --first-color property (see motion.css §16).
+    burstRing(originEl || togglerRef.current, { scale: 5 });
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = (originEl) => {
     const newTheme = theme === "light-theme" ? "dark-theme" : "light-theme";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    window.dispatchEvent(new Event("themeChange"));
+
+    // The circular reveal captures the DOM state inside this callback, so the
+    // class swap + React update must happen here (flushSync keeps the icon
+    // morph inside the same snapshot).
+    runThemeTransition(
+      () => {
+        applyThemeMode(newTheme);
+        localStorage.setItem("theme", newTheme);
+        window.dispatchEvent(new Event("themeChange"));
+        flushSync(() => setTheme(newTheme));
+      },
+      originEl || togglerRef.current,
+      { incomingClass: newTheme }
+    );
   };
 
   // Close switcher when clicking outside
@@ -104,9 +125,13 @@ const Themes = () => {
   }, [color]);
 
   useEffect(() => {
-    // Add/remove theme class without removing font CSS variables
-    document.documentElement.classList.remove('light-theme', 'dark-theme');
-    document.documentElement.classList.add(theme);
+    // Add/remove theme class without removing font CSS variables. Guarded so
+    // it never re-shuffles <html> mid-wipe (toggleTheme already applied it
+    // inside the view-transition callback).
+    const root = document.documentElement;
+    if (!root.classList.contains(theme)) {
+      applyThemeMode(theme);
+    }
   }, [theme]);
 
   return (
@@ -120,14 +145,29 @@ const Themes = () => {
         >
           <FaCog />
         </div>
-        <div className="theme__toggler" onClick={toggleTheme}>
-          {theme === "light-theme" ? <BsMoon /> : <BsSun />}
+        <div
+          ref={togglerRef}
+          className="theme__toggler"
+          role="switch"
+          aria-checked={theme === "dark-theme"}
+          aria-label={theme === "light-theme" ? "Switch to dark mode" : "Switch to light mode"}
+          title={theme === "light-theme" ? "Switch to dark mode" : "Switch to light mode"}
+          tabIndex={0}
+          onClick={(e) => toggleTheme(e.currentTarget)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleTheme(e.currentTarget);
+            }
+          }}
+        >
+          <ThemeModeIcon target={theme === "light-theme" ? "dark" : "light"} />
         </div>
         <h3 className="style__switcher-title">Style Switcher</h3>
         <div className="style__switcher-items">
-          {themes.map((theme, index) => {
+          {themes.map((theme) => {
             return (
-              <ThemeItem key={index} {...theme} changeColor={changeColor} />
+              <ThemeItem key={theme.id} {...theme} changeColor={changeColor} />
             );
           })}
         </div>

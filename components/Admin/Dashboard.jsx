@@ -6,6 +6,7 @@ import {
   FiLayers, FiTrendingUp, FiMessageSquare
 } from 'react-icons/fi';
 import { syncThemeCssVars } from '@/lib/utils';
+import { runThemeTransition, applyThemeMode } from '@/lib/themeTransition';
 import { useLoading } from './LoadingContext';
 import OperationLogs from './Dashboard/OperationLogs';
 import ThemeController from './Dashboard/ThemeController';
@@ -179,16 +180,22 @@ export default function Dashboard() {
     };
   }, [fetchExternalStatuses, fetchStats, fetchThemeSettings]);
 
-  const saveThemeSettings = useCallback(async (color, mode) => {
+  const saveThemeSettings = useCallback(async (color, mode, originEl) => {
     setSavingTheme(true);
     setSuccess('');
 
     setThemeSettings({ color, mode });
-    localStorage.setItem("color", color);
-    localStorage.setItem("theme", mode);
-    syncThemeCssVars(color);
-    document.documentElement.className = mode;
-    window.dispatchEvent(new Event("themeChange"));
+
+    // Circular reveal from the clicked control (View Transitions where
+    // available) — same engine the public style switcher uses.
+    runThemeTransition(() => {
+      localStorage.setItem("color", color);
+      localStorage.setItem("theme", mode);
+      syncThemeCssVars(color);
+      // Class-safe swap: keeps the next/font variable classes on <html>.
+      applyThemeMode(mode);
+      window.dispatchEvent(new Event("themeChange"));
+    }, originEl, { incomingClass: mode });
 
     try {
       const payload = [
@@ -248,11 +255,11 @@ export default function Dashboard() {
 
   return (
     <div
-      className="animate-fade-in max-w-[1700px] mx-auto pb-20 px-4 md:px-6"
-      style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}
+      className="admin-dashboard animate-fade-in max-w-[1700px] mx-auto pb-20 px-4 md:px-6"
+      style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}
     >
 
-      <div className="flex flex-col gap-6 mb-4">
+      <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(16,185,129,1)]" />
@@ -265,7 +272,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-black/[0.05] dark:border-white/[0.06] pb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:pr-16 border-b border-black/[0.05] dark:border-white/[0.06] pb-5">
 
           <div>
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight !mb-1" style={{ color: textTitle }}>
@@ -285,10 +292,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
         {statItems.map((stat, i) => (
+          <div key={i} className="admin-reveal" data-reveal-delay={i * 90}>
           <StatCard
-            key={i}
             stat={stat}
             loading={loading}
             error={error}
@@ -303,6 +310,7 @@ export default function Dashboard() {
             cardBorder={cardBorder}
             cardInset={cardInset}
           />
+          </div>
         ))}
       </div>
 
@@ -326,11 +334,11 @@ export default function Dashboard() {
 
       <div
         className="grid grid-cols-1 xl:grid-cols-12"
-        style={{ display: 'grid', gap: '40px' }}
+        style={{ display: 'grid', gap: '24px' }}
       >
         <div
-          className="xl:col-span-8"
-          style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
+          className="xl:col-span-8 admin-reveal"
+          style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
         >
           <OperationLogs
             hoveredLog={hoveredLog}
@@ -363,8 +371,8 @@ export default function Dashboard() {
         </div>
 
         <div
-          className="xl:col-span-4"
-          style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
+          className="xl:col-span-4 admin-reveal" data-reveal-delay="140"
+          style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
         >
           <section
             style={{
@@ -372,9 +380,10 @@ export default function Dashboard() {
               border: `1px solid ${cardBorder}`,
               boxShadow: `0 10px 30px ${isLight ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.2)'}, ${cardInset}`,
             }}
-            className="rounded-2xl p-8 backdrop-blur-2xl"
+            className="rounded-2xl p-6 backdrop-blur-2xl admin-lift"
+            data-spotlight
           >
-            <div className="flex items-center gap-3" style={{ marginBottom: '32px' }}>
+            <div className="flex items-center gap-3" style={{ marginBottom: '24px' }}>
               <div className="w-10 h-10 rounded-xl bg-[var(--admin-accent)]/15 flex items-center justify-center text-[var(--admin-accent)] border border-[var(--admin-accent)]/20">
                 <FiZap size={18} className="animate-pulse" />
               </div>
@@ -384,7 +393,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <ExternalStatusWidget
                 icon={<FiGithub size={13} />}
                 label="GitHub API"
@@ -452,7 +461,8 @@ export default function Dashboard() {
               border: `1px solid ${cardBorder}`,
               boxShadow: `0 10px 30px ${isLight ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.2)'}, ${cardInset}`,
             }}
-            className="rounded-2xl p-8 backdrop-blur-2xl"
+            className="rounded-2xl p-8 backdrop-blur-2xl admin-lift"
+            data-spotlight
           >
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Total Command hits</p>
             <h4 className="text-3xl font-black tracking-tight hud-text" style={{ color: textTitle, textShadow: isLight ? 'none' : '0 0 15px rgba(255,255,255,0.1)' }}>

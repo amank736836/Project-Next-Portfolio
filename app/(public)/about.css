@@ -29,16 +29,36 @@
   max-width: 65ch;
 }
 
+/* Personal info grid.
+   NOTE: these rules previously set `grid-template-columns` without
+   `display: grid`, so the grid was inert and the global stylesheet's
+   `@media (max-width: 1024px)` flex rule turned the list into centred,
+   variable-width chips ("staircase" on phones). The list is now an explicit
+   grid: two columns when there is room, one full-width column on phones. */
 .info__list {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 22px;
   margin-bottom: 40px;
 }
 
 .info__item {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 13px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--container-color) 55%, transparent);
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.info__item:hover {
+  border-color: color-mix(in srgb, var(--first-color) 55%, transparent);
+  transform: translateY(-2px);
 }
 
 .section__subtitle {
@@ -50,6 +70,8 @@
 }
 
 .info__title {
+  flex: 0 0 auto;
+  white-space: nowrap;
   font-size: var(--tiny-font-size);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -59,6 +81,10 @@
 }
 
 .info__description {
+  min-width: 0;
+  margin-left: auto;
+  text-align: right;
+  overflow-wrap: anywhere;
   font-size: var(--normal-font-size);
   color: var(--title-color);
   font-weight: var(--weight-500);
@@ -331,6 +357,29 @@
 @media screen and (max-width: 1024px) {
   .info__list {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Long values (emails, URLs) need a little more room on phones. */
+@media screen and (max-width: 600px) {
+  .info__description {
+    font-size: var(--smaller-font-size);
+  }
+}
+
+/* Very narrow phones: stack the label above the value. */
+@media screen and (max-width: 340px) {
+  .info__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 12px 16px;
+  }
+
+  .info__description {
+    margin-left: 0;
+    text-align: left;
   }
 }
 

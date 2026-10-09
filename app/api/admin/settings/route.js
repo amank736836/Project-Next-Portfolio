@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
+import { logAudit } from '@/lib/audit';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -42,6 +43,7 @@ export async function POST(request) {
 
   const { data, error } = await supabase.from('user_settings').upsert([item]).select();
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'create', resourceType: 'user_settings', resourceId: item.key, newData: item, request });
   return NextResponse.json(data[0], { headers: NO_CACHE });
 }
 
@@ -56,6 +58,7 @@ export async function PUT(request) {
 
   const { error } = await supabase.from('user_settings').upsert(payload);
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'update', resourceType: 'user_settings', resourceId: payload?.[0]?.key, newData: payload, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }
 
@@ -74,5 +77,6 @@ export async function DELETE(request) {
 
   const { error } = await supabase.from('user_settings').delete().eq('key', key);
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: NO_CACHE });
+  await logAudit({ action: 'delete', resourceType: 'user_settings', resourceId: key, request });
   return NextResponse.json({ success: true }, { headers: NO_CACHE });
 }

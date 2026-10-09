@@ -1,0 +1,6 @@
+{
+  "title": "Should be hidden",
+  "img": "/assets/default.png",
+  "description": "Has default image so should be filtered out by public API.",
+  "details": []
+}

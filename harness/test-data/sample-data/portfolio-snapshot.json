@@ -1,0 +1,18 @@
+{
+  "_comment": "Snapshot of the public personal_info KV store, used for tests that need stable seed data.",
+  "personal_info": {
+    "first_name": "Aman",
+    "last_name": "Kumar",
+    "site_mode": "multi",
+    "address": "Jaipur, Rajasthan, India",
+    "phone": "+91 62847 36836",
+    "email": "amankarguwal0@gmail.com"
+  },
+  "featured_skills": [
+    { "title": "React", "icon": "⚛", "color": "#61DAFB" },
+    { "title": "Node.js", "icon": "🟢", "color": "#339933" }
+  ],
+  "_env_overrides": {
+    "AUTHORIZED_ADMIN_EMAIL": "Set this to the real admin email in production."
+  }
+}
