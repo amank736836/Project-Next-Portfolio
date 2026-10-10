@@ -1,11 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { FiEye, FiEyeOff, FiCheck, FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
+import { getDisplayImage } from '@/lib/projectPreview';
 
 export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) => {
+  const displayImage = useMemo(() => getDisplayImage(project), [project]);
   return (
     <div
       className={`showcase-project-card group relative overflow-hidden stagger-${(index % 5) + 1} transition-all duration-500 hover:scale-[1.01] rounded-lg sm:rounded-xl border border-white/5 bg-white/[0.02] hover:border-white/10 ${isSelected ? 'ring-2 ring-[var(--admin-accent)] shadow-[0_0_40px_var(--admin-accent-glow)]' : ''}`}
@@ -13,7 +15,7 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
       {/* Image Section */}
       <div className="relative h-28 sm:h-36 md:h-40 w-full overflow-hidden bg-[var(--admin-bg)]">
         <Image
-          src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'}
+          src={displayImage}
           alt={project.title || 'Project image'}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -131,6 +133,7 @@ export const ProjectCard = React.memo(({ project, index, isSelected, onToggleSel
 });
 
 export const ProjectListItem = React.memo(({ project, index, isSelected, onToggleSelect, onToggleVisibility, onEdit, onDelete }) => {
+  const displayImage = useMemo(() => getDisplayImage(project, { width: 400 }), [project]);
   return (
     <div
       className={`flex items-center gap-3 sm:gap-4 transition-all duration-300 hover:bg-white/2 p-3 sm:p-4 rounded-lg border border-white/5 hover:border-white/10 ${isSelected ? 'ring-2 ring-indigo-500/50 bg-indigo-500/[0.02]' : ''}`}
@@ -148,7 +151,7 @@ export const ProjectListItem = React.memo(({ project, index, isSelected, onToggl
 
       <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-[var(--admin-bg)] flex-shrink-0 border border-border/50">
         <Image
-          src={project.image || project.img || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop'}
+          src={displayImage}
           alt={project.title || 'Project thumbnail'}
           fill
           sizes="56px"

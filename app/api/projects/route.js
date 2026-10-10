@@ -18,9 +18,8 @@ export async function GET() {
     // 1. Mandatory Title check
     if (!project.title || project.title.trim() === '') return false;
 
-    // 2. Mandatory Image check (Must be populated and not a placeholder/empty/default)
-    if (!project.img || project.img.trim() === '' || project.img === '/assets/default.png' || project.img.includes('placeholder')) return false;
-
+    // 2. Image is optional now — card falls back to live screenshot from
+    //    the Production Preview URL (see lib/projectPreview.js).
     // 3. Mandatory Details validation
     try {
       const details = typeof project.details === 'string' ? JSON.parse(project.details) : project.details;

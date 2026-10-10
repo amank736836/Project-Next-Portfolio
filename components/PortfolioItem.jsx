@@ -18,6 +18,7 @@ import {
   FiImage
 } from "react-icons/fi";
 import { FaCode, FaMobileAlt } from "react-icons/fa";
+import { getDisplayImage, getProductionUrl } from "@/lib/projectPreview";
 import TiltCard from "@/components/ui/TiltCard";
 import LivePreview from "@/components/LivePreview";
 
@@ -270,9 +271,9 @@ const PortfolioItem = ({
           </div>
         )}
         <div className="portfolio__actions">
-          {liveUrl && (
+          {resolvedLiveUrl && (
             <a 
-              href={liveUrl} 
+              href={resolvedLiveUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="portfolio__action-btn"

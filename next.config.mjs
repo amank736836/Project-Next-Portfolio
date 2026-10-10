@@ -27,6 +27,21 @@ const nextConfig = {
 				hostname: 'via.placeholder.com',
 				pathname: '/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 's.wordpress.com',
+				pathname: '/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'image.thum.io',
+				pathname: '/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'api.microlink.io',
+				pathname: '/**',
+			},
 		],
 		formats: ['image/avif', 'image/webp'],
 		minimumCacheTTL: 60 * 60 * 24,
