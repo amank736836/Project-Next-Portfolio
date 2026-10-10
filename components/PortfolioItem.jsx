@@ -271,9 +271,9 @@ const PortfolioItem = ({
           </div>
         )}
         <div className="portfolio__actions">
-          {resolvedLiveUrl && (
+          {livePreviewUrl && (
             <a 
-              href={resolvedLiveUrl} 
+              href={livePreviewUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="portfolio__action-btn"
