@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { 
@@ -113,6 +113,18 @@ const PortfolioItem = ({
   }, [shortDescription, parsedDetails]);
 
   const toggleModal = () => setModal(!modal);
+
+  // Lock background page scroll while the details modal (with the
+  // interactive/scrollable iframe) is open, so wheel events stay inside
+  // the modal preview instead of fighting the page behind it.
+  useEffect(() => {
+    if (!modal) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [modal]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
@@ -236,6 +248,7 @@ const PortfolioItem = ({
   return (
     <TiltCard
       className={`portfolio__item reveal-scale ${delayClass}`}
+      max={7}
       onClick={toggleModal}
       role="button"
       tabIndex={0}

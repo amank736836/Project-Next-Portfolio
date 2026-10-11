@@ -98,7 +98,7 @@ export default function LivePreview({
           className={[
             "live-preview__frame",
             status === "ready" ? "is-ready" : "",
-            interactive ? "is-interactive" : "",
+            interactive ? "is-interactive" : "is-static",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -106,6 +106,14 @@ export default function LivePreview({
           sandbox={PREVIEW_SANDBOX}
           allow={PREVIEW_ALLOW}
           referrerPolicy="strict-origin-when-cross-origin"
+          // Grid cards are inert thumbnails: no left/right (or vertical)
+          // scrollbars, no keyboard focus, no pointer capture — the card owns
+          // hover/click. `scrolling="no"` is obsolete but still honored by
+          // browsers and is the only declarative way to hide inner-document
+          // scrollbars cross-origin while the 16/9 wrapper clips overflow.
+          scrolling={interactive ? "auto" : "no"}
+          tabIndex={interactive ? 0 : -1}
+          aria-hidden={interactive ? undefined : true}
           onLoad={() => setStatus((current) => (current === "failed" ? current : "ready"))}
           onError={() => setStatus("failed")}
         />

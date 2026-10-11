@@ -55,6 +55,10 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: #0b0b14;
+  isolation: isolate;
 }
 
 .portfolio__item:hover {
@@ -75,11 +79,19 @@
   transform: scale(1.1);
 }
 
-/* ===== Live project preview ===== */
+/* ===== Live project preview =====
+   Grid cards keep a strict 16/9 window with NO iframe scrollbars
+   (notably no left/right scrollbar). Overflow is clipped by the wrapper
+   so aspect ratio is maintained; only the modal's interactive frame
+   is allowed to scroll. */
 .live-preview {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
+  overscroll-behavior: contain;
   background: var(--glass-bg);
 }
 
@@ -91,11 +103,14 @@
 .live-preview__frame {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
+  max-width: 100%;
   border: 0;
   background: #fff;
   opacity: 0;
+  overflow: hidden;
   /* Cards own hover + click: the frame stays inert until opened in the modal */
   pointer-events: none;
   transition: opacity 0.45s ease;
@@ -105,8 +120,59 @@
   opacity: 1;
 }
 
+/* Static (grid) frame: never scroll, never capture pointer/scroll, never
+   distort the 16/9 window. `scrolling="no"` on the element hides the inner
+   document scrollbars; this CSS clips any residual overflow-x/y. */
+.live-preview__frame.is-static {
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  pointer-events: none !important;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.live-preview__frame.is-static::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 .live-preview__frame.is-interactive {
   pointer-events: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: auto;
+}
+
+.modal__img-wrapper .live-preview {
+  border-radius: 16px;
+}
+
+/* Coarse pointers / touch: tilt is JS-disabled, make sure no residual
+   transform lingers and grid frames never trap horizontal panning. */
+@media (hover: none), (pointer: coarse) {
+  .portfolio__item.tilt {
+    transform: none !important;
+  }
+
+  .live-preview__frame.is-static {
+    touch-action: pan-y;
+  }
+}
+
+/* Tilted cards must clip scaled/rotated frames so neighbours never show a
+   squished "side view" during fast pointer moves or scroll. */
+.portfolio__item.tilt {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-origin: center center;
+}
+
+.portfolio__item.tilt .live-preview__frame {
+  transform: translateZ(0);
 }
 
 .live-preview__badge {

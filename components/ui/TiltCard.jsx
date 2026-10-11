@@ -18,16 +18,19 @@ export default function TiltCard({
   ...rest
 }) {
   const ref = useRef(null);
+  const rafRef = useRef(0);
 
-  const handleMove = useCallback(
-    (event) => {
+  const applyTilt = useCallback(
+    (clientX, clientY) => {
       const node = ref.current;
       if (!node) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches) return;
-
       const bounds = node.getBoundingClientRect();
-      const x = (event.clientX - bounds.left) / bounds.width;
-      const y = (event.clientY - bounds.top) / bounds.height;
+      if (!bounds.width || !bounds.height) return;
+      // Clamp to 0..1 so fast pointer moves, scroll, pen or touch slipping
+      // outside the card can never produce extreme rotate angles.
+      const clamp01 = (v) => Math.min(1, Math.max(0, v));
+      const x = clamp01((clientX - bounds.left) / bounds.width);
+      const y = clamp01((clientY - bounds.top) / bounds.height);
 
       node.style.setProperty('--tilt-y', `${(x - 0.5) * max * 2}deg`);
       node.style.setProperty('--tilt-x', `${(0.5 - y) * max * 2}deg`);
@@ -41,9 +44,21 @@ export default function TiltCard({
     [max]
   );
 
+  const handleMove = useCallback(
+    (event) => {
+      if (event.pointerType === 'touch') return;
+      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches) return;
+      const { clientX, clientY } = event;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => applyTilt(clientX, clientY));
+    },
+    [applyTilt]
+  );
+
   const handleLeave = useCallback(() => {
     const node = ref.current;
     if (!node) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     node.style.setProperty('--tilt-x', '0deg');
     node.style.setProperty('--tilt-y', '0deg');
   }, []);
@@ -54,6 +69,8 @@ export default function TiltCard({
       className={`tilt ${className}`}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
+      onPointerCancel={handleLeave}
+      onBlur={handleLeave}
       style={{ '--tilt-scale': scale }}
       {...rest}
     >
