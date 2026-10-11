@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Outfit, Poppins } from 'next/font/google';
 
 import { getSiteUrl } from "@/lib/config";
@@ -84,6 +85,7 @@ export default async function RootLayout({ children }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
