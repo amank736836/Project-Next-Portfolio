@@ -24,7 +24,7 @@ export default function Resume() {
       }
     }
     fetchResume();
-  }, []);
+  }, [setResumeUrl]);
 
   if (loading) {
     return (

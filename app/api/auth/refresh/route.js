@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession, setSession } from '@/lib/cookies';
 import { isTokenExpired } from '@/lib/cookies';
+import { randomUUID } from 'node:crypto';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, private, must-revalidate' };
 
@@ -19,7 +20,7 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Token is still valid' }, { headers: NO_CACHE });
     }
 
-    const sessionId = session.user?.sub || session.user?.id || session.user?.email || session.tokens?.access_token || Math.random().toString();
+    const sessionId = session.user?.sub || session.user?.id || session.user?.email || session.tokens?.access_token || randomUUID();
     if (refreshInProgress.has(sessionId)) {
       return NextResponse.json({ error: 'Refresh already in progress' }, { status: 429, headers: NO_CACHE });
     }

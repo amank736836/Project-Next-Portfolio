@@ -37,7 +37,7 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
     return () => {
       document.body.style.overflow = 'unset';
       document.removeEventListener('keydown', handleKeyDown);
-      
+
       if (triggerElement) {
         triggerElement.focus();
       } else if (previousActiveElement.current) {
@@ -45,7 +45,7 @@ const Modal = ({ isOpen, onClose, title, children, className = "", triggerRef })
       }
     };
   }, [isOpen, onClose, triggerRef]);
-
+ 
   const trapFocus = (e, focusableElements) => {
     if (!focusableElements || focusableElements.length === 0) return;
     

@@ -69,7 +69,7 @@ export default function EditProjectFormModal({
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
-  }, [successToast, errorToast]);
+  }, [successToast, errorToast, setEditingProject]);
 
   const isNew = !editingProject?.id;
 
@@ -106,7 +106,7 @@ export default function EditProjectFormModal({
     } finally {
       setSaving(false);
     }
-  }, [editingProject, isNew, onUpdateProject, successToast, errorToast]);
+  }, [editingProject, isNew, onUpdateProject, successToast, errorToast, setEditingProject, setIsAddingCategory]);
 
   if (!editingProject) return null;
 
